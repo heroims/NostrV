@@ -1,0 +1,10 @@
+{
+  "dialogByTitle": "温馨提示",
+  "dialogByCreate": "请选择创建账户的方式。",
+  "createByHDNode": "HD Node",
+  "createByNormal": "普通",
+  "createByCancel": "取消",
+  "pageWelcomeTitle": "欢迎",
+  "pageWelcomeGo": "进入",
+  "pageWelcomeImport": "导入"
+}
