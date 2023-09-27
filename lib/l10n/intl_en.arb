@@ -4,7 +4,12 @@
   "createByHDNode": "HD Node",
   "createByNormal": "Normal",
   "createByCancel": "Cancel",
-  "pageWelcome_Title": "Welcome",
-  "pageWelcome_Go": "Go",
-  "pageWelcome_Import": "Import"
+  "pageWelcomeTitle": "Welcome",
+  "pageWelcomeGo": "Go",
+  "pageWelcomeImport": "Import",
+  "pageMnemonicTitle": "Mnemonic",
+  "pageMnemonicDescribe": "Please backup the mnemonic words",
+  "pageMnemonicShowTip": "The mnemonic words are required for recovering your wallet. Please write these mnemonic words on a piece of paper and store it in a secure location.",
+  "pageMnemonicVerifyTip": "Please choose mnemonic words in order and make sure your mnemonic was correct written.",
+  "pageMnemonicNext": "Next"
 }

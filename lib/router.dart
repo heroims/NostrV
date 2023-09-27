@@ -3,14 +3,16 @@ import 'package:go_router/go_router.dart';
 import 'package:nostr_app/models/login_info_model.dart';
 import 'package:nostr_app/pages/home_page.dart';
 import 'package:nostr_app/pages/mnemonic_verify_page.dart';
+import 'package:nostr_app/pages/mnemonic_show_page.dart';
 import 'package:nostr_app/pages/welcome_page.dart';
 
 enum Routers {
-  mnemonicVerify(1, 'mnemonic_verify'),
-  home(2, 'home'),
-  feed(3, 'feed'),
-  search(4, 'search'),
-  profile(5, 'profile');
+  mnemonicVerify(6, 'mnemonic_verify'),
+  mnemonicShow(5, 'mnemonic_show'),
+  profile(4, 'profile'),
+  search(3, 'search'),
+  feed(2, 'feed'),
+  home(1, 'home');
 
   const Routers(this.number, this.value);
 
@@ -38,9 +40,16 @@ class AppRouter {
         pageBuilder: (context, state) => const MaterialPage(child: WelcomePage()),
         routes: [
           GoRoute(
-              name: Routers.mnemonicVerify.value,
-              path: 'mnemonic/verify',
-              pageBuilder: (context, state) => const MaterialPage(child: MnemonicVerifyPage()),
+              name: Routers.mnemonicShow.value,
+              path: 'mnemonic/show',
+              pageBuilder: (context, state) => MaterialPage(child: MnemonicShowPage(mnemonic: (state.extra) as List<String>)),
+              routes: [
+                GoRoute(
+                  name: Routers.mnemonicVerify.value,
+                  path: 'verify',
+                  pageBuilder: (context, state) => MaterialPage(child: MnemonicVerifyPage(mnemonic: (state.extra) as List<String>)),
+                )
+              ]
           )
         ]
       ),

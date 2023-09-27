@@ -28,8 +28,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "dialogByCreate": MessageLookupByLibrary.simpleMessage(
             "Please select a method to create an account."),
         "dialogByTitle": MessageLookupByLibrary.simpleMessage("Tip"),
-        "pageWelcome_Go": MessageLookupByLibrary.simpleMessage("Go"),
-        "pageWelcome_Import": MessageLookupByLibrary.simpleMessage("Import"),
-        "pageWelcome_Title": MessageLookupByLibrary.simpleMessage("Welcome")
+        "pageMnemonicDescribe": MessageLookupByLibrary.simpleMessage(
+            "Please backup the mnemonic words"),
+        "pageMnemonicNext": MessageLookupByLibrary.simpleMessage("Next"),
+        "pageMnemonicShowTip": MessageLookupByLibrary.simpleMessage(
+            "The mnemonic words are required for recovering your wallet. Please write these mnemonic words on a piece of paper and store it in a secure location."),
+        "pageMnemonicTitle": MessageLookupByLibrary.simpleMessage("Mnemonic"),
+        "pageMnemonicVerifyTip": MessageLookupByLibrary.simpleMessage(
+            "Please choose mnemonic words in order and make sure your mnemonic was correct written."),
+        "pageWelcomeGo": MessageLookupByLibrary.simpleMessage("Go"),
+        "pageWelcomeImport": MessageLookupByLibrary.simpleMessage("Import"),
+        "pageWelcomeTitle": MessageLookupByLibrary.simpleMessage("Welcome")
       };
 }

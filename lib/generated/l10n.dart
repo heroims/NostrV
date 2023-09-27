@@ -101,30 +101,80 @@ class S {
   }
 
   /// `Welcome`
-  String get pageWelcome_Title {
+  String get pageWelcomeTitle {
     return Intl.message(
       'Welcome',
-      name: 'pageWelcome_Title',
+      name: 'pageWelcomeTitle',
       desc: '',
       args: [],
     );
   }
 
   /// `Go`
-  String get pageWelcome_Go {
+  String get pageWelcomeGo {
     return Intl.message(
       'Go',
-      name: 'pageWelcome_Go',
+      name: 'pageWelcomeGo',
       desc: '',
       args: [],
     );
   }
 
   /// `Import`
-  String get pageWelcome_Import {
+  String get pageWelcomeImport {
     return Intl.message(
       'Import',
-      name: 'pageWelcome_Import',
+      name: 'pageWelcomeImport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mnemonic`
+  String get pageMnemonicTitle {
+    return Intl.message(
+      'Mnemonic',
+      name: 'pageMnemonicTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please backup the mnemonic words`
+  String get pageMnemonicDescribe {
+    return Intl.message(
+      'Please backup the mnemonic words',
+      name: 'pageMnemonicDescribe',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The mnemonic words are required for recovering your wallet. Please write these mnemonic words on a piece of paper and store it in a secure location.`
+  String get pageMnemonicShowTip {
+    return Intl.message(
+      'The mnemonic words are required for recovering your wallet. Please write these mnemonic words on a piece of paper and store it in a secure location.',
+      name: 'pageMnemonicShowTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please choose mnemonic words in order and make sure your mnemonic was correct written.`
+  String get pageMnemonicVerifyTip {
+    return Intl.message(
+      'Please choose mnemonic words in order and make sure your mnemonic was correct written.',
+      name: 'pageMnemonicVerifyTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Next`
+  String get pageMnemonicNext {
+    return Intl.message(
+      'Next',
+      name: 'pageMnemonicNext',
       desc: '',
       args: [],
     );

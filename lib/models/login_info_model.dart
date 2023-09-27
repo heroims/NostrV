@@ -48,7 +48,7 @@ class NostrUserModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  late List<NostrUser> _userList;
+  late List<NostrUser>? _userList;
   Future<List<NostrUser>> get userList async{
     if(_userList==null){
       String? json = await storage.read(key: 'nostr_user_list',iOptions: iosOptions,aOptions: androidOptions);
@@ -59,7 +59,7 @@ class NostrUserModel extends ChangeNotifier {
       }
     }
     _userList??=[];
-    return _userList;
+    return _userList!;
   }
 
   Future<void> loadCurrentNostrUser() async{
@@ -98,7 +98,14 @@ class NostrUserModel extends ChangeNotifier {
 
   Future<List<String>> createHDAccount() async {
     final m = BIP39(count: 12);
+    await storage.write(key:'mnemonic', value: m.mnemonic.join(' '), iOptions: iosOptions,aOptions: androidOptions);
+    return m.mnemonic;
+  }
 
+  Future<void> removeMnemonic() async {
+    final mnemonic = await storage.read(key: 'mnemonic', iOptions: iosOptions,aOptions: androidOptions);
+
+    final m = BIP39.fromMnemonic(mnemonic!);
     final node = BIP32.fromSeed(Uint8List.fromList(hexToBytes(m.seed)));
     final hdNode = node.derivePath("m/44'/1237'/0'/0/0");
     final pk = bytesToHex(hdNode.privateKey!);
@@ -107,8 +114,8 @@ class NostrUserModel extends ChangeNotifier {
 
     final nostrUser = NostrUser(Nip19.encodePubkey(nostrNode.public), Nip19.encodePrivkey(nostrNode.private));
     currentUser = nostrUser;
-    await saveCurrentNostrUser('nostr_user', currentUser);
-    return m.mnemonic;
+    await saveCurrentNostrUser('nostr_user', await currentUser);
+    await storage.delete(key: 'mnemonic', iOptions: iosOptions,aOptions: androidOptions);
   }
 
   String exportNostrPrivateKey(NostrUser user){

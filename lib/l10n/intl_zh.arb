@@ -6,5 +6,10 @@
   "createByCancel": "取消",
   "pageWelcomeTitle": "欢迎",
   "pageWelcomeGo": "进入",
-  "pageWelcomeImport": "导入"
+  "pageWelcomeImport": "导入",
+  "pageMnemonicTitle": "助记词",
+  "pageMnemonicDescribe": "请备份助记词",
+  "pageMnemonicShowTip": "助记词是恢复钱包所必须的。请把这些助记词写在纸上,并妥善保管在安全地方。",
+  "pageMnemonicVerifyTip": "请以顺序选择助记词,并确保您输入的助记词正确无误。",
+  "pageMnemonicNext": "下一步"
 }

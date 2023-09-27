@@ -26,6 +26,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "createByHDNode": MessageLookupByLibrary.simpleMessage("HD Node"),
         "createByNormal": MessageLookupByLibrary.simpleMessage("普通"),
         "dialogByCreate": MessageLookupByLibrary.simpleMessage("请选择创建账户的方式。"),
-        "dialogByTitle": MessageLookupByLibrary.simpleMessage("温馨提示")
+        "dialogByTitle": MessageLookupByLibrary.simpleMessage("温馨提示"),
+        "pageMnemonicDescribe": MessageLookupByLibrary.simpleMessage("请备份助记词"),
+        "pageMnemonicNext": MessageLookupByLibrary.simpleMessage("下一步"),
+        "pageMnemonicShowTip": MessageLookupByLibrary.simpleMessage(
+            "助记词是恢复钱包所必须的。请把这些助记词写在纸上,并妥善保管在安全地方。"),
+        "pageMnemonicTitle": MessageLookupByLibrary.simpleMessage("助记词"),
+        "pageMnemonicVerifyTip":
+            MessageLookupByLibrary.simpleMessage("请以顺序选择助记词,并确保您输入的助记词正确无误。"),
+        "pageWelcomeGo": MessageLookupByLibrary.simpleMessage("进入"),
+        "pageWelcomeImport": MessageLookupByLibrary.simpleMessage("导入"),
+        "pageWelcomeTitle": MessageLookupByLibrary.simpleMessage("欢迎")
       };
 }

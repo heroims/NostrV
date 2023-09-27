@@ -22,7 +22,7 @@ class WelcomePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(S.of(context).pageWelcome_Title,
+              Text(S.of(context).pageWelcomeTitle,
                 style: const TextStyle(
                   fontSize: 28,
                   color: Colors.black,
@@ -56,6 +56,7 @@ class WelcomePage extends StatelessWidget {
                             title: Text(S.of(context).dialogByTitle,textAlign: TextAlign.center,),
                             children: [
                               Container(
+                                padding: const EdgeInsets.all(20),
                                 height: 80,
                                 alignment: Alignment.center,
                                 child: Text(S.of(context).dialogByCreate),
@@ -77,10 +78,9 @@ class WelcomePage extends StatelessWidget {
 
                       switch (value as CreateUserType){
                         case CreateUserType.hdNode:{
-                          context.pushNamed(Routers.mnemonicVerify.value);
-                          // nostrUserModel.createHDAccount().then((value){
-                          //
-                          // });
+                          nostrUserModel.createHDAccount().then((mnemonic){
+                            context.pushNamed(Routers.mnemonicShow.value, extra: mnemonic);
+                          });
                           break;
                         }
                         case CreateUserType.normal:{
@@ -97,7 +97,7 @@ class WelcomePage extends StatelessWidget {
                     });
 
                   },
-                  child: Text(S.of(context).pageWelcome_Go),
+                  child: Text(S.of(context).pageWelcomeGo),
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.width*0.06),
@@ -119,7 +119,7 @@ class WelcomePage extends StatelessWidget {
                         }
                         return Colors.brown; // Defer to the widget's default.
                       }),),
-                  onPressed: ()=>{},child: Text(S.of(context).pageWelcome_Import),
+                  onPressed: ()=>{},child: Text(S.of(context).pageWelcomeImport),
                 ),
               ),
             ],
