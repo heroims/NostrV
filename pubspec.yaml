@@ -43,6 +43,8 @@ dependencies:
   web3dart:
   shared_preferences:
   flutter_secure_storage:
+  intl:
+  easy_refresh:
 dev_dependencies:
   flutter_test:
     sdk: flutter

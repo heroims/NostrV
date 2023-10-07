@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nostr_app/models/login_info_model.dart';
+import 'package:nostr_app/models/nostr_user_model.dart';
 import 'package:nostr_app/pages/home_page.dart';
 import 'package:nostr_app/pages/mnemonic_verify_page.dart';
 import 'package:nostr_app/pages/mnemonic_show_page.dart';

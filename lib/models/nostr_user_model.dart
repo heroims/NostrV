@@ -8,6 +8,7 @@ import 'package:hd_wallet/hd_wallet.dart';
 import 'package:nostr/nostr.dart';
 import 'package:web3dart/crypto.dart';
 import 'package:web3dart/web3dart.dart';
+import 'package:nostr_app/globals/storage_setting.dart';
 
 class NostrUser{
   final String publicKey;
@@ -27,13 +28,11 @@ class NostrUser{
 
 class NostrUserModel extends ChangeNotifier {
   final storage = const FlutterSecureStorage();
-  final iosOptions = const IOSOptions(accessibility: KeychainAccessibility.unlocked);
-  final androidOptions = const AndroidOptions(encryptedSharedPreferences: true);
 
   NostrUser? _currentUser;
   Future<NostrUser?> get currentUser async{
     if(_currentUser==null){
-      String? json = await storage.read(key: 'nostr_user',iOptions: iosOptions,aOptions: androidOptions);
+      String? json = await storage.read(key: 'nostr_user',iOptions: iosSecureStorageOptions,aOptions: androidSecureStorageOptions);
       if(json!=null){
         Map<String, dynamic> userMap = jsonDecode(json);
         _currentUser = NostrUser.fromJson(userMap);
@@ -51,7 +50,7 @@ class NostrUserModel extends ChangeNotifier {
   late List<NostrUser>? _userList;
   Future<List<NostrUser>> get userList async{
     if(_userList==null){
-      String? json = await storage.read(key: 'nostr_user_list',iOptions: iosOptions,aOptions: androidOptions);
+      String? json = await storage.read(key: 'nostr_user_list',iOptions: iosSecureStorageOptions,aOptions: androidSecureStorageOptions);
       if(json!=null){
         List<Map<String, dynamic>> userListMap = jsonDecode(json);
         _userList = userListMap.map((item) => NostrUser.fromJson(item)).toList();
@@ -63,7 +62,7 @@ class NostrUserModel extends ChangeNotifier {
   }
 
   Future<void> loadCurrentNostrUser() async{
-    String? json = await storage.read(key: 'nostr_user',iOptions: iosOptions,aOptions: androidOptions);
+    String? json = await storage.read(key: 'nostr_user',iOptions: iosSecureStorageOptions,aOptions: androidSecureStorageOptions);
     if(_currentUser==null){
       if(json!=null){
         Map<String, dynamic> userMap = jsonDecode(json);
@@ -75,7 +74,7 @@ class NostrUserModel extends ChangeNotifier {
 
   Future<void> saveCurrentNostrUser(String userKey,dynamic userValue) async {
     String json =jsonEncode(userValue);
-    await storage.write(key:userKey, value: json,iOptions: iosOptions,aOptions: androidOptions);
+    await storage.write(key:userKey, value: json,iOptions: iosSecureStorageOptions,aOptions: androidSecureStorageOptions);
   }
 
   Future<void> checkoutNostrUser(int index) async{
@@ -85,7 +84,7 @@ class NostrUserModel extends ChangeNotifier {
   Future<void> addNostrUser(dynamic userValue) async {
     String json = JsonEncoder(userValue) as String;
     (await userList).add(userValue);
-    await storage.write(key:'nostr_user_list', value: json, iOptions: iosOptions,aOptions: androidOptions);
+    await storage.write(key:'nostr_user_list', value: json, iOptions: iosSecureStorageOptions,aOptions: androidSecureStorageOptions);
 
   }
 
@@ -98,12 +97,12 @@ class NostrUserModel extends ChangeNotifier {
 
   Future<List<String>> createHDAccount() async {
     final m = BIP39(count: 12);
-    await storage.write(key:'mnemonic', value: m.mnemonic.join(' '), iOptions: iosOptions,aOptions: androidOptions);
+    await storage.write(key:'mnemonic', value: m.mnemonic.join(' '), iOptions: iosSecureStorageOptions,aOptions: androidSecureStorageOptions);
     return m.mnemonic;
   }
 
   Future<void> removeMnemonic() async {
-    final mnemonic = await storage.read(key: 'mnemonic', iOptions: iosOptions,aOptions: androidOptions);
+    final mnemonic = await storage.read(key: 'mnemonic', iOptions: iosSecureStorageOptions,aOptions: androidSecureStorageOptions);
 
     final m = BIP39.fromMnemonic(mnemonic!);
     final node = BIP32.fromSeed(Uint8List.fromList(hexToBytes(m.seed)));
@@ -115,7 +114,7 @@ class NostrUserModel extends ChangeNotifier {
     final nostrUser = NostrUser(Nip19.encodePubkey(nostrNode.public), Nip19.encodePrivkey(nostrNode.private));
     currentUser = nostrUser;
     await saveCurrentNostrUser('nostr_user', await currentUser);
-    await storage.delete(key: 'mnemonic', iOptions: iosOptions,aOptions: androidOptions);
+    await storage.delete(key: 'mnemonic', iOptions: iosSecureStorageOptions,aOptions: androidSecureStorageOptions);
   }
 
   String exportNostrPrivateKey(NostrUser user){

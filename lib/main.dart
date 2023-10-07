@@ -3,14 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:nostr_app/models/login_info_model.dart';
+import 'package:nostr_app/models/nostr_user_model.dart';
+import 'package:nostr_app/models/relay_pool_model.dart';
 import 'package:provider/provider.dart';
 import 'generated/l10n.dart';
 import 'package:nostr_app/router.dart';
 
 void main(){
 
-  runApp(MyApp());
+  runApp(const MyApp());
   if(Platform.isAndroid){
     //设置Android头部的导航栏透明
     SystemUiOverlayStyle systemUiOverlayStyle =
@@ -20,17 +21,19 @@ void main(){
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
-
-  final NostrUserModel nostrUserModel = NostrUserModel();
+  const MyApp({super.key});
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider<RelayPoolModel>(
+          lazy: false,
+          create: (_) => RelayPoolModel(),
+        ),
         Provider(
             lazy: false,
-            create: (_) => AppRouter(nostrUserModel: nostrUserModel),
+            create: (_) => AppRouter(nostrUserModel: NostrUserModel()),
         ),
       ],
       child: Builder(

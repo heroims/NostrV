@@ -48,7 +48,7 @@ class MnemonicVerifyModel extends ChangeNotifier{
 
   void unselectMnemonic(int index) {
     if(_mnemonicSetList.length>index && _mnemonicToSetShow.length>index){
-      _mnemonicShowSelect[_mnemonicToSetShow[index]!]=false;
+      _mnemonicShowSelect[_mnemonicToSetShow[index]]=false;
       _mnemonicSetList.removeAt(index);
       _mnemonicToSetShow.removeAt(index);
       notifyListeners();
