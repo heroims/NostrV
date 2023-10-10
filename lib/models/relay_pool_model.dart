@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:nostr/nostr.dart';
+import 'package:nostr_app/globals/storage_setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RelayPoolModel extends ChangeNotifier {
@@ -17,9 +18,10 @@ class RelayPoolModel extends ChangeNotifier {
   final Map<String, WebSocket?> _relayWss = {};
   Map<String, WebSocket?> get relayWss => _relayWss;
   final Map<String, List> _relayResponses = {};
+  final Map<String, Function(Event)> _relaySingleResponses = {};
 
   Future<void> startRelayPool() async {
-    final relays = (await prefs).getStringList(relaysSaveKey) ?? ['wss://offchain.pub','wss://relay.plebstr.com'];
+    final relays = (await prefs).getStringList(relaysSaveKey) ?? defaultRelayUrls;
     for (String url in relays) {
       await addRelayWithUrl(url);
     }
@@ -29,6 +31,19 @@ class RelayPoolModel extends ChangeNotifier {
     if(relayWss.containsKey(url)&&relayWss[url]!=null){
       relayWss[url]!.add(requestWithFilter.serialize());
       _relayResponses['$url/${requestWithFilter.subscriptionId}'] = [[], response];
+    }
+  }
+
+  void addRequestSingle(String url, Request requestWithFilter, Function(Event) response){
+    if(relayWss.containsKey(url)&&relayWss[url]!=null){
+      relayWss[url]!.add(requestWithFilter.serialize());
+      _relaySingleResponses['$url/${requestWithFilter.subscriptionId}'] = response;
+    }
+  }
+
+  void stopRequestSingle(String url, String subscriptionId){
+    if(relayWss.containsKey(url)&&relayWss[url]!=null){
+      relayWss[url]!.add(Close(subscriptionId));
     }
   }
 
@@ -55,11 +70,17 @@ class RelayPoolModel extends ChangeNotifier {
               (_relayResponses[key])![1](eventList);
               _relayResponses.remove(key);
             }
+            if(_relaySingleResponses.containsKey(key)){
+              _relaySingleResponses.remove(key);
+            }
             break;
           case 'EVENT':
             final key = '$url/${(message.message as Event).subscriptionId}';
             if(_relayResponses.containsKey(key)){
               ((_relayResponses[key])![0] as List).add(message.message);
+            }
+            if(_relaySingleResponses.containsKey(key)){
+              _relaySingleResponses[key]!(message.message);
             }
             break;
           case 'OK':
