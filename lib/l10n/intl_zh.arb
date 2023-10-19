@@ -1,4 +1,10 @@
 {
+  "actionSheetByReport": "请选择举报类型。",
+  "reportByNudity": "裸体、色情等",
+  "reportByProfanity": "脏话、仇恨言论等",
+  "reportByIllegal": "在某些地区可能违法",
+  "reportBySpam": "垃圾信息",
+  "reportByImpersonation": "冒充别人",
   "dialogByTitle": "温馨提示",
   "dialogByCreate": "请选择创建账户的方式。",
   "createByHDNode": "HD Node",

@@ -50,6 +50,66 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Please select the type of report.`
+  String get actionSheetByReport {
+    return Intl.message(
+      'Please select the type of report.',
+      name: 'actionSheetByReport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `depictions of nudity, porn, etc.`
+  String get reportByNudity {
+    return Intl.message(
+      'depictions of nudity, porn, etc.',
+      name: 'reportByNudity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `profanity, hateful speech, etc.`
+  String get reportByProfanity {
+    return Intl.message(
+      'profanity, hateful speech, etc.',
+      name: 'reportByProfanity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `may be illegal in some jurisdiction`
+  String get reportByIllegal {
+    return Intl.message(
+      'may be illegal in some jurisdiction',
+      name: 'reportByIllegal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Spam`
+  String get reportBySpam {
+    return Intl.message(
+      'Spam',
+      name: 'reportBySpam',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Impersonation`
+  String get reportByImpersonation {
+    return Intl.message(
+      'Impersonation',
+      name: 'reportByImpersonation',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Tip`
   String get dialogByTitle {
     return Intl.message(

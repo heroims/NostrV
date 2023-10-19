@@ -7,29 +7,38 @@ import 'package:nostr_app/models/relay_pool_model.dart';
 import 'package:provider/provider.dart';
 
 class UserInfo{
-  final String website;
-  final String lud06;
-  final String displayName;
-  final String about;
-  final String name;
-  final String picture;
-  final String banner;
+  String website = '';
+  String lud06 = '';
+  String lud16 = '';
+  String nip05 = '';
+  String displayName = '';
+  String userName = '';
+  String about = '';
+  String name = '';
+  String picture = '';
+  String banner = '';
 
   UserInfo.fromJson(Map<String, dynamic> json)
-      : website = json['website'],
-        banner = json['banner'],
-        lud06 = json['lud06'],
-        picture = json['picture'],
-        displayName = json['display_name'],
-        about = json['about'],
-        name = json['name'];
+      : website = json['website']??'',
+        banner = json['banner']??'',
+        lud06 = json['lud06']??'',
+        lud16 = json['lud16']??'',
+        nip05 = json['nip05']??'',
+        userName = json['username']??'',
+        picture = json['picture']??'',
+        displayName = json['display_name']??'',
+        about = json['about']??'',
+        name = json['name']??'';
 
   Map<String, dynamic> toJson() => {
     'website': website,
     'banner': banner,
     'lud06': lud06,
+    'lud16': lud16,
+    'nip05': nip05,
     'picture': picture,
     'display_name': displayName,
+    'username': userName,
     'about': about,
     'name': name,
   };
@@ -48,7 +57,7 @@ class UserFollowings {
 class UserInfoModel extends ChangeNotifier {
   late final BuildContext _context;
   late final String publicKey;
-  late final UserInfo userInfo;
+  UserInfo? userInfo;
 
   final UserFollowings followings = UserFollowings();
 
@@ -70,9 +79,9 @@ class UserInfoModel extends ChangeNotifier {
         kinds: [0],
       )
     ]);
-    relayPoolModel.addRequest(defaultRelayUrls.first, requestWithFilter, (events){
-      if(events.isNotEmpty) {
-        userInfo=UserInfo.fromJson(jsonDecode(events.first.content));
+    relayPoolModel.addRequestSingle(defaultRelayUrls.first, requestWithFilter, (event){
+      if(event!=null) {
+        userInfo=UserInfo.fromJson(jsonDecode(event.content));
         notifyListeners();
       }
     });

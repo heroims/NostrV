@@ -1,4 +1,5 @@
 
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
@@ -18,7 +19,8 @@ class RelayPoolModel extends ChangeNotifier {
   final Map<String, WebSocket?> _relayWss = {};
   Map<String, WebSocket?> get relayWss => _relayWss;
   final Map<String, List> _relayResponses = {};
-  final Map<String, Function(Event)> _relaySingleResponses = {};
+  final Map<String, Function(dynamic)> _relaySingleResponses = {};
+  final Map<String, Queue<String>> _relaySubscriptionId = {};
 
   Future<void> startRelayPool() async {
     final relays = (await prefs).getStringList(relaysSaveKey) ?? defaultRelayUrls;
@@ -31,13 +33,27 @@ class RelayPoolModel extends ChangeNotifier {
     if(relayWss.containsKey(url)&&relayWss[url]!=null){
       relayWss[url]!.add(requestWithFilter.serialize());
       _relayResponses['$url/${requestWithFilter.subscriptionId}'] = [[], response];
+
+      if(_relaySubscriptionId.containsKey(url)){
+        _relaySubscriptionId[url]!.add(requestWithFilter.subscriptionId);
+      }
+      else {
+        _relaySubscriptionId[url] = Queue<String>();
+      }
     }
   }
 
-  void addRequestSingle(String url, Request requestWithFilter, Function(Event) response){
+  void addRequestSingle(String url, Request requestWithFilter, Function(dynamic) response){
     if(relayWss.containsKey(url)&&relayWss[url]!=null){
       relayWss[url]!.add(requestWithFilter.serialize());
       _relaySingleResponses['$url/${requestWithFilter.subscriptionId}'] = response;
+
+      if(_relaySubscriptionId.containsKey(url)){
+        _relaySubscriptionId[url]!.add(requestWithFilter.subscriptionId);
+      }
+      else {
+        _relaySubscriptionId[url] = Queue<String>();
+      }
     }
   }
 
@@ -73,6 +89,9 @@ class RelayPoolModel extends ChangeNotifier {
             if(_relaySingleResponses.containsKey(key)){
               _relaySingleResponses.remove(key);
             }
+            if(_relaySubscriptionId.containsKey(url)&&_relaySubscriptionId[url]!.isNotEmpty){
+              _relaySubscriptionId[url]!.removeFirst();
+            }
             break;
           case 'EVENT':
             final key = '$url/${(message.message as Event).subscriptionId}';
@@ -84,6 +103,35 @@ class RelayPoolModel extends ChangeNotifier {
             }
             break;
           case 'OK':
+            if(_relaySubscriptionId.containsKey(url)&&_relaySubscriptionId[url]!.isNotEmpty){
+              final subscriptionId = _relaySubscriptionId[url]!.removeFirst();
+              final key = '$url/$subscriptionId';
+              if(_relayResponses.containsKey(key)){
+                List tmpList = (_relayResponses[key])![0];
+                List<Event> eventList = List.generate(tmpList.length, (index) => tmpList[index]);
+                (_relayResponses[key])![1](eventList);
+                _relayResponses.remove(key);
+              }
+              if(_relaySingleResponses.containsKey(key)){
+                _relaySingleResponses.remove(key);
+              }
+            }
+            break;
+          case 'NOTICE':
+            if(_relaySubscriptionId.containsKey(url)&&_relaySubscriptionId[url]!.isNotEmpty){
+              final subscriptionId = _relaySubscriptionId[url]!.removeFirst();
+              final key = '$url/$subscriptionId';
+              if(_relayResponses.containsKey(key)){
+                List tmpList = (_relayResponses[key])![0];
+                List<Event> eventList = List.generate(tmpList.length, (index) => tmpList[index]);
+                (_relayResponses[key])![1](eventList);
+                _relayResponses.remove(key);
+              }
+              if(_relaySingleResponses.containsKey(key)){
+                _relaySingleResponses[key]!(Exception(jsonDecode(message.message)[0]));
+                _relaySingleResponses.remove(key);
+              }
+            }
             break;
           default:
             break;

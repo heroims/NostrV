@@ -22,6 +22,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "actionSheetByReport": MessageLookupByLibrary.simpleMessage(
+            "Please select the type of report."),
         "createByCancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "createByHDNode": MessageLookupByLibrary.simpleMessage("HD Node"),
         "createByNormal": MessageLookupByLibrary.simpleMessage("Normal"),
@@ -38,6 +40,15 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please choose mnemonic words in order and make sure your mnemonic was correct written."),
         "pageWelcomeGo": MessageLookupByLibrary.simpleMessage("Go"),
         "pageWelcomeImport": MessageLookupByLibrary.simpleMessage("Import"),
-        "pageWelcomeTitle": MessageLookupByLibrary.simpleMessage("Welcome")
+        "pageWelcomeTitle": MessageLookupByLibrary.simpleMessage("Welcome"),
+        "reportByIllegal": MessageLookupByLibrary.simpleMessage(
+            "may be illegal in some jurisdiction"),
+        "reportByImpersonation":
+            MessageLookupByLibrary.simpleMessage("Impersonation"),
+        "reportByNudity": MessageLookupByLibrary.simpleMessage(
+            "depictions of nudity, porn, etc."),
+        "reportByProfanity": MessageLookupByLibrary.simpleMessage(
+            "profanity, hateful speech, etc."),
+        "reportBySpam": MessageLookupByLibrary.simpleMessage("Spam")
       };
 }

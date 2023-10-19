@@ -1,4 +1,10 @@
 {
+  "actionSheetByReport": "Please select the type of report.",
+  "reportByNudity": "depictions of nudity, porn, etc.",
+  "reportByProfanity": "profanity, hateful speech, etc.",
+  "reportByIllegal": "may be illegal in some jurisdiction",
+  "reportBySpam": "Spam",
+  "reportByImpersonation": "Impersonation",
   "dialogByTitle": "Tip",
   "dialogByCreate": "Please select a method to create an account.",
   "createByHDNode": "HD Node",

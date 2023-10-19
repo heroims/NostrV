@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -5,6 +7,9 @@ import 'package:flutter/material.dart';
 
 import 'package:hd_wallet/hd_wallet.dart';
 import 'package:nostr/nostr.dart';
+import 'package:nostr_app/models/relay_pool_model.dart';
+import 'package:nostr_app/models/user_info_model.dart';
+import 'package:provider/provider.dart';
 import 'package:web3dart/credentials.dart';
 import 'package:web3dart/crypto.dart';
 
@@ -68,7 +73,92 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             child: const Text('data'),
-          )
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width*0.5,
+            padding: const EdgeInsets.only(left: 10,right: 10,top: 20,bottom: 20),
+            child: ElevatedButton(
+                onPressed: () async{
+
+                  debugPrint(Nip19.encodePubkey('fea400befeb5bf115b16575e2176bfbd8fb8ab9985ac170adb402bf8c89b9d0a'));
+                  // Provider.of<RelayPoolModel>(context).deleteRelayWithUrl('wss://relay.plebstr.com');
+                  final model = UserInfoModel(context,Nip19.decodePubkey('npub1jac0kj928psa6wf7hpt7ws8jmah33c826sa668fsce09cxvzqznqprc8yd'));
+                  model.getUserFollower();
+
+                  final requestUUID =generate64RandomHexChars();
+                  Request requestWithFilter = Request(requestUUID, [
+                    Filter(
+                      // authors: [Nip19.decodePubkey('npub1jac0kj928psa6wf7hpt7ws8jmah33c826sa668fsce09cxvzqznqprc8yd')],
+                      kinds: [
+                        0,1,
+                        6,//转发
+                        7,//点赞
+                        // 16,23
+                      ],
+                      ids: [Nip19.decodeNote('note10405zm7ud53x0mxqnrutajq0kyk5shrm3a9lw4ap6r9qkvgarp2q4x2j23')],
+                      // e: [Nip19.decodeNote('note13j4ueqs2syq9lrr8muvawntv9d5praa0zw97073xjla62rrpc9jqdd5xnn')],
+                      // p:[Nip19.decodePubkey('npub1jac0kj928psa6wf7hpt7ws8jmah33c826sa668fsce09cxvzqznqprc8yd')],
+                      // until: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+                      // limit: 10,
+                    )
+                  ]);
+                  debugPrint('requestUUID: $requestUUID');
+
+
+                  // Connecting to a nostr relay using websocket
+                  WebSocket webSocket = await WebSocket.connect(
+                    'wss://offchain.pub',
+                    // 'wss://relay.plebstr.com',
+                    // or any nostr relay
+                  );
+                  // if the current socket fail try another one
+                  // wss://nostr.sandwich.farm
+                  // wss://relay.damus.io
+                  // Send a request message to the WebSocket server
+                  webSocket.add(requestWithFilter.serialize());
+                  int i=0;
+                  // Listen for events from the WebSocket server
+                  // await Future.delayed(Duration(seconds: 1));
+                  webSocket.listen((eventPayload) {
+                    i++;
+                    debugPrint('$i.Received event: $eventPayload');
+
+                    final message = Message.deserialize(eventPayload);
+
+                    if(message.type=='EOSE'){
+                      webSocket.add(Close(jsonDecode(message.message)[0]).serialize());
+                    }
+                    else{
+                      String result = (message.message as Event).content.replaceAll(r'^https?://([\w-]+\.)+[\w-]+(/\S+)*$', '');
+                      List<String> urls = [];
+                      const urlRegex = r"https?://[^\s]+[\w/]";
+                      final urlRegExp = RegExp(
+                          urlRegex,
+                          caseSensitive: false,
+                          multiLine: true
+                      );
+                      final matches = urlRegExp.allMatches(result);
+                      for (var match in matches) {
+                        debugPrint('--------');
+
+                        print(match.group(0));
+                        print(match.groupCount);
+                        debugPrint('--------');
+
+                        // urls.add(match.group(0)!);
+                        // result = result.replaceRange(match.start, match.end, "");
+                      }
+                      // debugPrint('reslut: $result');
+                    }
+                  });
+
+                  // Close the WebSocket connection
+                  // await webSocket.close();
+                },
+                child: Text('ssss')
+            ),
+          ),
+
         ],
       )
     );

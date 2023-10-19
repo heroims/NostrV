@@ -22,6 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "actionSheetByReport": MessageLookupByLibrary.simpleMessage("请选择举报类型。"),
         "createByCancel": MessageLookupByLibrary.simpleMessage("取消"),
         "createByHDNode": MessageLookupByLibrary.simpleMessage("HD Node"),
         "createByNormal": MessageLookupByLibrary.simpleMessage("普通"),
@@ -36,6 +37,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("请以顺序选择助记词,并确保您输入的助记词正确无误。"),
         "pageWelcomeGo": MessageLookupByLibrary.simpleMessage("进入"),
         "pageWelcomeImport": MessageLookupByLibrary.simpleMessage("导入"),
-        "pageWelcomeTitle": MessageLookupByLibrary.simpleMessage("欢迎")
+        "pageWelcomeTitle": MessageLookupByLibrary.simpleMessage("欢迎"),
+        "reportByIllegal": MessageLookupByLibrary.simpleMessage("在某些地区可能违法"),
+        "reportByImpersonation": MessageLookupByLibrary.simpleMessage("冒充别人"),
+        "reportByNudity": MessageLookupByLibrary.simpleMessage("裸体、色情等"),
+        "reportByProfanity": MessageLookupByLibrary.simpleMessage("脏话、仇恨言论等"),
+        "reportBySpam": MessageLookupByLibrary.simpleMessage("垃圾信息")
       };
 }
