@@ -110,6 +110,126 @@ class S {
     );
   }
 
+  /// `Copy Post ID`
+  String get copyByPostID {
+    return Intl.message(
+      'Copy Post ID',
+      name: 'copyByPostID',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy User ID`
+  String get copyByUserID {
+    return Intl.message(
+      'Copy User ID',
+      name: 'copyByUserID',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy Post`
+  String get copyByPost {
+    return Intl.message(
+      'Copy Post',
+      name: 'copyByPost',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copied to clipboard`
+  String get copyToClipboard {
+    return Intl.message(
+      'Copied to clipboard',
+      name: 'copyToClipboard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Report User`
+  String get reportUser {
+    return Intl.message(
+      'Report User',
+      name: 'reportUser',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mute User`
+  String get muteUser {
+    return Intl.message(
+      'Mute User',
+      name: 'muteUser',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Following`
+  String get avatarCardByFollowing {
+    return Intl.message(
+      'Following',
+      name: 'avatarCardByFollowing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Followers`
+  String get avatarCardByFollowers {
+    return Intl.message(
+      'Followers',
+      name: 'avatarCardByFollowers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Relays`
+  String get avatarCardByRelays {
+    return Intl.message(
+      'Relays',
+      name: 'avatarCardByRelays',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Follow`
+  String get avatarCardByFollow {
+    return Intl.message(
+      'Follow',
+      name: 'avatarCardByFollow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Followed`
+  String get avatarCardByFollowed {
+    return Intl.message(
+      'Followed',
+      name: 'avatarCardByFollowed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `reply:`
+  String get feedByReply {
+    return Intl.message(
+      'reply:',
+      name: 'feedByReply',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Tip`
   String get dialogByTitle {
     return Intl.message(

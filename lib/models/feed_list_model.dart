@@ -8,7 +8,8 @@ import 'package:provider/provider.dart';
 class FeedListModel extends ChangeNotifier {
   late final EasyRefreshController _controller;
   late final BuildContext _context;
-  FeedListModel(this._controller,this._context);
+  String? pubKey;
+  FeedListModel(this._controller,this._context, [this.pubKey]);
 
   int _lastCreatedAt = DateTime.now().millisecondsSinceEpoch ~/ 1000;
   final int _limit = 10;
@@ -23,25 +24,40 @@ class FeedListModel extends ChangeNotifier {
     else{
       userMap[publicKey] = UserInfoModel(_context, publicKey);
       userMap[publicKey]!.getUserInfo();
+      return null;
     }
   }
 
   void refreshFeed(){
     _lastCreatedAt = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     final requestUUID =generate64RandomHexChars();
-    Request requestWithFilter = Request(requestUUID, [
-      Filter(
-        kinds: [1, 23],
+    Filter filter;
+    if(pubKey != null) {
+      filter = Filter(
+        authors: [pubKey!],
+        kinds: [1],
         until: _lastCreatedAt,
         limit: _limit,
-      )
+      );
+    }
+    else {
+      filter = Filter(
+        kinds: [1],
+        until: _lastCreatedAt,
+        limit: _limit,
+      );
+    }
+    Request requestWithFilter = Request(requestUUID, [
+      filter
     ]);
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
     feedList.clear();
     relayPoolModel.addRequest(relayPoolModel.relayWss.keys.first, requestWithFilter, (response){
       feedList.addAll(response.where((event2) => !feedList.any((event1) => event1.id == event2.id)));
       feedList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      _lastCreatedAt=feedList.last.createdAt;
+      if (feedList.isNotEmpty){
+        _lastCreatedAt=feedList.last.createdAt;
+      }
       notifyListeners();
       _controller.finishRefresh();
       _controller.resetFooter();
@@ -50,7 +66,9 @@ class FeedListModel extends ChangeNotifier {
         relayPoolModel.addRequest(relayPoolModel.relayWss.keys.elementAt(i), requestWithFilter, (response){
           feedList.addAll(response.where((event2) => !feedList.any((event1) => event1.id == event2.id)));
           feedList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-          _lastCreatedAt=feedList.last.createdAt;
+          if (feedList.isNotEmpty){
+            _lastCreatedAt=feedList.last.createdAt;
+          }
           notifyListeners();
           _controller.finishLoad(response.isEmpty?IndicatorResult.noMore:IndicatorResult.success);
         });
@@ -60,19 +78,33 @@ class FeedListModel extends ChangeNotifier {
 
   void loadMoreFeed(){
     final requestUUID =generate64RandomHexChars();
-    Request requestWithFilter = Request(requestUUID, [
-      Filter(
-        kinds: [1, 23],
+    Filter filter;
+    if(pubKey != null) {
+      filter = Filter(
+        authors: [pubKey!],
+        kinds: [1],
         until: _lastCreatedAt,
         limit: _limit,
-      )
+      );
+    }
+    else {
+      filter = Filter(
+        kinds: [1],
+        until: _lastCreatedAt,
+        limit: _limit,
+      );
+    }
+    Request requestWithFilter = Request(requestUUID, [
+      filter
     ]);
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
     relayPoolModel.relayWss.forEach((key, value) {
       relayPoolModel.addRequest(key, requestWithFilter, (response){
         feedList.addAll(response.where((event2) => !feedList.any((event1) => event1.id == event2.id)));
         feedList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-        _lastCreatedAt=feedList.last.createdAt;
+        if (feedList.isNotEmpty){
+          _lastCreatedAt=feedList.last.createdAt;
+        }
         notifyListeners();
         _controller.finishLoad(response.isEmpty?IndicatorResult.noMore:IndicatorResult.success);
         notifyListeners();

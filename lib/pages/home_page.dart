@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nostr_app/models/tab_select_model.dart';
 import 'package:nostr_app/pages/feed_page.dart';
-import 'package:nostr_app/pages/profile_page.dart';
+import 'package:nostr_app/pages/notify_page.dart';
 import 'package:nostr_app/pages/search_page.dart';
 import 'package:provider/provider.dart';
 
@@ -54,7 +54,7 @@ class HomePage extends StatelessWidget{
                children: const [
                  FeedPage(),
                  SearchPage(),
-                 ProfilePage()
+                 NotifyPage()
                ],
              );
            },)

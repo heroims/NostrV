@@ -24,12 +24,27 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "actionSheetByReport": MessageLookupByLibrary.simpleMessage(
             "Please select the type of report."),
+        "avatarCardByFollow": MessageLookupByLibrary.simpleMessage("Follow"),
+        "avatarCardByFollowed":
+            MessageLookupByLibrary.simpleMessage("Followed"),
+        "avatarCardByFollowers":
+            MessageLookupByLibrary.simpleMessage("Followers"),
+        "avatarCardByFollowing":
+            MessageLookupByLibrary.simpleMessage("Following"),
+        "avatarCardByRelays": MessageLookupByLibrary.simpleMessage("Relays"),
+        "copyByPost": MessageLookupByLibrary.simpleMessage("Copy Post"),
+        "copyByPostID": MessageLookupByLibrary.simpleMessage("Copy Post ID"),
+        "copyByUserID": MessageLookupByLibrary.simpleMessage("Copy User ID"),
+        "copyToClipboard":
+            MessageLookupByLibrary.simpleMessage("Copied to clipboard"),
         "createByCancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "createByHDNode": MessageLookupByLibrary.simpleMessage("HD Node"),
         "createByNormal": MessageLookupByLibrary.simpleMessage("Normal"),
         "dialogByCreate": MessageLookupByLibrary.simpleMessage(
             "Please select a method to create an account."),
         "dialogByTitle": MessageLookupByLibrary.simpleMessage("Tip"),
+        "feedByReply": MessageLookupByLibrary.simpleMessage("reply:"),
+        "muteUser": MessageLookupByLibrary.simpleMessage("Mute User"),
         "pageMnemonicDescribe": MessageLookupByLibrary.simpleMessage(
             "Please backup the mnemonic words"),
         "pageMnemonicNext": MessageLookupByLibrary.simpleMessage("Next"),
@@ -49,6 +64,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "depictions of nudity, porn, etc."),
         "reportByProfanity": MessageLookupByLibrary.simpleMessage(
             "profanity, hateful speech, etc."),
-        "reportBySpam": MessageLookupByLibrary.simpleMessage("Spam")
+        "reportBySpam": MessageLookupByLibrary.simpleMessage("Spam"),
+        "reportUser": MessageLookupByLibrary.simpleMessage("Report User")
       };
 }

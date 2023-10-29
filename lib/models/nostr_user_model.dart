@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hd_wallet/hd_wallet.dart';
 import 'package:nostr/nostr.dart';
+import 'package:nostr_app/models/user_info_model.dart';
 import 'package:web3dart/crypto.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:nostr_app/globals/storage_setting.dart';
@@ -27,6 +28,10 @@ class NostrUser{
 }
 
 class NostrUserModel extends ChangeNotifier {
+  final BuildContext _context;
+
+  NostrUserModel(this._context);
+
   final storage = const FlutterSecureStorage();
 
   NostrUser? _currentUser;
@@ -40,6 +45,17 @@ class NostrUserModel extends ChangeNotifier {
       }
     }
     return _currentUser;
+  }
+
+  UserInfoModel? _currentUserInfo;
+  UserInfoModel? get currentUserInfo {
+    if(_currentUserInfo==null){
+      NostrUser? tmpUser=_currentUser;
+      if(tmpUser!=null){
+        _currentUserInfo = UserInfoModel(_context, Nip19.decodePubkey(tmpUser.publicKey));
+      }
+    }
+    return _currentUserInfo;
   }
 
   set currentUser(value){

@@ -3,8 +3,11 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:nostr/nostr.dart';
 import 'package:nostr_app/globals/storage_setting.dart';
+import 'package:nostr_app/models/nostr_user_model.dart';
 import 'package:nostr_app/models/relay_pool_model.dart';
 import 'package:provider/provider.dart';
+
+import '../router.dart';
 
 class UserInfo{
   String website = '';
@@ -70,6 +73,55 @@ class UserInfoModel extends ChangeNotifier {
 
   UserInfoModel(this._context, this.publicKey);
 
+  bool get followed {
+    AppRouter appRouter = Provider.of<AppRouter>(_context, listen: false);
+    if(appRouter.nostrUserModel.currentUserInfo!=null){
+      UserInfoModel ownUserInfo = appRouter.nostrUserModel.currentUserInfo!;
+      if(ownUserInfo.publicKey == publicKey){
+        return true;
+      }
+      else{
+        return ownUserInfo.followings.profiles.containsKey(publicKey);
+      }
+    }
+    return false;
+  }
+
+  void following(bool followed) async{
+    AppRouter appRouter = Provider.of<AppRouter>(_context, listen: false);
+
+    RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
+    NostrUser? tmpUser = await appRouter.nostrUserModel.currentUser;
+    UserFollowings? tmpFollowings= appRouter.nostrUserModel.currentUserInfo?.followings;
+    if(tmpUser!=null){
+      String decodeKey = Nip19.decodePrivkey(tmpUser.privateKey);
+      Event tmpEvent = Event.from(kind: 3, content: '', privkey: decodeKey);
+      relayPoolModel.relayWss.forEach((key, value) {
+        List<Profile> tmpProfiles = [];
+        Profile tmpProfile = Profile(publicKey, key, userInfo?.userName??'');
+        if(tmpFollowings!=null){
+          if(followed){
+            tmpFollowings.profiles[publicKey]=tmpProfile;
+          }
+          else{
+            tmpFollowings.profiles.remove(publicKey);
+          }
+          tmpProfiles = tmpFollowings.profiles.values.toList();
+        }
+        else{
+          tmpProfiles.add(tmpProfile);
+        }
+        notifyListeners();
+        tmpEvent.tags=Nip2.toTags(tmpProfiles);
+        tmpEvent.id=tmpEvent.getEventId();
+        tmpEvent.sig=tmpEvent.getSignature(decodeKey);
+        if(value!=null){
+          value.add(tmpEvent.serialize());
+        }
+      });
+    }
+  }
+
   void getUserInfo(){
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
     final requestUUID =generate64RandomHexChars();
@@ -99,7 +151,7 @@ class UserInfoModel extends ChangeNotifier {
       });
     }
   }
-  void getUserFollowing(){
+  void getUserFollowing({Function? refreshCallback}){
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
     final requestUUID =generate64RandomHexChars();
     _lastFollowersRequestUUID = requestUUID;
@@ -115,11 +167,17 @@ class UserInfoModel extends ChangeNotifier {
       if(value!=null){
         relayPoolModel.addRequest(relayUrl, requestWithFilter, (events){
           if(events.isNotEmpty) {
-            followings.relaysState.addAll(jsonDecode(events.first.content));
+            try {
+              followings.relaysState.addAll(jsonDecode(events.first.content));
+            }
+            catch(_){}
             for (var element in events.first.tags) {
               if(element.isNotEmpty && element.first=='p') {
                 followings.profiles[element[1]]=Profile(element[1], element.length>2?element[2]: relayUrl, element.length>3?element[3]:'');
               }
+            }
+            if(refreshCallback!=null){
+              refreshCallback();
             }
             notifyListeners();
           }
@@ -128,7 +186,7 @@ class UserInfoModel extends ChangeNotifier {
     });
   }
 
-  void getUserFollower(){
+  void getUserFollower({Function? refreshCallback}){
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
     final requestUUID =generate64RandomHexChars();
     Request requestWithFilter = Request(requestUUID, [
@@ -156,6 +214,9 @@ class UserInfoModel extends ChangeNotifier {
             }
           }
           followers[event.pubkey] = tmpFollowings;
+          if(refreshCallback!=null){
+            refreshCallback();
+          }
           notifyListeners();
         });
       }

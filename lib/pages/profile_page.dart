@@ -1,166 +1,121 @@
-import 'dart:convert';
-import 'dart:io';
-import 'dart:math';
-import 'dart:typed_data';
-
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
-
-import 'package:hd_wallet/hd_wallet.dart';
+import 'package:flutter/services.dart';
 import 'package:nostr/nostr.dart';
-import 'package:nostr_app/models/relay_pool_model.dart';
+import 'package:nostr_app/models/user_header_model.dart';
 import 'package:nostr_app/models/user_info_model.dart';
 import 'package:provider/provider.dart';
-import 'package:web3dart/credentials.dart';
-import 'package:web3dart/crypto.dart';
+
+import '../components/feed_item_card.dart';
+import '../components/user_header_card.dart';
+import '../generated/l10n.dart';
+import '../models/feed_list_model.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  final UserInfoModel userInfoModel;
+
+  const ProfilePage({super.key,required this.userInfoModel});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          const Text('profile'),
-          ElevatedButton(
-            onPressed: () {
-              final m = BIP39(count: 12);
-              debugPrint('m: ${m.mnemonic}');
-              final node = BIP32.fromSeed(Uint8List.fromList(hexToBytes(m.seed)));
-              debugPrint('node pri: ${bytesToHex(node.privateKey!)}');
-              debugPrint('node pub: ${bytesToHex(node.publicKey)}');
+    final controller = EasyRefreshController(
+      controlFinishRefresh: true,
+      controlFinishLoad: true,
+    );
+    String pubKey = userInfoModel.publicKey;
+    final feedListModel = FeedListModel(controller,context,pubKey);
 
-              final hdNode = node.derivePath("m/44'/1237'/0'/0/0");
-              final pk = bytesToHex(hdNode.privateKey!);
-              debugPrint('hd_node pri: $pk');
-              debugPrint('hd_node pub: ${bytesToHex(hdNode.publicKey)}');
+    feedListModel.refreshFeed();
+    final userFollowModel = UserFollowModel(userInfoModel);
+    userFollowModel.getUserFollowing();
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<FeedListModel>(
+          create: (_) => feedListModel,
+        ),
+        ChangeNotifierProvider<UserFollowModel>(
+          lazy: false,
+          create: (_) => userFollowModel,
+        )
+      ],
+      builder: (context, child) {
+        final rightNavBtnKey = GlobalKey();
 
-              final nostrNode = Keychain(pk);
-              debugPrint('nostr_node pri len: ${nostrNode.private.length}');
-//3aa0f58c99b09d5edc618b4321c0a31463e61644ac53b416de8560182253fb80
-              debugPrint('nostr_node pri: ${nostrNode.private}');
-              debugPrint('nostr_node pub: ${nostrNode.public}');
-
-              debugPrint('nostr_node pri: ${Nip19.encodePrivkey(nostrNode.private)}');
-              debugPrint('nostr_node pub: ${Nip19.encodePubkey(nostrNode.public)}');
-
-              final wallet = Wallet.createNew(EthPrivateKey.fromHex(pk), '123456', Random());
-              debugPrint('keystore: ${wallet.toJson()}');
-              try{
-                final newWallet = Wallet.fromJson("{\"crypto\":{\"cipher\":\"aes-128-ctr\",\"cipherparams\":{\"iv\":\"9e0ed4c9a9c58943b828129642bcb98a\"},\"ciphertext\":\"254eb0ce5912cae819c9076834d2763e70b4d534e40cf13495d0f3fb6c098ec9\",\"kdf\":\"scrypt\",\"kdfparams\":{\"dklen\":32,\"n\":8192,\"r\":8,\"p\":1,\"salt\":\"cab6108eb6ce2303938c722068a0ba17517b00b3b893438854c052881aff12ab\"},\"mac\":\"37e6ca8a5225e45b4a2ca9ecb44aa9c3004053e352b810cffe236036555bfb86\"},\"id\":\"a3d09d70-7ccb-4a04-8ab6-c3ca12aff01b\",\"version\":3}", '123456');
-                debugPrint('keystore pk: ${bytesToHex(newWallet.privateKey.privateKey)}');
-              } on Exception catch (exception) {
-                debugPrint(exception.toString());
-              } catch (error) {
-                debugPrint(error.toString());
-              }
-
-            },
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                      (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.focused)) {
-                      return Colors.red;
-                    }
-                    if (states.contains(MaterialState.hovered)) {
-                      return Colors.green;
-                    }
-                    if (states.contains(MaterialState.pressed)) {
-                      return Colors.red;
-                    }
-                    return Colors.brown;
-                  }
-              ),
-            ),
-            child: const Text('data'),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width*0.5,
-            padding: const EdgeInsets.only(left: 10,right: 10,top: 20,bottom: 20),
-            child: ElevatedButton(
-                onPressed: () async{
-
-                  debugPrint(Nip19.encodePubkey('fea400befeb5bf115b16575e2176bfbd8fb8ab9985ac170adb402bf8c89b9d0a'));
-                  // Provider.of<RelayPoolModel>(context).deleteRelayWithUrl('wss://relay.plebstr.com');
-                  final model = UserInfoModel(context,Nip19.decodePubkey('npub1jac0kj928psa6wf7hpt7ws8jmah33c826sa668fsce09cxvzqznqprc8yd'));
-                  model.getUserFollower();
-
-                  final requestUUID =generate64RandomHexChars();
-                  Request requestWithFilter = Request(requestUUID, [
-                    Filter(
-                      // authors: [Nip19.decodePubkey('npub1jac0kj928psa6wf7hpt7ws8jmah33c826sa668fsce09cxvzqznqprc8yd')],
-                      kinds: [
-                        0,1,
-                        6,//转发
-                        7,//点赞
-                        // 16,23
-                      ],
-                      ids: [Nip19.decodeNote('note10405zm7ud53x0mxqnrutajq0kyk5shrm3a9lw4ap6r9qkvgarp2q4x2j23')],
-                      // e: [Nip19.decodeNote('note13j4ueqs2syq9lrr8muvawntv9d5praa0zw97073xjla62rrpc9jqdd5xnn')],
-                      // p:[Nip19.decodePubkey('npub1jac0kj928psa6wf7hpt7ws8jmah33c826sa668fsce09cxvzqznqprc8yd')],
-                      // until: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-                      // limit: 10,
-                    )
-                  ]);
-                  debugPrint('requestUUID: $requestUUID');
-
-
-                  // Connecting to a nostr relay using websocket
-                  WebSocket webSocket = await WebSocket.connect(
-                    'wss://offchain.pub',
-                    // 'wss://relay.plebstr.com',
-                    // or any nostr relay
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text(''),
+            actions: [
+              IconButton(
+                key: rightNavBtnKey,
+                icon: const Icon(Icons.more_horiz_outlined),
+                onPressed: () {
+                  final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+                  final RenderBox button = rightNavBtnKey.currentContext!.findRenderObject() as RenderBox;
+                  final RelativeRect position = RelativeRect.fromRect(
+                    Rect.fromPoints(
+                      button.localToGlobal(button.size.center(Offset.zero), ancestor: overlay),
+                      button.localToGlobal(button.size.bottomRight(Offset.zero), ancestor: overlay),
+                    ),
+                    Offset.zero & overlay.size,
                   );
-                  // if the current socket fail try another one
-                  // wss://nostr.sandwich.farm
-                  // wss://relay.damus.io
-                  // Send a request message to the WebSocket server
-                  webSocket.add(requestWithFilter.serialize());
-                  int i=0;
-                  // Listen for events from the WebSocket server
-                  // await Future.delayed(Duration(seconds: 1));
-                  webSocket.listen((eventPayload) {
-                    i++;
-                    debugPrint('$i.Received event: $eventPayload');
-
-                    final message = Message.deserialize(eventPayload);
-
-                    if(message.type=='EOSE'){
-                      webSocket.add(Close(jsonDecode(message.message)[0]).serialize());
-                    }
-                    else{
-                      String result = (message.message as Event).content.replaceAll(r'^https?://([\w-]+\.)+[\w-]+(/\S+)*$', '');
-                      List<String> urls = [];
-                      const urlRegex = r"https?://[^\s]+[\w/]";
-                      final urlRegExp = RegExp(
-                          urlRegex,
-                          caseSensitive: false,
-                          multiLine: true
-                      );
-                      final matches = urlRegExp.allMatches(result);
-                      for (var match in matches) {
-                        debugPrint('--------');
-
-                        print(match.group(0));
-                        print(match.groupCount);
-                        debugPrint('--------');
-
-                        // urls.add(match.group(0)!);
-                        // result = result.replaceRange(match.start, match.end, "");
-                      }
-                      // debugPrint('reslut: $result');
-                    }
-                  });
-
-                  // Close the WebSocket connection
-                  // await webSocket.close();
+                  showMenu(
+                    context: context,
+                    position: position,
+                    items: [
+                      PopupMenuItem<String>(
+                        child: Text(S.of(context).copyByUserID),
+                        onTap: () {
+                          Clipboard.setData(ClipboardData(text: Nip19.encodePubkey(pubKey))).then((value){
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(S.of(context).copyToClipboard),
+                                duration: const Duration(seconds: 1),
+                              ),
+                            );
+                          });
+                        },
+                      ),
+                      PopupMenuItem<String>(
+                        child: Text(S.of(context).reportUser),
+                      ),
+                      PopupMenuItem<String>(
+                        child: Text(S.of(context).muteUser),
+                      ),
+                    ],
+                  );
                 },
-                child: Text('ssss')
+              )
+            ],
+          ),
+          body: EasyRefresh(
+            controller: controller,
+            header: const BezierHeader(),
+            footer: const ClassicFooter(),
+            onRefresh: () => feedListModel.refreshFeed(),
+            onLoad: () => feedListModel.loadMoreFeed(),
+            child: CustomScrollView(
+                slivers: [
+                  Consumer<UserFollowModel>(
+                      builder: (context, model, child){
+                        return SliverToBoxAdapter(
+                          child: UserHeaderCard(userFollowModel: model,),
+                        );
+                      }
+                  ),
+                  Consumer<FeedListModel>(
+                      builder:(context, model, child) {
+                        return SliverList.builder(
+                            itemCount: model.feedList.length,
+                            itemBuilder: (context, index) {
+                              return FeedItemCard(feedListModel: model, itemIndex: index,);
+                            });
+                      }
+                  )
+                ]
             ),
           ),
-
-        ],
-      )
+        );
+      },
     );
   }
 }

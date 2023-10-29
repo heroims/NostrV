@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         ),
         Provider(
             lazy: false,
-            create: (_) => AppRouter(nostrUserModel: NostrUserModel()),
+            create: (context) => AppRouter(nostrUserModel: NostrUserModel(context)),
         ),
       ],
       child: Builder(
