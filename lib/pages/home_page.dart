@@ -26,8 +26,8 @@ class HomePage extends StatelessWidget{
              return BottomNavigationBar(
                items: const [
                  BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Feed'),
-                 BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-                 BottomNavigationBarItem(icon: Icon(Icons.account_box), label: 'Profile'),
+                 BottomNavigationBarItem(icon: Icon(Icons.chat_bubble), label: 'Message'),
+                 BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Notifications'),
                ],
                currentIndex: model.selectIndex,
                onTap: (index){

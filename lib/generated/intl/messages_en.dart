@@ -65,6 +65,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "reportByProfanity": MessageLookupByLibrary.simpleMessage(
             "profanity, hateful speech, etc."),
         "reportBySpam": MessageLookupByLibrary.simpleMessage("Spam"),
-        "reportUser": MessageLookupByLibrary.simpleMessage("Report User")
+        "reportUser": MessageLookupByLibrary.simpleMessage("Report User"),
+        "userReplies": MessageLookupByLibrary.simpleMessage("Replies"),
+        "userReposts": MessageLookupByLibrary.simpleMessage("Reposts"),
+        "userUpvote": MessageLookupByLibrary.simpleMessage("Upvote")
       };
 }

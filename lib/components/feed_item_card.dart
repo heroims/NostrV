@@ -61,7 +61,6 @@ class FeedItemCard extends StatelessWidget {
         String replacedLink = "<a href='$link'>$link</a>"; // 替换为带有 <a> 标签的链接
         return replacedLink;
       }
-
     },
     );
 
@@ -97,14 +96,22 @@ class FeedItemCard extends StatelessWidget {
     }
 
     String replyText = '';
+    String atUserText = '';
+
     for (var element in feed.tags) {
-      if(element.first=='e'){
+      if(element.first=='e' && replyText == ''){
         final nodeID = Nip19.encodeNote(element[1]).toString();
         replyText = "${S.of(context).feedByReply}${nodeID.replaceRange(8, nodeID.length-6, ':')}";
-        break;
+      }
+      if(element.first=='p'){
+        final atUserID = Nip19.encodePubkey(element[1]).toString();
+        final atUserName = atUserID.replaceRange(8, 57, ':');
+        atUserText = "<a href='nostr://userinfo?id=$atUserID' style='text-decoration: none'>@$atUserName</a> $atUserText";
       }
     }
-
+    if(atUserText!=''){
+      replacedText ="$replacedText<br/><br/>$atUserText";
+    }
     final formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.fromMillisecondsSinceEpoch(feed.createdAt*1000));
 
     return GestureDetector(
@@ -169,7 +176,7 @@ class FeedItemCard extends StatelessWidget {
                         enableCaching: true,
                         onTapUrl: (url) {
                           if (url.startsWith(RegExp(r"(nostr://\S+)"))) {
-
+                            context.push(url.replaceAll("nostr:/", ""));
                           }
                           else {
                             launchUrl(Uri.parse(url));

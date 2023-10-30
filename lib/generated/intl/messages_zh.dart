@@ -54,6 +54,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "reportByNudity": MessageLookupByLibrary.simpleMessage("裸体、色情等"),
         "reportByProfanity": MessageLookupByLibrary.simpleMessage("脏话、仇恨言论等"),
         "reportBySpam": MessageLookupByLibrary.simpleMessage("垃圾信息"),
-        "reportUser": MessageLookupByLibrary.simpleMessage("举报用户")
+        "reportUser": MessageLookupByLibrary.simpleMessage("举报用户"),
+        "userReplies": MessageLookupByLibrary.simpleMessage("回复"),
+        "userReposts": MessageLookupByLibrary.simpleMessage("转发"),
+        "userUpvote": MessageLookupByLibrary.simpleMessage("点赞")
       };
 }

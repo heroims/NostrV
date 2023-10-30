@@ -8,6 +8,10 @@ class UserFollowModel extends ChangeNotifier {
 
   bool followersDownloaded = false;
 
+  UserInfo? get userInfo{
+    return userInfoModel.userInfo;
+  }
+
   bool get followed {
     return userInfoModel.followed;
   }
@@ -25,6 +29,12 @@ class UserFollowModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void getUserInfo(){
+    userInfoModel.getUserInfo(refreshCallback: (){
+      notifyListeners();
+    });
+  }
+
   void getUserFollowing(){
     userInfoModel.getUserFollowing(refreshCallback: (){
       notifyListeners();
@@ -39,4 +49,9 @@ class UserFollowModel extends ChangeNotifier {
     });
   }
 
+  void getUserRelay(){
+    userInfoModel.getUserRelay(refreshCallback: (){
+      notifyListeners();
+    });
+  }
 }

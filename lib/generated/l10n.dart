@@ -150,6 +150,36 @@ class S {
     );
   }
 
+  /// `Replies`
+  String get userReplies {
+    return Intl.message(
+      'Replies',
+      name: 'userReplies',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upvote`
+  String get userUpvote {
+    return Intl.message(
+      'Upvote',
+      name: 'userUpvote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reposts`
+  String get userReposts {
+    return Intl.message(
+      'Reposts',
+      name: 'userReposts',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Report User`
   String get reportUser {
     return Intl.message(

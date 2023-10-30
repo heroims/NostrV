@@ -18,7 +18,7 @@ class UserHeaderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserFollowModel model = userFollowModel;
-    UserInfo? user = model.userInfoModel.userInfo;
+    UserInfo? user = model.userInfo;
     String userId = Nip19.encodePubkey(model.userInfoModel.publicKey).toString().replaceRange(8, 57, ':');
     String userName = user?.name ?? userId;
     if(userName==''){

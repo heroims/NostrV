@@ -9,7 +9,15 @@ class FeedListModel extends ChangeNotifier {
   late final EasyRefreshController _controller;
   late final BuildContext _context;
   String? pubKey;
-  FeedListModel(this._controller,this._context, [this.pubKey]);
+  String? noteId;
+  String? atUserId;
+
+  Event? _noteFeed;
+  Event? get noteFeed{
+    return _noteFeed;
+  }
+
+  FeedListModel(this._controller,this._context, [this.pubKey, this.noteId, this.atUserId]);
 
   int _lastCreatedAt = DateTime.now().millisecondsSinceEpoch ~/ 1000;
   final int _limit = 10;
@@ -28,25 +36,53 @@ class FeedListModel extends ChangeNotifier {
     }
   }
 
+  void getNoteFeed(){
+    if(noteId==null) return;
+    final requestUUID =generate64RandomHexChars();
+    Filter filter = Filter(
+      kinds: [1],
+      ids: [noteId!],
+    );
+    Request requestWithFilter = Request(requestUUID, [
+      filter
+    ]);
+    RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
+    relayPoolModel.addRequest(relayPoolModel.relayWss.keys.first, requestWithFilter, (response){
+      for(int i=0;i<relayPoolModel.relayWss.keys.length;i++){
+        relayPoolModel.addRequest(relayPoolModel.relayWss.keys.elementAt(i), requestWithFilter, (response){
+          if (response.isNotEmpty){
+            _noteFeed=response.first;
+            notifyListeners();
+          }
+        });
+      }
+    });
+  }
+
   void refreshFeed(){
     _lastCreatedAt = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     final requestUUID =generate64RandomHexChars();
-    Filter filter;
+    Filter filter = Filter(
+      kinds: [1],
+      until: _lastCreatedAt,
+      limit: _limit,
+    );
+    List<String> tmpAuthors = [];
+    List<String> tmpE = [];
+    List<String> tmpP = [];
     if(pubKey != null) {
-      filter = Filter(
-        authors: [pubKey!],
-        kinds: [1],
-        until: _lastCreatedAt,
-        limit: _limit,
-      );
+      tmpAuthors.add(pubKey!);
+      filter.authors = tmpAuthors;
     }
-    else {
-      filter = Filter(
-        kinds: [1],
-        until: _lastCreatedAt,
-        limit: _limit,
-      );
+    if(noteId != null) {
+      tmpE.add(noteId!);
+      filter.e = tmpE;
     }
+    if(atUserId != null) {
+      tmpP.add(atUserId!);
+      filter.p = tmpP;
+    }
+
     Request requestWithFilter = Request(requestUUID, [
       filter
     ]);
@@ -78,22 +114,27 @@ class FeedListModel extends ChangeNotifier {
 
   void loadMoreFeed(){
     final requestUUID =generate64RandomHexChars();
-    Filter filter;
+    Filter filter = Filter(
+      kinds: [1],
+      until: _lastCreatedAt,
+      limit: _limit,
+    );
+    List<String> tmpAuthors = [];
+    List<String> tmpE = [];
+    List<String> tmpP = [];
     if(pubKey != null) {
-      filter = Filter(
-        authors: [pubKey!],
-        kinds: [1],
-        until: _lastCreatedAt,
-        limit: _limit,
-      );
+      tmpAuthors.add(pubKey!);
+      filter.authors = tmpAuthors;
     }
-    else {
-      filter = Filter(
-        kinds: [1],
-        until: _lastCreatedAt,
-        limit: _limit,
-      );
+    if(noteId != null) {
+      tmpE.add(noteId!);
+      filter.e = tmpE;
     }
+    if(atUserId != null) {
+      tmpP.add(atUserId!);
+      filter.p = tmpP;
+    }
+
     Request requestWithFilter = Request(requestUUID, [
       filter
     ]);

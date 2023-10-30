@@ -122,7 +122,7 @@ class UserInfoModel extends ChangeNotifier {
     }
   }
 
-  void getUserInfo(){
+  void getUserInfo({Function? refreshCallback}){
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
     final requestUUID =generate64RandomHexChars();
     Request requestWithFilter = Request(requestUUID, [
@@ -134,6 +134,9 @@ class UserInfoModel extends ChangeNotifier {
     relayPoolModel.addRequestSingle(defaultRelayUrls.first, requestWithFilter, (event){
       if(event!=null) {
         userInfo=UserInfo.fromJson(jsonDecode(event.content));
+        if(refreshCallback!=null){
+          refreshCallback();
+        }
         notifyListeners();
       }
     });
@@ -174,6 +177,47 @@ class UserInfoModel extends ChangeNotifier {
             for (var element in events.first.tags) {
               if(element.isNotEmpty && element.first=='p') {
                 followings.profiles[element[1]]=Profile(element[1], element.length>2?element[2]: relayUrl, element.length>3?element[3]:'');
+              }
+            }
+            if(refreshCallback!=null){
+              refreshCallback();
+            }
+            notifyListeners();
+          }
+        });
+      }
+    });
+  }
+
+  void getUserRelay({Function? refreshCallback}){
+    RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
+    final requestUUID =generate64RandomHexChars();
+    _lastFollowersRequestUUID = requestUUID;
+    Request requestWithFilter = Request(requestUUID, [
+      Filter(
+        authors: [publicKey],
+        kinds: [10002],
+      )
+    ]);
+
+    relayPoolModel.relayWss.forEach((key, value) {
+      final relayUrl = key;
+      if(value!=null){
+        relayPoolModel.addRequest(relayUrl, requestWithFilter, (events){
+          if(events.isNotEmpty) {
+            for (var element in events.first.tags) {
+              if(element.isNotEmpty && element.first=='r') {
+                bool readValue = false;
+                bool writeValue = false;
+                if(element.length>2){
+                  readValue = element[2]=='read';
+                  writeValue = element[2]=='write';
+                }
+                if(element.length>3){
+                  readValue = readValue | (element[3]=='read');
+                  writeValue = writeValue | (element[3]=='write');
+                }
+                followings.relaysState[element[1]]={'read':readValue,'write':writeValue};
               }
             }
             if(refreshCallback!=null){

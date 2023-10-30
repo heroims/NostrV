@@ -1,7 +1,5 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:nostr/nostr.dart';
 import 'package:nostr_app/models/user_header_model.dart';
 import 'package:nostr_app/models/user_info_model.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +25,11 @@ class ProfilePage extends StatelessWidget {
 
     feedListModel.refreshFeed();
     final userFollowModel = UserFollowModel(userInfoModel);
+    if(userFollowModel.userInfo==null){
+      userFollowModel.getUserInfo();
+    }
     userFollowModel.getUserFollowing();
+    userFollowModel.getUserRelay();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<FeedListModel>(
@@ -63,16 +65,18 @@ class ProfilePage extends StatelessWidget {
                     position: position,
                     items: [
                       PopupMenuItem<String>(
-                        child: Text(S.of(context).copyByUserID),
+                        child: Text(S.of(context).userReplies),
                         onTap: () {
-                          Clipboard.setData(ClipboardData(text: Nip19.encodePubkey(pubKey))).then((value){
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(S.of(context).copyToClipboard),
-                                duration: const Duration(seconds: 1),
-                              ),
-                            );
-                          });
+                        },
+                      ),
+                      PopupMenuItem<String>(
+                        child: Text(S.of(context).userUpvote),
+                        onTap: () {
+                        },
+                      ),
+                      PopupMenuItem<String>(
+                        child: Text(S.of(context).userReposts),
+                        onTap: () {
                         },
                       ),
                       PopupMenuItem<String>(
