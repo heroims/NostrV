@@ -15,16 +15,39 @@ import '../generated/l10n.dart';
 import '../models/user_info_model.dart';
 import '../router.dart';
 
-class FeedItemCard extends StatelessWidget {
+enum FeedItemCardType {
+  normal,
+  previous,
+  main,
+  root
+}
 
+class FeedItemCard extends StatelessWidget {
+  final FeedItemCardType cardType;
   final FeedListModel feedListModel;
   final int itemIndex;
-  const FeedItemCard({super.key,required this.feedListModel,required this.itemIndex});
+
+  const FeedItemCard({super.key,required this.feedListModel,required this.itemIndex,required this.cardType});
 
   @override
   Widget build(BuildContext context) {
     final appRouter = Provider.of<AppRouter>(context, listen: false);
-    final feed=feedListModel.feedList[itemIndex];
+    late final Event feed;
+    switch(cardType){
+      case FeedItemCardType.normal:
+        feed=feedListModel.feedList[itemIndex];
+        break;
+      case FeedItemCardType.previous:
+        feed=feedListModel.previousFeedList[itemIndex];
+        break;
+      case FeedItemCardType.main:
+        feed=feedListModel.noteFeed!;
+        break;
+      case FeedItemCardType.root:
+        feed=feedListModel.rootNoteFeed!;
+        break;
+    }
+
     UserInfo? user = feedListModel.getUser(feed.pubkey);
 
     String tmpContent = feed.content;
@@ -73,11 +96,53 @@ class FeedItemCard extends StatelessWidget {
       return replacedLink;
     },
     );
+
+    RegExp atRegex = RegExp(r"(nostr:\S+)");
+    replacedText = replacedText.replaceAllMapped(
+      atRegex, (match) {
+      String atText = match.group(0)!;
+      if(atText.startsWith("nostr:npub")){
+        atText=atText.replaceAll("nostr:", "");
+        String atUserName = atText.replaceRange(8, 57, ':');
+        final atUserOriginId = Nip19.decodePubkey(atText);
+        if(feedListModel.userMap.containsKey(atUserOriginId)){
+          if(feedListModel.userMap[atUserOriginId]?.userInfo!=null){
+            atUserName = feedListModel.userMap[atUserOriginId]!.userInfo?.userName??'';
+            if(atUserName == ''){
+              atUserName = feedListModel.userMap[atUserOriginId]!.userInfo?.displayName??'';
+            }
+            if(atUserName == ''){
+              atUserName = feedListModel.userMap[atUserOriginId]!.userInfo?.name??'';
+            }
+            if(atUserName == ''){
+              atUserName = atText.replaceRange(8, 57, ':');
+            }
+          }
+        }
+        else{
+          feedListModel.userMap[atUserOriginId] = UserInfoModel(context, atUserOriginId);
+          feedListModel.userMap[atUserOriginId]?.getUserInfo();
+        }
+        String link = "nostr://userinfo?id=$atText";
+        String replacedLink = "<a href='$link' style='text-decoration: none'>@$atUserName</a>"; // 替换为带有 <a> 标签的链接
+        return replacedLink;
+      }
+      return atText;
+    },
+    );
     String userId = Nip19.encodePubkey(feed.pubkey).toString().replaceRange(8, 57, ':');
-    String userName = user?.name ?? userId;
+    String userName = user?.name ?? '';
+    if(userName==''){
+      userName = user?.userName ?? '';
+    }
+    if(userName==''){
+      userName == user?.displayName;
+    }
+
     if(userName==''){
       userName = userId;
     }
+
     String userAvatar = user?.picture ?? '';
     Widget defaultImageWidget = const Image(
       image: AssetImage("assets/img/avatar.png"),
@@ -97,15 +162,36 @@ class FeedItemCard extends StatelessWidget {
 
     String replyText = '';
     String atUserText = '';
-
+    String originAtNodeID = '';
     for (var element in feed.tags) {
-      if(element.first=='e' && replyText == ''){
-        final nodeID = Nip19.encodeNote(element[1]).toString();
-        replyText = "${S.of(context).feedByReply}${nodeID.replaceRange(8, nodeID.length-6, ':')}";
+      if(element.first=='e' && replyText == '' && element[1]!=feed.id){
+        originAtNodeID = element[1];
+        final atNodeID = Nip19.encodeNote(originAtNodeID).toString();
+        replyText = "${S.of(context).postByReply}${atNodeID.replaceRange(8, atNodeID.length-6, ':')}";
       }
+
       if(element.first=='p'){
-        final atUserID = Nip19.encodePubkey(element[1]).toString();
-        final atUserName = atUserID.replaceRange(8, 57, ':');
+        final atUserOriginId = element[1];
+        final atUserID = Nip19.encodePubkey(atUserOriginId).toString();
+        String atUserName = atUserID.replaceRange(8, 57, ':');
+        if(feedListModel.userMap.containsKey(atUserOriginId)){
+          if(feedListModel.userMap[atUserOriginId]?.userInfo!=null){
+            atUserName = feedListModel.userMap[atUserOriginId]!.userInfo?.userName??'';
+            if(atUserName == ''){
+              atUserName = feedListModel.userMap[atUserOriginId]!.userInfo?.displayName??'';
+            }
+            if(atUserName == ''){
+              atUserName = feedListModel.userMap[atUserOriginId]!.userInfo?.name??'';
+            }
+            if(atUserName == ''){
+              atUserName = atUserID.replaceRange(8, 57, ':');
+            }
+          }
+        }
+        else{
+          feedListModel.userMap[atUserOriginId] = UserInfoModel(context, atUserOriginId);
+          feedListModel.userMap[atUserOriginId]?.getUserInfo();
+        }
         atUserText = "<a href='nostr://userinfo?id=$atUserID' style='text-decoration: none'>@$atUserName</a> $atUserText";
       }
     }
@@ -129,6 +215,31 @@ class FeedItemCard extends StatelessWidget {
                     child: CupertinoButton(
                       padding: const EdgeInsets.all(0),
                       onPressed: (){
+                        final pageState = GoRouterState.of(context);
+
+                        if(pageState.name.toString() == Routers.userInfo.value){
+                          String? pubKey = pageState.uri.queryParameters['id'];
+                          if(pubKey!=null){
+                            pubKey = Nip19.decodePubkey(pubKey);
+                          }
+                          else {
+                            if(pageState.extra!=null){
+                              pubKey = (pageState.extra as UserInfoModel).publicKey;
+                            }
+                          }
+                          if(
+                            pubKey!=null
+                            &&pubKey==feed.pubkey
+                          ){
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(S.of(context).tipByOnThisUser),
+                                duration: const Duration(seconds: 1),
+                              ),
+                            );
+                          }
+                          return;
+                        }
                         context.pushNamed(Routers.userInfo.value,extra: feedListModel.userMap[feed.pubkey]);
                       },
                       child: imageWidget,
@@ -165,7 +276,21 @@ class FeedItemCard extends StatelessWidget {
                           ),
                         ),
                         onPressed: (){
-
+                          final pageState = GoRouterState.of(context);
+                          if(
+                          pageState.name.toString() == Routers.feedDetail.value
+                              &&feedListModel.noteId!=null
+                              &&feedListModel.noteId==originAtNodeID
+                          ){
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(S.of(context).tipByOnThisPost),
+                                duration: const Duration(seconds: 1),
+                              ),
+                            );
+                            return;
+                          }
+                          context.pushNamed(Routers.feedDetail.value,extra: originAtNodeID);
                         },
                       ),
                     ),),
@@ -176,6 +301,33 @@ class FeedItemCard extends StatelessWidget {
                         enableCaching: true,
                         onTapUrl: (url) {
                           if (url.startsWith(RegExp(r"(nostr://\S+)"))) {
+
+                            final pageState = GoRouterState.of(context);
+
+                            if(pageState.name.toString() == Routers.userInfo.value){
+                              String? pubKey = pageState.uri.queryParameters['id'];
+                              if(pubKey!=null){
+                                pubKey = Nip19.decodePubkey(pubKey);
+                              }
+                              else {
+                                if(pageState.extra!=null){
+                                  pubKey = (pageState.extra as UserInfoModel).publicKey;
+                                }
+                              }
+                              if(
+                                  pubKey!=null
+                                  &&pubKey==url.replaceAll("nostr://userinfo?id=", "")
+                              ){
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(S.of(context).tipByOnThisUser),
+                                    duration: const Duration(seconds: 1),
+                                  ),
+                                );
+                              }
+                              return true;
+                            }
+
                             context.push(url.replaceAll("nostr:/", ""));
                           }
                           else {
@@ -210,9 +362,9 @@ class FeedItemCard extends StatelessWidget {
                                   actions: [
                                     CupertinoActionSheetAction(onPressed: (){
                                       appRouter.nostrUserModel.currentUser.then((user) {
-                                        feedListModel.isReportFeed(itemIndex, Nip19.decodePubkey(user!.publicKey), (isReport) {
+                                        feedListModel.isReportFeed(feed.id, Nip19.decodePubkey(user!.publicKey), (isReport) {
                                           if(!isReport){
-                                            feedListModel.reportFeed(itemIndex, 'nudity');
+                                            feedListModel.reportFeed(feed.id, 'nudity');
                                           }
                                           Navigator.pop(context);
                                         });
@@ -220,9 +372,9 @@ class FeedItemCard extends StatelessWidget {
                                     }, child: Text(S.of(context).reportByNudity)),
                                     CupertinoActionSheetAction(onPressed: (){
                                       appRouter.nostrUserModel.currentUser.then((user) {
-                                        feedListModel.isReportFeed(itemIndex, Nip19.decodePubkey(user!.publicKey), (isReport) {
+                                        feedListModel.isReportFeed(feed.id, Nip19.decodePubkey(user!.publicKey), (isReport) {
                                           if(!isReport){
-                                            feedListModel.reportFeed(itemIndex, 'profanity');
+                                            feedListModel.reportFeed(feed.id, 'profanity');
                                           }
                                           Navigator.pop(context);
                                         });
@@ -230,9 +382,9 @@ class FeedItemCard extends StatelessWidget {
                                     }, child: Text(S.of(context).reportByProfanity)),
                                     CupertinoActionSheetAction(onPressed: (){
                                       appRouter.nostrUserModel.currentUser.then((user) {
-                                        feedListModel.isReportFeed(itemIndex, Nip19.decodePubkey(user!.publicKey), (isReport) {
+                                        feedListModel.isReportFeed(feed.id, Nip19.decodePubkey(user!.publicKey), (isReport) {
                                           if(!isReport){
-                                            feedListModel.reportFeed(itemIndex, 'illegal');
+                                            feedListModel.reportFeed(feed.id, 'illegal');
                                           }
                                           Navigator.pop(context);
                                         });
@@ -240,9 +392,9 @@ class FeedItemCard extends StatelessWidget {
                                     }, child: Text(S.of(context).reportByIllegal)),
                                     CupertinoActionSheetAction(onPressed: (){
                                       appRouter.nostrUserModel.currentUser.then((user) {
-                                        feedListModel.isReportFeed(itemIndex, Nip19.decodePubkey(user!.publicKey), (isReport) {
+                                        feedListModel.isReportFeed(feed.id, Nip19.decodePubkey(user!.publicKey), (isReport) {
                                           if(!isReport){
-                                            feedListModel.reportFeed(itemIndex, 'impersonation');
+                                            feedListModel.reportFeed(feed.id, 'impersonation');
                                           }
                                           Navigator.pop(context);
                                         });
@@ -250,9 +402,9 @@ class FeedItemCard extends StatelessWidget {
                                     }, child: Text(S.of(context).reportByImpersonation)),
                                     CupertinoActionSheetAction(onPressed: (){
                                       appRouter.nostrUserModel.currentUser.then((user) {
-                                        feedListModel.isReportFeed(itemIndex, Nip19.decodePubkey(user!.publicKey), (isReport) {
+                                        feedListModel.isReportFeed(feed.id, Nip19.decodePubkey(user!.publicKey), (isReport) {
                                           if(!isReport){
-                                            feedListModel.reportFeed(itemIndex, 'spam');
+                                            feedListModel.reportFeed(feed.id, 'spam');
                                           }
                                           Navigator.pop(context);
                                         });
@@ -342,7 +494,21 @@ class FeedItemCard extends StatelessWidget {
         ),
       ),
       onTap: (){
-
+        final pageState = GoRouterState.of(context);
+        if(
+        pageState.name.toString() == Routers.feedDetail.value
+            &&feedListModel.noteId!=null
+            &&feedListModel.noteId==feed.id
+        ){
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(S.of(context).tipByOnThisPost),
+              duration: const Duration(seconds: 1),
+            ),
+          );
+          return;
+        }
+        context.pushNamed(Routers.feedDetail.value,extra: feed.id);
       },
     );
   }

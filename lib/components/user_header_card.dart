@@ -20,7 +20,14 @@ class UserHeaderCard extends StatelessWidget {
     UserFollowModel model = userFollowModel;
     UserInfo? user = model.userInfo;
     String userId = Nip19.encodePubkey(model.userInfoModel.publicKey).toString().replaceRange(8, 57, ':');
-    String userName = user?.name ?? userId;
+    String userName = user?.name ?? '';
+    if(userName==''){
+      userName = user?.userName ?? '';
+    }
+    if(userName==''){
+      userName == user?.displayName ?? '';
+    }
+
     if(userName==''){
       userName = userId;
     }
@@ -50,6 +57,17 @@ class UserHeaderCard extends StatelessWidget {
       return replacedLink;
     },
     );
+
+    RegExp tagRegex = RegExp(r"(#\S+)");
+    replacedText = replacedText.replaceAllMapped(
+      tagRegex, (match) {
+      String tag = match.group(0)!;
+      String link = "nostr://search/$tag";
+      String replacedLink = "<a href='$link' style='text-decoration: none'>$tag</a>"; // 替换为带有 <a> 标签的链接
+      return replacedLink;
+    },
+    );
+
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.all(10),

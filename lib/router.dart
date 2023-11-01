@@ -7,9 +7,11 @@ import 'package:nostr_app/pages/home_page.dart';
 import 'package:nostr_app/pages/mnemonic_verify_page.dart';
 import 'package:nostr_app/pages/mnemonic_show_page.dart';
 import 'package:nostr_app/pages/profile_page.dart';
+import 'package:nostr_app/pages/feed_detail_page.dart';
 import 'package:nostr_app/pages/welcome_page.dart';
 
 enum Routers {
+  feedDetail(8, 'feed_detail'),
   userInfo(7, 'user_info'),
   mnemonicVerify(6, 'mnemonic_verify'),
   mnemonicShow(5, 'mnemonic_show'),
@@ -94,7 +96,7 @@ class AppRouter {
             String? pubKey = state.uri.queryParameters['id'];
             UserInfoModel? userInfoModel;
             if(pubKey!=null){
-              pubKey = Nip19.decodePubkey(pubKey!);
+              pubKey = Nip19.decodePubkey(pubKey);
               userInfoModel = UserInfoModel(context,pubKey);
             }
             else {
@@ -106,19 +108,40 @@ class AppRouter {
             return MaterialPage(child: ProfilePage(userInfoModel: userInfoModel!,));
           }
       ),
+      GoRoute(
+          name: Routers.feedDetail.value,
+          path: '/feed/detail',
+          pageBuilder: (context, state) {
+
+            String? noteId = state.uri.queryParameters['id'];
+
+            if(noteId!=null){
+              noteId = Nip19.decodeNote(noteId);
+            }
+            else {
+              if(state.extra!=null){
+                noteId = state.extra as String;
+              }
+            }
+
+
+            return MaterialPage(child: FeedDetailPage(noteId: noteId!));
+          }
+      ),
     ],
     redirect: (context, state) async {
       final user = await nostrUserModel.currentUser;
       if(user!=null&&state.fullPath=='/'){
         return '/home/feed';
       }
+
       if(
           user!=null
           && state.uri.path == '/userinfo'
           && !state.uri.queryParameters.containsKey('id')
           && state.extra==null
       ){
-        return '/userinfo?id=${user!.publicKey}';
+        return '/userinfo?id=${user.publicKey}';
       }
       return null;
     },

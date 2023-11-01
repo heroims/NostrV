@@ -251,10 +251,70 @@ class S {
   }
 
   /// `reply:`
-  String get feedByReply {
+  String get postByReply {
     return Intl.message(
       'reply:',
-      name: 'feedByReply',
+      name: 'postByReply',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Comment`
+  String get postDetailByComment {
+    return Intl.message(
+      'Comment',
+      name: 'postDetailByComment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Main`
+  String get postDetailByMain {
+    return Intl.message(
+      'Main',
+      name: 'postDetailByMain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Root`
+  String get postDetailByRoot {
+    return Intl.message(
+      'Root',
+      name: 'postDetailByRoot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Previous`
+  String get postDetailByPrevious {
+    return Intl.message(
+      'Previous',
+      name: 'postDetailByPrevious',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Currently positioned at the main comment.`
+  String get tipByOnThisPost {
+    return Intl.message(
+      'Currently positioned at the main comment.',
+      name: 'tipByOnThisPost',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Currently positioned at the user page.`
+  String get tipByOnThisUser {
+    return Intl.message(
+      'Currently positioned at the user page.',
+      name: 'tipByOnThisUser',
       desc: '',
       args: [],
     );
@@ -265,6 +325,26 @@ class S {
     return Intl.message(
       'Tip',
       name: 'dialogByTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get dialogByDone {
+    return Intl.message(
+      'Done',
+      name: 'dialogByDone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please add additional relays to fetch data.`
+  String get dialogByNoDataInRelay {
+    return Intl.message(
+      'Please add additional relays to fetch data.',
+      name: 'dialogByNoDataInRelay',
       desc: '',
       args: [],
     );

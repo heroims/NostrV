@@ -41,7 +41,7 @@ class FeedPage extends StatelessWidget {
                 return ListView.builder(
                     itemCount: model.feedList.length,
                     itemBuilder: (context, index) {
-                      return FeedItemCard(feedListModel: model, itemIndex: index,);
+                      return FeedItemCard(feedListModel: model, itemIndex: index, cardType: FeedItemCardType.normal,);
                     });
               }
             ),

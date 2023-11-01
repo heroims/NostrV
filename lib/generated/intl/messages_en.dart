@@ -42,8 +42,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "createByNormal": MessageLookupByLibrary.simpleMessage("Normal"),
         "dialogByCreate": MessageLookupByLibrary.simpleMessage(
             "Please select a method to create an account."),
+        "dialogByDone": MessageLookupByLibrary.simpleMessage("Done"),
+        "dialogByNoDataInRelay": MessageLookupByLibrary.simpleMessage(
+            "Please add additional relays to fetch data."),
         "dialogByTitle": MessageLookupByLibrary.simpleMessage("Tip"),
-        "feedByReply": MessageLookupByLibrary.simpleMessage("reply:"),
         "muteUser": MessageLookupByLibrary.simpleMessage("Mute User"),
         "pageMnemonicDescribe": MessageLookupByLibrary.simpleMessage(
             "Please backup the mnemonic words"),
@@ -56,6 +58,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "pageWelcomeGo": MessageLookupByLibrary.simpleMessage("Go"),
         "pageWelcomeImport": MessageLookupByLibrary.simpleMessage("Import"),
         "pageWelcomeTitle": MessageLookupByLibrary.simpleMessage("Welcome"),
+        "postByReply": MessageLookupByLibrary.simpleMessage("reply:"),
+        "postDetailByComment": MessageLookupByLibrary.simpleMessage("Comment"),
+        "postDetailByMain": MessageLookupByLibrary.simpleMessage("Main"),
+        "postDetailByPrevious":
+            MessageLookupByLibrary.simpleMessage("Previous"),
+        "postDetailByRoot": MessageLookupByLibrary.simpleMessage("Root"),
         "reportByIllegal": MessageLookupByLibrary.simpleMessage(
             "may be illegal in some jurisdiction"),
         "reportByImpersonation":
@@ -66,6 +74,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "profanity, hateful speech, etc."),
         "reportBySpam": MessageLookupByLibrary.simpleMessage("Spam"),
         "reportUser": MessageLookupByLibrary.simpleMessage("Report User"),
+        "tipByOnThisPost": MessageLookupByLibrary.simpleMessage(
+            "Currently positioned at the main comment."),
+        "tipByOnThisUser": MessageLookupByLibrary.simpleMessage(
+            "Currently positioned at the user page."),
         "userReplies": MessageLookupByLibrary.simpleMessage("Replies"),
         "userReposts": MessageLookupByLibrary.simpleMessage("Reposts"),
         "userUpvote": MessageLookupByLibrary.simpleMessage("Upvote")

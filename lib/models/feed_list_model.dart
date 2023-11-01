@@ -17,7 +17,14 @@ class FeedListModel extends ChangeNotifier {
     return _noteFeed;
   }
 
-  FeedListModel(this._controller,this._context, [this.pubKey, this.noteId, this.atUserId]);
+  Event? _rootNoteFeed;
+  Event? get rootNoteFeed{
+    return _rootNoteFeed;
+  }
+
+  final List<Event> previousFeedList = [];
+
+  FeedListModel(this._controller,this._context, {this.pubKey, this.noteId, this.atUserId});
 
   int _lastCreatedAt = DateTime.now().millisecondsSinceEpoch ~/ 1000;
   final int _limit = 10;
@@ -36,27 +43,84 @@ class FeedListModel extends ChangeNotifier {
     }
   }
 
-  void getNoteFeed(){
-    if(noteId==null) return;
+  void getRootNoteFeed(String rootNoteId){
     final requestUUID =generate64RandomHexChars();
     Filter filter = Filter(
       kinds: [1],
-      ids: [noteId!],
+      ids: [rootNoteId],
+      limit: 1,
     );
     Request requestWithFilter = Request(requestUUID, [
       filter
     ]);
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
-    relayPoolModel.addRequest(relayPoolModel.relayWss.keys.first, requestWithFilter, (response){
-      for(int i=0;i<relayPoolModel.relayWss.keys.length;i++){
-        relayPoolModel.addRequest(relayPoolModel.relayWss.keys.elementAt(i), requestWithFilter, (response){
-          if (response.isNotEmpty){
-            _noteFeed=response.first;
-            notifyListeners();
+    for(int i=0;i<relayPoolModel.relayWss.keys.length;i++){
+      relayPoolModel.addRequest(relayPoolModel.relayWss.keys.elementAt(i), requestWithFilter, (response){
+        if (response.isNotEmpty){
+          _rootNoteFeed=response.first;
+          notifyListeners();
+        }
+      });
+    }
+
+  }
+
+  void _getPreviousNoteFeeds(List<String> noteIds){
+    final requestUUID =generate64RandomHexChars();
+    Filter filter = Filter(
+      kinds: [1],
+      ids: noteIds,
+      limit: noteIds.length
+    );
+    Request requestWithFilter = Request(requestUUID, [
+      filter
+    ]);
+    RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
+    for(int i=0;i<relayPoolModel.relayWss.keys.length;i++){
+      relayPoolModel.addRequest(relayPoolModel.relayWss.keys.elementAt(i), requestWithFilter, (response){
+        previousFeedList.addAll(response.where((event2) => !previousFeedList.any((event1) => event1.id == event2.id)));
+        previousFeedList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+        notifyListeners();
+
+      });
+    }
+  }
+
+  void getNoteFeed(Function? callback){
+    if(noteId==null) return;
+    final requestUUID =generate64RandomHexChars();
+    Filter filter = Filter(
+      kinds: [1],
+      ids: [noteId!],
+      limit: 1,
+    );
+    Request requestWithFilter = Request(requestUUID, [
+      filter
+    ]);
+    RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
+    for(int i=0;i<relayPoolModel.relayWss.keys.length;i++){
+      relayPoolModel.addRequest(relayPoolModel.relayWss.keys.elementAt(i), requestWithFilter, (response){
+        if (response.isNotEmpty){
+          _noteFeed=response.first;
+          notifyListeners();
+          List<String> previousFeedIds = [];
+          for (var element in _noteFeed!.tags) {
+            if(element.length>3&&element.first=='e'&&element[3]=='root'){
+              getRootNoteFeed(element[1]);
+            }
+            else if(element.first=='e'){
+              previousFeedIds.add(element[1]);
+            }
           }
-        });
-      }
-    });
+          _getPreviousNoteFeeds(previousFeedIds);
+        }
+
+        if(callback!=null){
+          callback();
+        }
+      });
+    }
   }
 
   void refreshFeed(){
@@ -95,8 +159,10 @@ class FeedListModel extends ChangeNotifier {
         _lastCreatedAt=feedList.last.createdAt;
       }
       notifyListeners();
-      _controller.finishRefresh();
-      _controller.resetFooter();
+      if(_controller.controlFinishRefresh){
+        _controller.finishRefresh();
+        _controller.resetFooter();
+      }
 
       for(int i=1;i<relayPoolModel.relayWss.keys.length;i++){
         relayPoolModel.addRequest(relayPoolModel.relayWss.keys.elementAt(i), requestWithFilter, (response){
@@ -153,12 +219,12 @@ class FeedListModel extends ChangeNotifier {
     });
   }
 
-  void reportFeed(int index, String reportType) {
+  void reportFeed(String reportId, String reportType) {
     final requestUUID =generate64RandomHexChars();
     Request requestWithFilter = Request(requestUUID, [
       Filter(
         kinds: [1984],
-        e: [feedList[index].id, reportType],
+        e: [reportId, reportType],
       )
     ]);
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
@@ -168,13 +234,13 @@ class FeedListModel extends ChangeNotifier {
     });
   }
 
-  void isReportFeed(int index, String pubKey, Function(bool) callback) {
+  void isReportFeed(String reportId, String pubKey, Function(bool) callback) {
     final requestUUID =generate64RandomHexChars();
     Request requestWithFilter = Request(requestUUID, [
       Filter(
         kinds: [1984],
         authors: [pubKey],
-        e: [feedList[index].id],
+        e: [reportId],
       )
     ]);
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);

@@ -21,7 +21,7 @@ class ProfilePage extends StatelessWidget {
       controlFinishLoad: true,
     );
     String pubKey = userInfoModel.publicKey;
-    final feedListModel = FeedListModel(controller,context,pubKey);
+    final feedListModel = FeedListModel(controller,context,pubKey:pubKey);
 
     feedListModel.refreshFeed();
     final userFollowModel = UserFollowModel(userInfoModel);
@@ -111,7 +111,7 @@ class ProfilePage extends StatelessWidget {
                         return SliverList.builder(
                             itemCount: model.feedList.length,
                             itemBuilder: (context, index) {
-                              return FeedItemCard(feedListModel: model, itemIndex: index,);
+                              return FeedItemCard(feedListModel: model, itemIndex: index, cardType: FeedItemCardType.normal,);
                             });
                       }
                   )
