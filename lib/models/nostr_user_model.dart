@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
@@ -44,6 +45,10 @@ class NostrUserModel extends ChangeNotifier {
         notifyListeners();
       }
     }
+    return _currentUser;
+  }
+
+  NostrUser? get currentUserSync{
     return _currentUser;
   }
 

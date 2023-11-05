@@ -78,6 +78,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Currently positioned at the main comment."),
         "tipByOnThisUser": MessageLookupByLibrary.simpleMessage(
             "Currently positioned at the user page."),
+        "tipReportRepeatedly": MessageLookupByLibrary.simpleMessage(
+            "Please do not report repeatedly."),
         "userReplies": MessageLookupByLibrary.simpleMessage("Replies"),
         "userReposts": MessageLookupByLibrary.simpleMessage("Reposts"),
         "userUpvote": MessageLookupByLibrary.simpleMessage("Upvote")

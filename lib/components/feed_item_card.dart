@@ -200,6 +200,13 @@ class FeedItemCard extends StatelessWidget {
     }
     final formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.fromMillisecondsSinceEpoch(feed.createdAt*1000));
 
+    bool upvote = false;
+    if(feedListModel.upvoteFeedMap.containsKey(feed.id)){
+      upvote = feedListModel.upvoteFeedMap[feed.id]?? false;
+    }
+    else{
+      feedListModel.getUpvoteFeed(feed.id, Nip19.decodePubkey(appRouter.nostrUserModel.currentUserSync!.publicKey));
+    }
     return GestureDetector(
       child: Card(
         child: Column(
@@ -348,7 +355,9 @@ class FeedItemCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         IconButton(onPressed: (){}, icon: const Icon(Icons.chat_bubble_outline)),
-                        IconButton(onPressed: (){}, icon: const Icon(Icons.thumb_up_off_alt_outlined)),
+                        IconButton(onPressed: (){
+                          feedListModel.upvoteFeed(feed.id, !upvote);
+                        }, icon: Icon(upvote ? Icons.thumb_up: Icons.thumb_up_off_alt_outlined)),
                         IconButton(onPressed: (){
                           Share.share(Nip19.encodeNote(feed.id));
                         }, icon: const Icon(Icons.share_outlined)),
@@ -356,59 +365,43 @@ class FeedItemCard extends StatelessWidget {
                           showCupertinoModalPopup(
                               context: context,
                               builder: (context){
+                                void reportFeed(String reportType){
+                                  appRouter.nostrUserModel.currentUser.then((user) {
+                                    feedListModel.isReportFeed(feed.id, Nip19.decodePubkey(user!.publicKey), (isReport) {
+                                      if(!isReport){
+                                        feedListModel.reportFeed(feed.id, reportType);
+                                      }
+                                      else{
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text(S.of(context).tipReportRepeatedly),
+                                            duration: const Duration(seconds: 1),
+                                          ),
+                                        );
+                                      }
+                                      Navigator.pop(context);
+                                    });
+                                  });
+                                }
+
                                 return CupertinoActionSheet(
                                   title: Text(S.of(context).dialogByTitle),
                                   message: Text(S.of(context).actionSheetByReport),
                                   actions: [
                                     CupertinoActionSheetAction(onPressed: (){
-                                      appRouter.nostrUserModel.currentUser.then((user) {
-                                        feedListModel.isReportFeed(feed.id, Nip19.decodePubkey(user!.publicKey), (isReport) {
-                                          if(!isReport){
-                                            feedListModel.reportFeed(feed.id, 'nudity');
-                                          }
-                                          Navigator.pop(context);
-                                        });
-                                      });
+                                      reportFeed('nudity');
                                     }, child: Text(S.of(context).reportByNudity)),
                                     CupertinoActionSheetAction(onPressed: (){
-                                      appRouter.nostrUserModel.currentUser.then((user) {
-                                        feedListModel.isReportFeed(feed.id, Nip19.decodePubkey(user!.publicKey), (isReport) {
-                                          if(!isReport){
-                                            feedListModel.reportFeed(feed.id, 'profanity');
-                                          }
-                                          Navigator.pop(context);
-                                        });
-                                      });
+                                      reportFeed('profanity');
                                     }, child: Text(S.of(context).reportByProfanity)),
                                     CupertinoActionSheetAction(onPressed: (){
-                                      appRouter.nostrUserModel.currentUser.then((user) {
-                                        feedListModel.isReportFeed(feed.id, Nip19.decodePubkey(user!.publicKey), (isReport) {
-                                          if(!isReport){
-                                            feedListModel.reportFeed(feed.id, 'illegal');
-                                          }
-                                          Navigator.pop(context);
-                                        });
-                                      });
+                                      reportFeed('illegal');
                                     }, child: Text(S.of(context).reportByIllegal)),
                                     CupertinoActionSheetAction(onPressed: (){
-                                      appRouter.nostrUserModel.currentUser.then((user) {
-                                        feedListModel.isReportFeed(feed.id, Nip19.decodePubkey(user!.publicKey), (isReport) {
-                                          if(!isReport){
-                                            feedListModel.reportFeed(feed.id, 'impersonation');
-                                          }
-                                          Navigator.pop(context);
-                                        });
-                                      });
+                                      reportFeed('impersonation');
                                     }, child: Text(S.of(context).reportByImpersonation)),
                                     CupertinoActionSheetAction(onPressed: (){
-                                      appRouter.nostrUserModel.currentUser.then((user) {
-                                        feedListModel.isReportFeed(feed.id, Nip19.decodePubkey(user!.publicKey), (isReport) {
-                                          if(!isReport){
-                                            feedListModel.reportFeed(feed.id, 'spam');
-                                          }
-                                          Navigator.pop(context);
-                                        });
-                                      });
+                                      reportFeed('spam');
                                     }, child: Text(S.of(context).reportBySpam)),
                                     CupertinoActionSheetAction(
                                         isDestructiveAction: true,

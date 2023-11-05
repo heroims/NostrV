@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:nostr/nostr.dart';
 import 'package:nostr_app/models/relay_pool_model.dart';
 import 'package:nostr_app/models/user_info_model.dart';
+import 'package:nostr_app/router.dart';
 import 'package:provider/provider.dart';
 
 class FeedListModel extends ChangeNotifier {
@@ -23,6 +24,7 @@ class FeedListModel extends ChangeNotifier {
   }
 
   final List<Event> previousFeedList = [];
+  final Map<String, bool> upvoteFeedMap = {};
 
   FeedListModel(this._controller,this._context, {this.pubKey, this.noteId, this.atUserId});
 
@@ -220,17 +222,14 @@ class FeedListModel extends ChangeNotifier {
   }
 
   void reportFeed(String reportId, String reportType) {
-    final requestUUID =generate64RandomHexChars();
-    Request requestWithFilter = Request(requestUUID, [
-      Filter(
-        kinds: [1984],
-        e: [reportId, reportType],
-      )
-    ]);
+    AppRouter appRouter = Provider.of<AppRouter>(_context, listen: false);
+    Event event = Event.from(kind: 1984, content: '', tags: [['e', reportId, reportType]], privkey: Nip19.decodePrivkey((appRouter.nostrUserModel.currentUserSync)!.privateKey));
+
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
     relayPoolModel.relayWss.forEach((key, value) {
-      relayPoolModel.addRequestSingle(key, requestWithFilter, (response){
-      });
+      if(value!=null){
+        value.add(event.serialize());
+      }
     });
   }
 
@@ -251,7 +250,6 @@ class FeedListModel extends ChangeNotifier {
         tryCount += 1;
         if(response.isNotEmpty) {
           isReport = true;
-          callback(isReport);
         }
         if(tryCount>=relayPoolModel.relayWss.length){
           callback(isReport);
@@ -263,4 +261,85 @@ class FeedListModel extends ChangeNotifier {
 
     });
   }
+
+  void upvoteFeed(String upvoteId, bool upvote){
+    AppRouter appRouter = Provider.of<AppRouter>(_context, listen: false);
+    final requestUUID =generate64RandomHexChars();
+    Event event = Event.from(
+        // subscriptionId: requestUUID,
+        kind: 7,
+        content: upvote?'+':'',
+        tags: [['e', upvoteId]],
+        privkey: Nip19.decodePrivkey((appRouter.nostrUserModel.currentUserSync)!.privateKey)
+    );
+    upvoteFeedMap[upvoteId]=upvote;
+    notifyListeners();
+    RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
+    relayPoolModel.relayWss.forEach((key, value) {
+      value!.add(event.serialize());
+      // relayPoolModel.addRequest(key, event, (event) {
+      //   if(event.isNotEmpty){
+      //
+      //   }
+      // });
+    });
+  }
+
+  void isUpvoteFeed(String upvoteId, String pubKey, Function(bool) callback) {
+    final requestUUID =generate64RandomHexChars();
+    Request requestWithFilter = Request(requestUUID, [
+      Filter(
+        kinds: [7],
+        authors: [pubKey],
+        e: [upvoteId],
+      )
+    ]);
+    RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
+    bool isUpvote = false;
+    int tryCount = 0;
+    relayPoolModel.relayWss.forEach((key, value) {
+      relayPoolModel.addRequest(key, requestWithFilter, (response){
+        tryCount += 1;
+        if(response.isNotEmpty && response.first.content == '+') {
+          isUpvote = true;
+          callback(isUpvote);
+        }
+        if(tryCount>=relayPoolModel.relayWss.length){
+          callback(isUpvote);
+        }
+      });
+      if (isUpvote) {
+        return;
+      }
+
+    });
+  }
+
+  void getUpvoteFeed(String upvoteId, String pubKey) {
+    final requestUUID =generate64RandomHexChars();
+    Request requestWithFilter = Request(requestUUID, [
+      Filter(
+        kinds: [7],
+        authors: [pubKey],
+        e: [upvoteId],
+      )
+    ]);
+    RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
+    bool isUpvote = false;
+    relayPoolModel.relayWss.forEach((key, value) {
+      relayPoolModel.addRequest(key, requestWithFilter, (response){
+        if(response.isNotEmpty){
+          upvoteFeedMap[upvoteId]=response.first.content=='+';
+          notifyListeners();
+        }
+        if(response.isNotEmpty && response.first.content == '+') {
+          isUpvote = true;
+        }
+      });
+      if (isUpvote) {
+        return;
+      }
+    });
+  }
+
 }

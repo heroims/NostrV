@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "copyByPost": MessageLookupByLibrary.simpleMessage("复制信息"),
         "copyByPostID": MessageLookupByLibrary.simpleMessage("复制NoteID"),
         "copyByUserID": MessageLookupByLibrary.simpleMessage("复制用户ID"),
-        "copyToClipboard": MessageLookupByLibrary.simpleMessage("复制到剪贴板"),
+        "copyToClipboard": MessageLookupByLibrary.simpleMessage("已复制到剪贴板"),
         "createByCancel": MessageLookupByLibrary.simpleMessage("取消"),
         "createByHDNode": MessageLookupByLibrary.simpleMessage("HD Node"),
         "createByNormal": MessageLookupByLibrary.simpleMessage("普通"),
@@ -64,6 +64,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "reportUser": MessageLookupByLibrary.simpleMessage("举报用户"),
         "tipByOnThisPost": MessageLookupByLibrary.simpleMessage("正位于当前主评论。"),
         "tipByOnThisUser": MessageLookupByLibrary.simpleMessage("正位于当前用户页面。"),
+        "tipReportRepeatedly": MessageLookupByLibrary.simpleMessage("请勿重复举报"),
         "userReplies": MessageLookupByLibrary.simpleMessage("回复"),
         "userReposts": MessageLookupByLibrary.simpleMessage("转发"),
         "userUpvote": MessageLookupByLibrary.simpleMessage("点赞")

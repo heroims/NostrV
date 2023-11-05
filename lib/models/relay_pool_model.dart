@@ -29,7 +29,7 @@ class RelayPoolModel extends ChangeNotifier {
     }
   }
 
-  void addRequest(String url, Request requestWithFilter, Function(List<Event>) response){
+  void addRequest(String url, dynamic requestWithFilter, Function(List<Event>) response){
     if(relayWss.containsKey(url)&&relayWss[url]!=null){
       relayWss[url]!.add(requestWithFilter.serialize());
       _relayResponses['$url/${requestWithFilter.subscriptionId}'] = [[], response];
@@ -43,7 +43,7 @@ class RelayPoolModel extends ChangeNotifier {
     }
   }
 
-  void addRequestSingle(String url, Request requestWithFilter, Function(dynamic) response){
+  void addRequestSingle(String url, dynamic requestWithFilter, Function(dynamic) response){
     if(relayWss.containsKey(url)&&relayWss[url]!=null){
       relayWss[url]!.add(requestWithFilter.serialize());
       _relaySingleResponses['$url/${requestWithFilter.subscriptionId}'] = response;

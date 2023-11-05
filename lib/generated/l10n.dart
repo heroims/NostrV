@@ -150,6 +150,16 @@ class S {
     );
   }
 
+  /// `Please do not report repeatedly.`
+  String get tipReportRepeatedly {
+    return Intl.message(
+      'Please do not report repeatedly.',
+      name: 'tipReportRepeatedly',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Replies`
   String get userReplies {
     return Intl.message(
