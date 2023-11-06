@@ -8,15 +8,21 @@ import 'package:nostr_app/pages/mnemonic_verify_page.dart';
 import 'package:nostr_app/pages/mnemonic_show_page.dart';
 import 'package:nostr_app/pages/profile_page.dart';
 import 'package:nostr_app/pages/feed_detail_page.dart';
+import 'package:nostr_app/pages/search_page.dart';
 import 'package:nostr_app/pages/welcome_page.dart';
+import 'package:nostr_app/realm/db_follower.dart';
+import 'package:nostr_app/realm/db_following.dart';
+import 'package:nostr_app/realm/db_user.dart';
+import 'package:realm/realm.dart';
 
 enum Routers {
-  feedDetail(8, 'feed_detail'),
-  userInfo(7, 'user_info'),
+  feedDetail(9, 'feed_detail'),
+  userInfo(8, 'user_info'),
+  search(7, 'search'),
   mnemonicVerify(6, 'mnemonic_verify'),
   mnemonicShow(5, 'mnemonic_show'),
-  profile(4, 'profile'),
-  search(3, 'search'),
+  notify(4, 'notify'),
+  message(3, 'message'),
   feed(2, 'feed'),
   home(1, 'home');
 
@@ -28,7 +34,12 @@ enum Routers {
 
 class AppRouter {
   final NostrUserModel nostrUserModel;
-  AppRouter({required this.nostrUserModel});
+  late Realm realm;
+
+  AppRouter({required this.nostrUserModel}){
+    final config = Configuration.local([DBUser.schema,DBFollower.schema,DBFollowing.schema]);
+    realm = Realm(config);
+  }
 
   // GoRouter configuration
   late final router = GoRouter(
@@ -61,36 +72,46 @@ class AppRouter {
       ),
       GoRoute(
           name: Routers.home.value,
-          path: '/home/:tab(feed|search|profile)',
+          path: '/${Routers.home.value}/:tab(${Routers.feed.value}|${Routers.message.value}|${Routers.notify.value})',
           pageBuilder: (context, state) {
             final tabStr = state.pathParameters['tab'];
-            return MaterialPage(child: HomePage(tab: tabStr ?? 'feed'));
+            return MaterialPage(child: HomePage(tab: tabStr ?? Routers.feed.value));
           }
       ),
       GoRoute(
           name: Routers.feed.value,
-          path: '/feed',
+          path: '/${Routers.feed.value}',
           redirect: (context, state) {
-            return '/home/feed';
+            return '/${Routers.home.value}/${Routers.feed.value}';
           }
       ),
       GoRoute(
           name: Routers.search.value,
-          path: '/search',
-          redirect: (context, state) {
-            return '/home/search';
+          path: '/${Routers.search.value}',
+          pageBuilder: (context, state) {
+            String? keyword = state.uri.queryParameters['keyword'];
+            String? tag = state.uri.queryParameters['tag'];
+
+            return MaterialPage(child: SearchPage(keyword: keyword,tag: tag,));
           }
       ),
       GoRoute(
-          name: Routers.profile.value,
-          path: '/profile',
+          name: Routers.notify.value,
+          path: '/${Routers.notify.value}',
           redirect: (context, state) {
-            return '/home/profile';
+            return '/${Routers.home.value}/${Routers.notify.value}';
+          }
+      ),
+      GoRoute(
+          name: Routers.message.value,
+          path: '/${Routers.message.value}',
+          redirect: (context, state) {
+            return '/${Routers.home.value}/${Routers.message.value}';
           }
       ),
       GoRoute(
           name: Routers.userInfo.value,
-          path: '/userinfo',
+          path: '/${Routers.userInfo.value}',
           pageBuilder: (context, state) {
 
             String? pubKey = state.uri.queryParameters['id'];
@@ -110,7 +131,7 @@ class AppRouter {
       ),
       GoRoute(
           name: Routers.feedDetail.value,
-          path: '/feed/detail',
+          path: '/${Routers.feed.value}/detail',
           pageBuilder: (context, state) {
 
             String? noteId = state.uri.queryParameters['id'];
@@ -132,7 +153,7 @@ class AppRouter {
     redirect: (context, state) async {
       final user = await nostrUserModel.currentUser;
       if(user!=null&&state.fullPath=='/'){
-        return '/home/feed';
+        return '/${Routers.home.value}/${Routers.feed.value}';
       }
 
       if(

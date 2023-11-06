@@ -3,8 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:nostr_app/models/tab_select_model.dart';
 import 'package:nostr_app/pages/feed_page.dart';
 import 'package:nostr_app/pages/notify_page.dart';
-import 'package:nostr_app/pages/search_page.dart';
+import 'package:nostr_app/router.dart';
 import 'package:provider/provider.dart';
+
+import 'message_page.dart';
 
 class HomePage extends StatelessWidget{
   final String tabStr;
@@ -34,13 +36,13 @@ class HomePage extends StatelessWidget{
                  model.setIndex(index);
                  switch(index){
                    case 0:
-                     context.go('/feed');
+                     context.goNamed(Routers.feed.value);
                      break;
                    case 1:
-                     context.go('/search');
+                     context.goNamed(Routers.message.value);
                      break;
                    case 2:
-                     context.go('/profile');
+                     context.goNamed(Routers.notify.value);
                      break;
                  }
                },
@@ -53,7 +55,7 @@ class HomePage extends StatelessWidget{
                index: model.selectIndex,
                children: const [
                  FeedPage(),
-                 SearchPage(),
+                 MessagePage(),
                  NotifyPage()
                ],
              );

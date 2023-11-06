@@ -5,6 +5,7 @@ import 'package:nostr/nostr.dart';
 import 'package:nostr_app/globals/storage_setting.dart';
 import 'package:nostr_app/models/nostr_user_model.dart';
 import 'package:nostr_app/models/relay_pool_model.dart';
+import 'package:nostr_app/realm/db_user.dart';
 import 'package:provider/provider.dart';
 
 import '../router.dart';
@@ -123,6 +124,8 @@ class UserInfoModel extends ChangeNotifier {
   }
 
   void getUserInfo({Function? refreshCallback}){
+    // AppRouter appRouter = Provider.of<AppRouter>(_context, listen: false);
+
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
     final requestUUID =generate64RandomHexChars();
     Request requestWithFilter = Request(requestUUID, [
@@ -134,6 +137,19 @@ class UserInfoModel extends ChangeNotifier {
     relayPoolModel.addRequestSingle(defaultRelayUrls.first, requestWithFilter, (event){
       if(event!=null) {
         userInfo=UserInfo.fromJson(jsonDecode(event.content));
+        // appRouter.realm.write(() => appRouter.realm.add(DBUser(
+        //   publicKey,
+        //   name: userInfo?.name,
+        //   userName: userInfo?.userName,
+        //   displayName: userInfo?.displayName,
+        //   website: userInfo?.website,
+        //   lud06: userInfo?.lud06,
+        //   lud16: userInfo?.lud16,
+        //   nip05: userInfo?.nip05,
+        //   about: userInfo?.about,
+        //   picture: userInfo?.picture,
+        //   banner: userInfo?.banner
+        // )));
         if(refreshCallback!=null){
           refreshCallback();
         }

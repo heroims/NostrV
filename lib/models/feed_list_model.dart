@@ -264,9 +264,7 @@ class FeedListModel extends ChangeNotifier {
 
   void upvoteFeed(String upvoteId, bool upvote){
     AppRouter appRouter = Provider.of<AppRouter>(_context, listen: false);
-    final requestUUID =generate64RandomHexChars();
     Event event = Event.from(
-        // subscriptionId: requestUUID,
         kind: 7,
         content: upvote?'+':'',
         tags: [['e', upvoteId]],
@@ -277,11 +275,6 @@ class FeedListModel extends ChangeNotifier {
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
     relayPoolModel.relayWss.forEach((key, value) {
       value!.add(event.serialize());
-      // relayPoolModel.addRequest(key, event, (event) {
-      //   if(event.isNotEmpty){
-      //
-      //   }
-      // });
     });
   }
 
@@ -342,4 +335,54 @@ class FeedListModel extends ChangeNotifier {
     });
   }
 
+  void repostFeed(Event feed){
+    AppRouter appRouter = Provider.of<AppRouter>(_context, listen: false);
+    Event event1 = Event.from(
+        kind: 6,
+        content: feed.serialize(),
+        tags: [['e', feed.id]],
+        privkey: Nip19.decodePrivkey((appRouter.nostrUserModel.currentUserSync)!.privateKey)
+    );
+    Event event2 = Event.from(
+        kind: 16,
+        content: feed.serialize(),
+        tags: [['e', feed.id], ['k', feed.kind.toString()]],
+        privkey: Nip19.decodePrivkey((appRouter.nostrUserModel.currentUserSync)!.privateKey)
+    );
+    RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
+    relayPoolModel.relayWss.forEach((key, value) {
+      value!.add(event1.serialize());
+      value!.add(event2.serialize());
+    });
+  }
+
+  void isRepostFeed(String repostId, String pubKey, Function(bool) callback) {
+    final requestUUID =generate64RandomHexChars();
+    Request requestWithFilter = Request(requestUUID, [
+      Filter(
+        kinds: [6],
+        authors: [pubKey],
+        e: [repostId],
+      )
+    ]);
+    RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
+    bool isRepost = false;
+    int tryCount = 0;
+    relayPoolModel.relayWss.forEach((key, value) {
+      relayPoolModel.addRequest(key, requestWithFilter, (response){
+        tryCount += 1;
+        if(response.isNotEmpty) {
+          isRepost = true;
+          callback(isRepost);
+        }
+        if(tryCount>=relayPoolModel.relayWss.length){
+          callback(isRepost);
+        }
+      });
+      if (isRepost) {
+        return;
+      }
+
+    });
+  }
 }

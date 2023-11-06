@@ -110,6 +110,36 @@ class S {
     );
   }
 
+  /// `Reposted`
+  String get tipByReposted {
+    return Intl.message(
+      'Reposted',
+      name: 'tipByReposted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Repost`
+  String get repostByPostID {
+    return Intl.message(
+      'Repost',
+      name: 'repostByPostID',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share`
+  String get shareByPostID {
+    return Intl.message(
+      'Share',
+      name: 'shareByPostID',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Copy Post ID`
   String get copyByPostID {
     return Intl.message(

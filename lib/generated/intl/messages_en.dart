@@ -74,10 +74,13 @@ class MessageLookup extends MessageLookupByLibrary {
             "profanity, hateful speech, etc."),
         "reportBySpam": MessageLookupByLibrary.simpleMessage("Spam"),
         "reportUser": MessageLookupByLibrary.simpleMessage("Report User"),
+        "repostByPostID": MessageLookupByLibrary.simpleMessage("Repost"),
+        "shareByPostID": MessageLookupByLibrary.simpleMessage("Share"),
         "tipByOnThisPost": MessageLookupByLibrary.simpleMessage(
             "Currently positioned at the main comment."),
         "tipByOnThisUser": MessageLookupByLibrary.simpleMessage(
             "Currently positioned at the user page."),
+        "tipByReposted": MessageLookupByLibrary.simpleMessage("Reposted"),
         "tipReportRepeatedly": MessageLookupByLibrary.simpleMessage(
             "Please do not report repeatedly."),
         "userReplies": MessageLookupByLibrary.simpleMessage("Replies"),

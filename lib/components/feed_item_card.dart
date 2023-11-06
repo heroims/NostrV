@@ -359,7 +359,40 @@ class FeedItemCard extends StatelessWidget {
                           feedListModel.upvoteFeed(feed.id, !upvote);
                         }, icon: Icon(upvote ? Icons.thumb_up: Icons.thumb_up_off_alt_outlined)),
                         IconButton(onPressed: (){
-                          Share.share(Nip19.encodeNote(feed.id));
+                          showCupertinoModalPopup(context: context, builder: (context){
+                            return CupertinoActionSheet(
+                                actions: [
+                                  CupertinoActionSheetAction(
+                                    onPressed: (){
+                                      feedListModel.repostFeed(feed);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(S.of(context).tipByReposted),
+                                          duration: const Duration(seconds: 1),
+                                        ),
+                                      );
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text(S.of(context).repostByPostID),
+                                  ),
+                                  CupertinoActionSheetAction(
+                                    onPressed: (){
+                                      Share.share(Nip19.encodeNote(feed.id));
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text(S.of(context).shareByPostID),
+                                  ),
+                                  CupertinoActionSheetAction(
+                                      isDestructiveAction: true,
+                                      onPressed: (){
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text(S.of(context).createByCancel)
+                                  ),
+                                ]
+                            );
+                          });
+
                         }, icon: const Icon(Icons.share_outlined)),
                         IconButton(onPressed: (){
                           showCupertinoModalPopup(
