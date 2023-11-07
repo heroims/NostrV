@@ -123,7 +123,7 @@ class FeedItemCard extends StatelessWidget {
           feedListModel.userMap[atUserOriginId] = UserInfoModel(context, atUserOriginId);
           feedListModel.userMap[atUserOriginId]?.getUserInfo();
         }
-        String link = "nostr://userinfo?id=$atText";
+        String link = "nostr://${Routers.profile.value}?id=$atText";
         String replacedLink = "<a href='$link' style='text-decoration: none'>@$atUserName</a>"; // 替换为带有 <a> 标签的链接
         return replacedLink;
       }
@@ -192,7 +192,7 @@ class FeedItemCard extends StatelessWidget {
           feedListModel.userMap[atUserOriginId] = UserInfoModel(context, atUserOriginId);
           feedListModel.userMap[atUserOriginId]?.getUserInfo();
         }
-        atUserText = "<a href='nostr://userinfo?id=$atUserID' style='text-decoration: none'>@$atUserName</a> $atUserText";
+        atUserText = "<a href='nostr://${Routers.profile.value}?id=$atUserID' style='text-decoration: none'>@$atUserName</a> $atUserText";
       }
     }
     if(atUserText!=''){
@@ -224,7 +224,7 @@ class FeedItemCard extends StatelessWidget {
                       onPressed: (){
                         final pageState = GoRouterState.of(context);
 
-                        if(pageState.name.toString() == Routers.userInfo.value){
+                        if(pageState.name.toString() == Routers.profile.value){
                           String? pubKey = pageState.uri.queryParameters['id'];
                           if(pubKey!=null){
                             pubKey = Nip19.decodePubkey(pubKey);
@@ -247,7 +247,7 @@ class FeedItemCard extends StatelessWidget {
                           }
                           return;
                         }
-                        context.pushNamed(Routers.userInfo.value,extra: feedListModel.userMap[feed.pubkey]);
+                        context.pushNamed(Routers.profile.value,extra: feedListModel.userMap[feed.pubkey]);
                       },
                       child: imageWidget,
                     )
@@ -311,7 +311,7 @@ class FeedItemCard extends StatelessWidget {
 
                             final pageState = GoRouterState.of(context);
 
-                            if(pageState.name.toString() == Routers.userInfo.value){
+                            if(pageState.name.toString() == Routers.profile.value){
                               String? pubKey = pageState.uri.queryParameters['id'];
                               if(pubKey!=null){
                                 pubKey = Nip19.decodePubkey(pubKey);
@@ -323,7 +323,7 @@ class FeedItemCard extends StatelessWidget {
                               }
                               if(
                                   pubKey!=null
-                                  &&pubKey==url.replaceAll("nostr://userinfo?id=", "")
+                                  &&pubKey==url.replaceAll("nostr://${Routers.profile.value}?id=", "")
                               ){
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
@@ -332,7 +332,6 @@ class FeedItemCard extends StatelessWidget {
                                   ),
                                 );
                               }
-                              return true;
                             }
 
                             context.push(url.replaceAll("nostr:/", ""));

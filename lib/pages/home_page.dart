@@ -6,6 +6,7 @@ import 'package:nostr_app/pages/notify_page.dart';
 import 'package:nostr_app/router.dart';
 import 'package:provider/provider.dart';
 
+import '../generated/l10n.dart';
 import 'message_page.dart';
 
 class HomePage extends StatelessWidget{
@@ -22,6 +23,80 @@ class HomePage extends StatelessWidget{
          appBar: AppBar(
            title: const Text("Nostr"),
            centerTitle: true,
+           leading: Consumer<TabSelectModel>(
+             builder: (context, model, child) {
+               return IconButton(
+                 icon: const Icon(Icons.account_circle_outlined),
+                 onPressed: (){
+                   context.pushNamed(Routers.profile.value);
+                 },
+               );
+             },
+           ),
+           actions: [
+             Consumer<TabSelectModel>(
+               builder: (context, model, child) {
+                 final addNavBtnKey = GlobalKey();
+
+                 switch (model.selectIndex) {
+                   case 0:
+                   case 1:
+                     return IconButton(
+                       key: addNavBtnKey,
+                       icon: const Icon(Icons.add),
+                       onPressed: () {
+                         if (model.selectIndex == 0){
+
+                         }
+                         else{
+                           final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+                           final RenderBox button = addNavBtnKey.currentContext!.findRenderObject() as RenderBox;
+                           final RelativeRect position = RelativeRect.fromRect(
+                             Rect.fromPoints(
+                               button.localToGlobal(button.size.center(Offset.zero), ancestor: overlay),
+                               button.localToGlobal(button.size.bottomRight(Offset.zero), ancestor: overlay),
+                             ),
+                             Offset.zero & overlay.size,
+                           );
+                           showMenu(
+                             context: context,
+                             position: position,
+                             items: [
+                               PopupMenuItem<String>(
+                                 child: Text(S.of(context).navByPrivateChat),
+                                 onTap: () {
+                                 },
+                               ),
+                               PopupMenuItem<String>(
+                                 child: Text(S.of(context).navByPublicChat),
+                                 onTap: () {
+                                 },
+                               ),
+                             ],
+                           );
+                         }
+                       },
+                     );
+                   default:
+                     return const SizedBox();
+                 }
+               },
+             ),
+             Consumer<TabSelectModel>(
+               builder: (context, model, child) {
+                 switch (model.selectIndex) {
+                   case 0:
+                     return IconButton(
+                       icon: const Icon(Icons.search),
+                       onPressed: () {
+                       },
+                     );
+                   default:
+                     return const SizedBox();
+                 }
+               },
+             ),
+           ],
          ),
          bottomNavigationBar: Consumer<TabSelectModel>(
            builder: (context, model, child){

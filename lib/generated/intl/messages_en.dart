@@ -24,6 +24,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "actionSheetByReport": MessageLookupByLibrary.simpleMessage(
             "Please select the type of report."),
+        "avatarCardByEdit": MessageLookupByLibrary.simpleMessage("Edit"),
         "avatarCardByFollow": MessageLookupByLibrary.simpleMessage("Follow"),
         "avatarCardByFollowed":
             MessageLookupByLibrary.simpleMessage("Followed"),
@@ -47,6 +48,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please add additional relays to fetch data."),
         "dialogByTitle": MessageLookupByLibrary.simpleMessage("Tip"),
         "muteUser": MessageLookupByLibrary.simpleMessage("Mute User"),
+        "navByPrivateChat":
+            MessageLookupByLibrary.simpleMessage("Private Chat"),
+        "navByPublicChat": MessageLookupByLibrary.simpleMessage("Public Chat"),
         "pageMnemonicDescribe": MessageLookupByLibrary.simpleMessage(
             "Please backup the mnemonic words"),
         "pageMnemonicNext": MessageLookupByLibrary.simpleMessage("Next"),

@@ -110,6 +110,26 @@ class S {
     );
   }
 
+  /// `Public Chat`
+  String get navByPublicChat {
+    return Intl.message(
+      'Public Chat',
+      name: 'navByPublicChat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Private Chat`
+  String get navByPrivateChat {
+    return Intl.message(
+      'Private Chat',
+      name: 'navByPrivateChat',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Reposted`
   String get tipByReposted {
     return Intl.message(
@@ -235,6 +255,16 @@ class S {
     return Intl.message(
       'Mute User',
       name: 'muteUser',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit`
+  String get avatarCardByEdit {
+    return Intl.message(
+      'Edit',
+      name: 'avatarCardByEdit',
       desc: '',
       args: [],
     );

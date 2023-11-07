@@ -17,7 +17,7 @@ import 'package:realm/realm.dart';
 
 enum Routers {
   feedDetail(9, 'feed_detail'),
-  userInfo(8, 'user_info'),
+  profile(8, 'profile'),
   search(7, 'search'),
   mnemonicVerify(6, 'mnemonic_verify'),
   mnemonicShow(5, 'mnemonic_show'),
@@ -110,8 +110,8 @@ class AppRouter {
           }
       ),
       GoRoute(
-          name: Routers.userInfo.value,
-          path: '/${Routers.userInfo.value}',
+          name: Routers.profile.value,
+          path: '/${Routers.profile.value}',
           pageBuilder: (context, state) {
 
             String? pubKey = state.uri.queryParameters['id'];
@@ -123,6 +123,9 @@ class AppRouter {
             else {
               if(state.extra!=null){
                 userInfoModel = state.extra as UserInfoModel;
+              }
+              else{
+                userInfoModel = UserInfoModel(context,Nip19.decodePubkey(nostrUserModel.currentUserSync!.publicKey));
               }
             }
 
@@ -158,11 +161,11 @@ class AppRouter {
 
       if(
           user!=null
-          && state.uri.path == '/userinfo'
+          && state.uri.path == '/${Routers.profile.value}'
           && !state.uri.queryParameters.containsKey('id')
           && state.extra==null
       ){
-        return '/userinfo?id=${user.publicKey}';
+        return '/${Routers.profile.value}?id=${user.publicKey}';
       }
       return null;
     },

@@ -1,5 +1,6 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
+import 'package:nostr/nostr.dart';
 import 'package:nostr_app/models/user_header_model.dart';
 import 'package:nostr_app/models/user_info_model.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,7 @@ import '../components/feed_item_card.dart';
 import '../components/user_header_card.dart';
 import '../generated/l10n.dart';
 import '../models/feed_list_model.dart';
+import '../router.dart';
 
 class ProfilePage extends StatelessWidget {
   final UserInfoModel userInfoModel;
@@ -42,6 +44,7 @@ class ProfilePage extends StatelessWidget {
       ],
       builder: (context, child) {
         final rightNavBtnKey = GlobalKey();
+        AppRouter appRouter = Provider.of<AppRouter>(context, listen: false);
 
         return Scaffold(
           appBar: AppBar(
@@ -60,32 +63,37 @@ class ProfilePage extends StatelessWidget {
                     ),
                     Offset.zero & overlay.size,
                   );
-                  showMenu(
-                    context: context,
-                    position: position,
-                    items: [
-                      PopupMenuItem<String>(
-                        child: Text(S.of(context).userReplies),
-                        onTap: () {
-                        },
-                      ),
-                      PopupMenuItem<String>(
-                        child: Text(S.of(context).userUpvote),
-                        onTap: () {
-                        },
-                      ),
-                      PopupMenuItem<String>(
-                        child: Text(S.of(context).userReposts),
-                        onTap: () {
-                        },
-                      ),
+                  final menuItem = [
+                    PopupMenuItem<String>(
+                      child: Text(S.of(context).userReplies),
+                      onTap: () {
+                      },
+                    ),
+                    PopupMenuItem<String>(
+                      child: Text(S.of(context).userUpvote),
+                      onTap: () {
+                      },
+                    ),
+                    PopupMenuItem<String>(
+                      child: Text(S.of(context).userReposts),
+                      onTap: () {
+                      },
+                    ),
+                  ];
+                  if(pubKey!=Nip19.decodePubkey(appRouter.nostrUserModel.currentUserSync!.publicKey)){
+                    menuItem.addAll([
                       PopupMenuItem<String>(
                         child: Text(S.of(context).reportUser),
                       ),
                       PopupMenuItem<String>(
                         child: Text(S.of(context).muteUser),
                       ),
-                    ],
+                    ]);
+                  }
+                  showMenu(
+                    context: context,
+                    position: position,
+                    items: menuItem,
                   );
                 },
               )

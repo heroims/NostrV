@@ -1,6 +1,7 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nostr/nostr.dart';
+import 'package:nostr_app/models/nostr_filter.dart';
 import 'package:nostr_app/models/relay_pool_model.dart';
 import 'package:nostr_app/models/user_info_model.dart';
 import 'package:nostr_app/router.dart';
@@ -12,6 +13,7 @@ class FeedListModel extends ChangeNotifier {
   String? pubKey;
   String? noteId;
   String? atUserId;
+  String? searchKey;
 
   Event? _noteFeed;
   Event? get noteFeed{
@@ -26,7 +28,7 @@ class FeedListModel extends ChangeNotifier {
   final List<Event> previousFeedList = [];
   final Map<String, bool> upvoteFeedMap = {};
 
-  FeedListModel(this._controller,this._context, {this.pubKey, this.noteId, this.atUserId});
+  FeedListModel(this._controller,this._context, {this.pubKey, this.noteId, this.atUserId, this.searchKey});
 
   int _lastCreatedAt = DateTime.now().millisecondsSinceEpoch ~/ 1000;
   final int _limit = 10;
@@ -128,7 +130,7 @@ class FeedListModel extends ChangeNotifier {
   void refreshFeed(){
     _lastCreatedAt = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     final requestUUID =generate64RandomHexChars();
-    Filter filter = Filter(
+    NostrFilter filter = NostrFilter(
       kinds: [1],
       until: _lastCreatedAt,
       limit: _limit,
@@ -136,6 +138,7 @@ class FeedListModel extends ChangeNotifier {
     List<String> tmpAuthors = [];
     List<String> tmpE = [];
     List<String> tmpP = [];
+    List<String> tmpT = [];
     if(pubKey != null) {
       tmpAuthors.add(pubKey!);
       filter.authors = tmpAuthors;
@@ -147,6 +150,23 @@ class FeedListModel extends ChangeNotifier {
     if(atUserId != null) {
       tmpP.add(atUserId!);
       filter.p = tmpP;
+    }
+    if(searchKey!=null){
+      String replacedText = searchKey!;
+      RegExp tagRegex = RegExp(r"(#\S+)");
+      replacedText = replacedText.replaceAllMapped(
+        tagRegex, (match) {
+        String tag = match.group(0)!;
+        tmpT.add(tag.replaceAll('#', ''));
+        return '';
+      },
+      );
+      if(replacedText.trim()!=''){
+        filter.search=replacedText;
+      }
+      if(tmpT.isNotEmpty){
+        filter.t=tmpT;
+      }
     }
 
     Request requestWithFilter = Request(requestUUID, [
@@ -182,7 +202,7 @@ class FeedListModel extends ChangeNotifier {
 
   void loadMoreFeed(){
     final requestUUID =generate64RandomHexChars();
-    Filter filter = Filter(
+    NostrFilter filter = NostrFilter(
       kinds: [1],
       until: _lastCreatedAt,
       limit: _limit,
@@ -190,6 +210,7 @@ class FeedListModel extends ChangeNotifier {
     List<String> tmpAuthors = [];
     List<String> tmpE = [];
     List<String> tmpP = [];
+    List<String> tmpT = [];
     if(pubKey != null) {
       tmpAuthors.add(pubKey!);
       filter.authors = tmpAuthors;
@@ -201,6 +222,23 @@ class FeedListModel extends ChangeNotifier {
     if(atUserId != null) {
       tmpP.add(atUserId!);
       filter.p = tmpP;
+    }
+    if(searchKey!=null){
+      String replacedText = searchKey!;
+      RegExp tagRegex = RegExp(r"(#\S+)");
+      replacedText = replacedText.replaceAllMapped(
+        tagRegex, (match) {
+        String tag = match.group(0)!;
+        tmpT.add(tag.replaceAll('#', ''));
+        return '';
+      },
+      );
+      if(replacedText.trim()!=''){
+        filter.search=replacedText;
+      }
+      if(tmpT.isNotEmpty){
+        filter.t=tmpT;
+      }
     }
 
     Request requestWithFilter = Request(requestUUID, [
@@ -352,7 +390,7 @@ class FeedListModel extends ChangeNotifier {
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
     relayPoolModel.relayWss.forEach((key, value) {
       value!.add(event1.serialize());
-      value!.add(event2.serialize());
+      value.add(event2.serialize());
     });
   }
 

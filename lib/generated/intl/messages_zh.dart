@@ -23,6 +23,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "actionSheetByReport": MessageLookupByLibrary.simpleMessage("请选择举报类型。"),
+        "avatarCardByEdit": MessageLookupByLibrary.simpleMessage("编辑"),
         "avatarCardByFollow": MessageLookupByLibrary.simpleMessage("关注"),
         "avatarCardByFollowed": MessageLookupByLibrary.simpleMessage("已关注"),
         "avatarCardByFollowers": MessageLookupByLibrary.simpleMessage("被关注"),
@@ -41,6 +42,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("请添加其他中继，以便拉取数据。"),
         "dialogByTitle": MessageLookupByLibrary.simpleMessage("温馨提示"),
         "muteUser": MessageLookupByLibrary.simpleMessage("屏蔽用户"),
+        "navByPrivateChat": MessageLookupByLibrary.simpleMessage("私信"),
+        "navByPublicChat": MessageLookupByLibrary.simpleMessage("公共聊天"),
         "pageMnemonicDescribe": MessageLookupByLibrary.simpleMessage("请备份助记词"),
         "pageMnemonicNext": MessageLookupByLibrary.simpleMessage("下一步"),
         "pageMnemonicShowTip": MessageLookupByLibrary.simpleMessage(

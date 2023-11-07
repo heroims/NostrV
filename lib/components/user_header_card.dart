@@ -5,10 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:nostr/nostr.dart';
 import 'package:nostr_app/models/user_header_model.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../generated/l10n.dart';
 import '../models/user_info_model.dart';
+import '../router.dart';
 
 class UserHeaderCard extends StatelessWidget {
   final UserFollowModel userFollowModel;
@@ -19,13 +21,14 @@ class UserHeaderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     UserFollowModel model = userFollowModel;
     UserInfo? user = model.userInfo;
-    String userId = Nip19.encodePubkey(model.userInfoModel.publicKey).toString().replaceRange(8, 57, ':');
+    String originUserId = Nip19.encodePubkey(model.userInfoModel.publicKey).toString();
+    String userId = originUserId.replaceRange(8, 57, ':');
     String userName = user?.name ?? '';
     if(userName==''){
       userName = user?.userName ?? '';
     }
     if(userName==''){
-      userName == user?.displayName ?? '';
+      userName == user?.displayName;
     }
 
     if(userName==''){
@@ -68,6 +71,8 @@ class UserHeaderCard extends StatelessWidget {
     },
     );
 
+    AppRouter appRouter = Provider.of<AppRouter>(context, listen: false);
+
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.all(10),
@@ -82,7 +87,7 @@ class UserHeaderCard extends StatelessWidget {
                   height: 80,
                   child: imageWidget,
                 ),
-                Row(
+                if (originUserId != appRouter.nostrUserModel.currentUserSync!.publicKey) Row(
                   children: [
                     SizedBox(
                       height: 50,
@@ -106,6 +111,15 @@ class UserHeaderCard extends StatelessWidget {
                       ),
                     )
                   ],
+                ) else SizedBox(
+                  height: 50,
+                  width: 120,
+                  child: CupertinoButton(
+                    padding: const EdgeInsets.all(0),
+                    color: Colors.blue,
+                    onPressed: (){},
+                    child: Text(S.of(context).avatarCardByEdit),
+                  ),
                 )
               ]
           ),
