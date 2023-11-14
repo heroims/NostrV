@@ -29,7 +29,7 @@ class NotifyPage extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(context, listen: false);
-              relayPoolModel.addRelayWithUrl('wss://relay.plebstr.com');
+              relayPoolModel.deleteRelayWithUrl('wss://relay.plebstr.com');
 
               // Map map = bech32Decode('nevent1qqs2jcrcwj052esfg769ars7y2d6wyzafxa8ruxtgr4vhppx8sf2gnspz3mhxue69uhkummnw3ezummcw3ezuer9wcqs7amnwvaz7tmwdaehgu3wd4hk67qljca');
               // final decodedData = bech32.decode('nevent1qqs2jcrcwj052esfg769ars7y2d6wyzafxa8ruxtgr4vhppx8sf2gnspz3mhxue69uhkummnw3ezummcw3ezuer9wcqs7amnwvaz7tmwdaehgu3wd4hk67qljca',200);
@@ -99,16 +99,16 @@ class NotifyPage extends StatelessWidget {
 
                   final requestUUID =generate64RandomHexChars();
                   Request requestWithFilter = Request(requestUUID, [
-                    NostrFilter(
-                      authors: [Nip19.decodePubkey('npub1j35wr3uerzml6qvm9ym5ys6p2mka2eeturjrzvpeawd2r55ku0gsypxn6y')],
-                      kinds: [4],
-                      p: [Nip19.decodePubkey('npub10lgg9fa7cqfwqyk0amde4l08llpceudltwyqvzsltxg9mc9mx00sxvxpgc')]
-                    ),
                     // NostrFilter(
-                    //   kinds: [0],
-                    //   limit: 10,
-                    //   search: "hero"
+                    //   authors: [Nip19.decodePubkey('npub1j35wr3uerzml6qvm9ym5ys6p2mka2eeturjrzvpeawd2r55ku0gsypxn6y')],
+                    //   kinds: [4],
+                    //   p: [Nip19.decodePubkey('npub10lgg9fa7cqfwqyk0amde4l08llpceudltwyqvzsltxg9mc9mx00sxvxpgc')]
                     // ),
+                    NostrFilter(
+                      kinds: [1],
+                      limit: 10,
+                      // search: "hero"
+                    ),
                     // Filter(
                     //   // authors: [Nip19.decodePubkey('npub1dpna3xwwddnhhzg9ycpvlcz2ze0jdwm2rf3eqd2lf9leaewtq7tqhw0ef2')],
                     //   kinds: [
@@ -147,7 +147,7 @@ class NotifyPage extends StatelessWidget {
                   // Connecting to a nostr relay using websocket
                   WebSocket webSocket = await WebSocket.connect(
                     // 'wss://offchain.pub',
-                    'wss://relay.plebstr.com',
+                    'wss://agora.nostr1.com',
                     // 'wss://relayable.org',
                     // or any nostr relay
                   );
@@ -169,11 +169,11 @@ class NotifyPage extends StatelessWidget {
                       webSocket.add(Close(jsonDecode(message.message)[0]).serialize());
                     }
                     else{
-                      String priK=Nip19.decodePrivkey('nsec1gmgr08t84fpw5kxccxpmef4p6lt08qxevtpg8uf0dnt5h2yzmreszlcllr');
-                      (message.message as EncryptedDirectMessage).pubkey = Nip19.decodePubkey('npub10lgg9fa7cqfwqyk0amde4l08llpceudltwyqvzsltxg9mc9mx00sxvxpgc');
-                      String content =
-                      (message.message as EncryptedDirectMessage).getPlaintext(priK);
-                      debugPrint('--------$content');
+                      // String priK=Nip19.decodePrivkey('nsec1gmgr08t84fpw5kxccxpmef4p6lt08qxevtpg8uf0dnt5h2yzmreszlcllr');
+                      // (message.message as EncryptedDirectMessage).pubkey = Nip19.decodePubkey('npub10lgg9fa7cqfwqyk0amde4l08llpceudltwyqvzsltxg9mc9mx00sxvxpgc');
+                      // String content =
+                      // (message.message as EncryptedDirectMessage).getPlaintext(priK);
+                      // debugPrint('--------$content');
 
                       String result = (message.message as Event).content.replaceAll(r'^https?://([\w-]+\.)+[\w-]+(/\S+)*$', '');
                       List<String> urls = [];

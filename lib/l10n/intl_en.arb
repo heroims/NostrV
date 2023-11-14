@@ -7,6 +7,8 @@
   "reportByImpersonation": "Impersonation",
   "navByPublicChat": "Public Chat",
   "navByPrivateChat": "Private Chat",
+  "searchTabByPost": "Post",
+  "searchTabByUser": "User",
   "tipByReposted": "Reposted",
   "repostByPostID": "Repost",
   "shareByPostID": "Share",

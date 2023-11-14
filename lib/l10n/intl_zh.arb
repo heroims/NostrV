@@ -7,6 +7,8 @@
   "reportByImpersonation": "冒充别人",
   "navByPublicChat": "公共聊天",
   "navByPrivateChat": "私信",
+  "searchTabByPost": "帖子",
+  "searchTabByUser": "用户",
   "tipByReposted": "已转发",
   "repostByPostID": "转发",
   "shareByPostID": "分享",

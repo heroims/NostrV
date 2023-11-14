@@ -134,28 +134,31 @@ class UserInfoModel extends ChangeNotifier {
         kinds: [0],
       )
     ]);
-    relayPoolModel.addRequestSingle(defaultRelayUrls.first, requestWithFilter, (event){
-      if(event!=null) {
-        userInfo=UserInfo.fromJson(jsonDecode(event.content));
-        // appRouter.realm.write(() => appRouter.realm.add(DBUser(
-        //   publicKey,
-        //   name: userInfo?.name,
-        //   userName: userInfo?.userName,
-        //   displayName: userInfo?.displayName,
-        //   website: userInfo?.website,
-        //   lud06: userInfo?.lud06,
-        //   lud16: userInfo?.lud16,
-        //   nip05: userInfo?.nip05,
-        //   about: userInfo?.about,
-        //   picture: userInfo?.picture,
-        //   banner: userInfo?.banner
-        // )));
-        if(refreshCallback!=null){
-          refreshCallback();
+    relayPoolModel.relayWss.forEach((key, value) {
+      relayPoolModel.addRequestSingle(key, requestWithFilter, (event){
+        if(event!=null) {
+          userInfo=UserInfo.fromJson(jsonDecode(event.content));
+          // appRouter.realm.write(() => appRouter.realm.add(DBUser(
+          //   publicKey,
+          //   name: userInfo?.name,
+          //   userName: userInfo?.userName,
+          //   displayName: userInfo?.displayName,
+          //   website: userInfo?.website,
+          //   lud06: userInfo?.lud06,
+          //   lud16: userInfo?.lud16,
+          //   nip05: userInfo?.nip05,
+          //   about: userInfo?.about,
+          //   picture: userInfo?.picture,
+          //   banner: userInfo?.banner
+          // )));
+          if(refreshCallback!=null){
+            refreshCallback();
+          }
+          notifyListeners();
         }
-        notifyListeners();
-      }
+      });
     });
+
   }
 
   void stopGetUserFollowing(){

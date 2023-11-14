@@ -66,6 +66,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "reportBySpam": MessageLookupByLibrary.simpleMessage("垃圾信息"),
         "reportUser": MessageLookupByLibrary.simpleMessage("举报用户"),
         "repostByPostID": MessageLookupByLibrary.simpleMessage("转发"),
+        "searchTabByPost": MessageLookupByLibrary.simpleMessage("帖子"),
+        "searchTabByUser": MessageLookupByLibrary.simpleMessage("用户"),
         "shareByPostID": MessageLookupByLibrary.simpleMessage("分享"),
         "tipByOnThisPost": MessageLookupByLibrary.simpleMessage("正位于当前主评论。"),
         "tipByOnThisUser": MessageLookupByLibrary.simpleMessage("正位于当前用户页面。"),

@@ -130,6 +130,26 @@ class S {
     );
   }
 
+  /// `Post`
+  String get searchTabByPost {
+    return Intl.message(
+      'Post',
+      name: 'searchTabByPost',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `User`
+  String get searchTabByUser {
+    return Intl.message(
+      'User',
+      name: 'searchTabByUser',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Reposted`
   String get tipByReposted {
     return Intl.message(

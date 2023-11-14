@@ -24,6 +24,9 @@ class RelayPoolModel extends ChangeNotifier {
 
   Future<void> startRelayPool() async {
     final relays = (await prefs).getStringList(relaysSaveKey) ?? defaultRelayUrls;
+    for (var element in relays) {
+      _relayWss[element] = null;
+    }
     for (String url in relays) {
       await addRelayWithUrl(url);
     }
@@ -40,6 +43,9 @@ class RelayPoolModel extends ChangeNotifier {
       else {
         _relaySubscriptionId[url] = Queue<String>();
       }
+    }
+    else{
+      response([]);
     }
   }
 
@@ -66,8 +72,6 @@ class RelayPoolModel extends ChangeNotifier {
   Future<void> addRelayWithUrl (String url) async {
 
     relayWss[url]= null;
-
-    await (await prefs).setStringList(relaysSaveKey, relayWss.keys.toList());
 
     notifyListeners();
     try {
@@ -144,17 +148,18 @@ class RelayPoolModel extends ChangeNotifier {
       relayWss[url]= null;
     }
     finally {
+      await (await prefs).setStringList(relaysSaveKey, relayWss.keys.toList());
       notifyListeners();
     }
   }
 
   Future<void> deleteRelayWithUrl (String url) async {
-    if(relayWss.containsKey(url)&&relayWss[url]!=null) {
+    if(relayWss.containsKey(url)) {
       try {
-        await relayWss[url]!.close();
+        if(relayWss[url]!=null){
+          await relayWss[url]!.close();
+        }
         relayWss.remove(url);
-
-        await (await prefs).setStringList(relaysSaveKey, relayWss.keys.toList());
 
         notifyListeners();
 
@@ -162,10 +167,14 @@ class RelayPoolModel extends ChangeNotifier {
           _relayResponses.remove(url);
         }
       }
-      catch (e) {
-        rethrow;
+      catch (_) {}
+      finally{
+        final relaysList = (await prefs).getStringList(relaysSaveKey);
+        if(relaysList!=null){
+          relaysList.remove(url);
+          await (await prefs).setStringList(relaysSaveKey, relaysList);
+        }
       }
     }
-    throw Exception('no url');
   }
 }

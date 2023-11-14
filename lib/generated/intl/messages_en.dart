@@ -79,6 +79,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "reportBySpam": MessageLookupByLibrary.simpleMessage("Spam"),
         "reportUser": MessageLookupByLibrary.simpleMessage("Report User"),
         "repostByPostID": MessageLookupByLibrary.simpleMessage("Repost"),
+        "searchTabByPost": MessageLookupByLibrary.simpleMessage("Post"),
+        "searchTabByUser": MessageLookupByLibrary.simpleMessage("User"),
         "shareByPostID": MessageLookupByLibrary.simpleMessage("Share"),
         "tipByOnThisPost": MessageLookupByLibrary.simpleMessage(
             "Currently positioned at the main comment."),

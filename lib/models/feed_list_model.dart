@@ -42,7 +42,7 @@ class FeedListModel extends ChangeNotifier {
     }
     else{
       userMap[publicKey] = UserInfoModel(_context, publicKey);
-      userMap[publicKey]!.getUserInfo();
+      userMap[publicKey]!.getUserInfo(refreshCallback: ()=>notifyListeners());
       return null;
     }
   }
@@ -125,6 +125,11 @@ class FeedListModel extends ChangeNotifier {
         }
       });
     }
+  }
+
+  void clearFeed(){
+    feedList.clear();
+    notifyListeners();
   }
 
   void refreshFeed(){

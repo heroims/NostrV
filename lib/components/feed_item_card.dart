@@ -91,7 +91,7 @@ class FeedItemCard extends StatelessWidget {
     replacedText = replacedText.replaceAllMapped(
       tagRegex, (match) {
       String tag = match.group(0)!;
-      String link = "nostr://search/$tag";
+      String link = "nostr://search?keyword=#$tag";
       String replacedLink = "<a href='$link' style='text-decoration: none'>$tag</a>"; // 替换为带有 <a> 标签的链接
       return replacedLink;
     },
@@ -101,32 +101,36 @@ class FeedItemCard extends StatelessWidget {
     replacedText = replacedText.replaceAllMapped(
       atRegex, (match) {
       String atText = match.group(0)!;
-      if(atText.startsWith("nostr:npub")){
-        atText=atText.replaceAll("nostr:", "");
-        String atUserName = atText.replaceRange(8, 57, ':');
-        final atUserOriginId = Nip19.decodePubkey(atText);
-        if(feedListModel.userMap.containsKey(atUserOriginId)){
-          if(feedListModel.userMap[atUserOriginId]?.userInfo!=null){
-            atUserName = feedListModel.userMap[atUserOriginId]!.userInfo?.userName??'';
-            if(atUserName == ''){
-              atUserName = feedListModel.userMap[atUserOriginId]!.userInfo?.displayName??'';
-            }
-            if(atUserName == ''){
-              atUserName = feedListModel.userMap[atUserOriginId]!.userInfo?.name??'';
-            }
-            if(atUserName == ''){
-              atUserName = atText.replaceRange(8, 57, ':');
+      try {
+        if(atText.startsWith("nostr:npub")){
+          atText=atText.replaceAll("nostr:", "");
+          String atUserName = atText.replaceRange(8, 57, ':');
+          final atUserOriginId = Nip19.decodePubkey(atText);
+          if(feedListModel.userMap.containsKey(atUserOriginId)){
+            if(feedListModel.userMap[atUserOriginId]?.userInfo!=null){
+              atUserName = feedListModel.userMap[atUserOriginId]!.userInfo?.userName??'';
+              if(atUserName == ''){
+                atUserName = feedListModel.userMap[atUserOriginId]!.userInfo?.displayName??'';
+              }
+              if(atUserName == ''){
+                atUserName = feedListModel.userMap[atUserOriginId]!.userInfo?.name??'';
+              }
+              if(atUserName == ''){
+                atUserName = atText.replaceRange(8, 57, ':');
+              }
             }
           }
+          else{
+            feedListModel.userMap[atUserOriginId] = UserInfoModel(context, atUserOriginId);
+            feedListModel.userMap[atUserOriginId]?.getUserInfo();
+          }
+          String link = "nostr://${Routers.profile.value}?id=$atText";
+          String replacedLink = "<a href='$link' style='text-decoration: none'>@$atUserName</a>"; // 替换为带有 <a> 标签的链接
+          return replacedLink;
         }
-        else{
-          feedListModel.userMap[atUserOriginId] = UserInfoModel(context, atUserOriginId);
-          feedListModel.userMap[atUserOriginId]?.getUserInfo();
-        }
-        String link = "nostr://${Routers.profile.value}?id=$atText";
-        String replacedLink = "<a href='$link' style='text-decoration: none'>@$atUserName</a>"; // 替换为带有 <a> 标签的链接
-        return replacedLink;
+
       }
+      catch(_) {}
       return atText;
     },
     );

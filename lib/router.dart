@@ -90,9 +90,8 @@ class AppRouter {
           path: '/${Routers.search.value}',
           pageBuilder: (context, state) {
             String? keyword = state.uri.queryParameters['keyword'];
-            String? tag = state.uri.queryParameters['tag'];
 
-            return MaterialPage(child: SearchPage(keyword: keyword,tag: tag,));
+            return MaterialPage(child: SearchPage(keyword: keyword,));
           }
       ),
       GoRoute(
@@ -129,7 +128,7 @@ class AppRouter {
               }
             }
 
-            return MaterialPage(child: ProfilePage(userInfoModel: userInfoModel!,));
+            return MaterialPage(child: ProfilePage(userInfoModel: userInfoModel,));
           }
       ),
       GoRoute(

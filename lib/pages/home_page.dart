@@ -89,6 +89,7 @@ class HomePage extends StatelessWidget{
                      return IconButton(
                        icon: const Icon(Icons.search),
                        onPressed: () {
+                         context.pushNamed(Routers.search.value);
                        },
                      );
                    default:
