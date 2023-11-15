@@ -91,7 +91,7 @@ class FeedItemCard extends StatelessWidget {
     replacedText = replacedText.replaceAllMapped(
       tagRegex, (match) {
       String tag = match.group(0)!;
-      String link = "nostr://search?keyword=#$tag";
+      String link = "nostr://search?keyword=${Uri.encodeComponent(tag)}";
       String replacedLink = "<a href='$link' style='text-decoration: none'>$tag</a>"; // 替换为带有 <a> 标签的链接
       return replacedLink;
     },

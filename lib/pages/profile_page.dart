@@ -26,7 +26,7 @@ class ProfilePage extends StatelessWidget {
     final feedListModel = FeedListModel(controller,context,pubKey:pubKey);
 
     feedListModel.refreshFeed();
-    final userFollowModel = UserFollowModel(userInfoModel);
+    final userFollowModel = UserFollowModel(UserInfoModel(context,userInfoModel.publicKey, userInfoModel: userInfoModel));
     if(userFollowModel.userInfo==null){
       userFollowModel.getUserInfo();
     }

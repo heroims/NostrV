@@ -31,7 +31,11 @@ class SearchPage extends StatelessWidget {
     final editController = TextEditingController();
     final feedListModel = FeedListModel(feedController, context);
     final userListModel = EventListModel(userController, context, kinds: [0]);
-
+    final seachListModel = SearchModel(feedListModel: feedListModel, userListModel: userListModel,editingController: editController);
+    if(keyword!=null&&keyword!=""){
+      editController.text = keyword!;
+      seachListModel.setSearchKey(editController.text);
+    }
 
     return MultiProvider(
       providers: [
@@ -44,7 +48,7 @@ class SearchPage extends StatelessWidget {
           lazy: false,
         ),
         ChangeNotifierProvider(
-          create: (_)=>SearchModel(feedListModel: feedListModel, userListModel: userListModel,editingController: editController),
+          create: (_)=>seachListModel,
           lazy: false,
         )
       ],
