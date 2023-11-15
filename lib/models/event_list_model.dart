@@ -8,13 +8,13 @@ import 'package:provider/provider.dart';
 class EventListModel extends ChangeNotifier {
   late final EasyRefreshController _controller;
   late final BuildContext _context;
-  String? pubKey;
+  List<String>? pubKeys;
   String? noteId;
   String? atUserId;
   String? searchKey;
   List<int> kinds = [0];
 
-  EventListModel(this._controller,this._context, {this.pubKey, this.noteId, this.atUserId, this.searchKey, List<int>? kinds}){
+  EventListModel(this._controller,this._context, {this.pubKeys, this.noteId, this.atUserId, this.searchKey, List<int>? kinds}){
     if(kinds!=null){
       this.kinds.addAll(kinds);
       this.kinds = this.kinds.toSet().toList();
@@ -31,7 +31,7 @@ class EventListModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void refreshEvent(){
+  void refreshEvent({Function? refreshCallback}){
     _lastCreatedAt = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     final requestUUID =generate64RandomHexChars();
     NostrFilter filter = NostrFilter(
@@ -43,9 +43,9 @@ class EventListModel extends ChangeNotifier {
     List<String> tmpE = [];
     List<String> tmpP = [];
     List<String> tmpT = [];
-    if(pubKey != null) {
-      tmpAuthors.add(pubKey!);
-      filter.authors = tmpAuthors;
+    if(pubKeys != null) {
+      tmpAuthors.addAll(pubKeys!);
+      filter.authors = tmpAuthors.toSet().toList();
     }
     if(noteId != null) {
       tmpE.add(noteId!);
@@ -88,6 +88,9 @@ class EventListModel extends ChangeNotifier {
       if(_controller.controlFinishRefresh){
         _controller.finishRefresh();
         _controller.resetFooter();
+        if(refreshCallback!=null){
+          refreshCallback();
+        }
       }
 
       for(int i=1;i<relayPoolModel.relayWss.keys.length;i++){
@@ -99,12 +102,15 @@ class EventListModel extends ChangeNotifier {
           }
           notifyListeners();
           _controller.finishLoad(response.isEmpty?IndicatorResult.noMore:IndicatorResult.success);
+          if(refreshCallback!=null){
+            refreshCallback();
+          }
         });
       }
     });
   }
 
-  void loadMoreEvent(){
+  void loadMoreEvent({Function? refreshCallback}){
     final requestUUID =generate64RandomHexChars();
     NostrFilter filter = NostrFilter(
       kinds: kinds,
@@ -115,9 +121,9 @@ class EventListModel extends ChangeNotifier {
     List<String> tmpE = [];
     List<String> tmpP = [];
     List<String> tmpT = [];
-    if(pubKey != null) {
-      tmpAuthors.add(pubKey!);
-      filter.authors = tmpAuthors;
+    if(pubKeys != null) {
+      tmpAuthors.addAll(pubKeys!);
+      filter.authors = tmpAuthors.toSet().toList();
     }
     if(noteId != null) {
       tmpE.add(noteId!);
@@ -159,6 +165,9 @@ class EventListModel extends ChangeNotifier {
         notifyListeners();
         _controller.finishLoad(response.isEmpty?IndicatorResult.noMore:IndicatorResult.success);
         notifyListeners();
+        if(refreshCallback!=null){
+          refreshCallback();
+        }
       });
     });
   }

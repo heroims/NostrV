@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:nostr/nostr.dart';
 import 'package:nostr_app/models/nostr_user_model.dart';
 import 'package:nostr_app/models/user_info_model.dart';
+import 'package:nostr_app/pages/followers_page.dart';
+import 'package:nostr_app/pages/followings_page.dart';
 import 'package:nostr_app/pages/home_page.dart';
 import 'package:nostr_app/pages/mnemonic_verify_page.dart';
 import 'package:nostr_app/pages/mnemonic_show_page.dart';
@@ -16,6 +18,8 @@ import 'package:nostr_app/realm/db_user.dart';
 import 'package:realm/realm.dart';
 
 enum Routers {
+  followers(11, 'followers'),
+  followings(10, 'followings'),
   feedDetail(9, 'feed_detail'),
   profile(8, 'profile'),
   search(7, 'search'),
@@ -129,6 +133,52 @@ class AppRouter {
             }
 
             return MaterialPage(child: ProfilePage(userInfoModel: userInfoModel,));
+          }
+      ),
+      GoRoute(
+          name: Routers.followings.value,
+          path: '/${Routers.followings.value}',
+          pageBuilder: (context, state) {
+
+            String? pubKey = state.uri.queryParameters['id'];
+            UserInfoModel? userInfoModel;
+            if(pubKey!=null){
+              pubKey = Nip19.decodePubkey(pubKey);
+              userInfoModel = UserInfoModel(context,pubKey);
+            }
+            else {
+              if(state.extra!=null){
+                userInfoModel = state.extra as UserInfoModel;
+              }
+              else{
+                userInfoModel = UserInfoModel(context,Nip19.decodePubkey(nostrUserModel.currentUserSync!.publicKey));
+              }
+            }
+
+            return MaterialPage(child: FollowingsPage(userInfoModel: userInfoModel,));
+          }
+      ),
+      GoRoute(
+          name: Routers.followers.value,
+          path: '/${Routers.followers.value}',
+          pageBuilder: (context, state) {
+
+            String? pubKey = state.uri.queryParameters['id'];
+            UserInfoModel? userInfoModel;
+            if(pubKey!=null){
+              pubKey = Nip19.decodePubkey(pubKey);
+              userInfoModel = UserInfoModel(context,pubKey);
+            }
+            else {
+              if(state.extra!=null){
+                userInfoModel = state.extra as UserInfoModel;
+              }
+              else{
+                userInfoModel = UserInfoModel(context,Nip19.decodePubkey(nostrUserModel.currentUserSync!.publicKey));
+              }
+            }
+
+            return MaterialPage(child: FollowersPage(userInfoModel: userInfoModel,));
           }
       ),
       GoRoute(

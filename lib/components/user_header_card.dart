@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nostr/nostr.dart';
 import 'package:nostr_app/models/user_header_model.dart';
 import 'package:provider/provider.dart';
@@ -187,7 +188,8 @@ class UserHeaderCard extends StatelessWidget {
                     ],
                   ),
                   onPressed: (){
-
+                    UserInfoModel pushUserModel= UserInfoModel(context, model.userInfoModel.publicKey,userInfoModel: model.userInfoModel);
+                    context.pushNamed(Routers.followings.value,extra: pushUserModel);
                   })),
               Expanded(child: CupertinoButton(
                   child: Column(
@@ -206,7 +208,8 @@ class UserHeaderCard extends StatelessWidget {
                   ),
                   onPressed: (){
                     if(model.followersDownloaded){
-
+                      UserInfoModel pushUserModel= UserInfoModel(context, model.userInfoModel.publicKey,userInfoModel: model.userInfoModel);
+                      context.pushNamed(Routers.followers.value,extra: pushUserModel);
                     }
                     else{
                       model.getUserFollower();

@@ -10,35 +10,37 @@ import '../models/user_header_model.dart';
 import '../router.dart';
 
 class UserItemCard extends StatelessWidget {
-  final UserInfo userInfo;
+  final UserInfo? userInfo;
   final UserFollowModel userFollowModel;
 
-  const UserItemCard({super.key,required this.userInfo, required this.userFollowModel});
+  const UserItemCard({super.key, this.userInfo, required this.userFollowModel});
 
   @override
   Widget build(BuildContext context) {
     UserFollowModel model = userFollowModel;
-    UserInfo user = userInfo;
-
+    UserInfo? user = userInfo;
+    if(user==null){
+      // userFollowModel.getUserInfo();
+    }
     String userId = Nip19.encodePubkey(model.userInfoModel.publicKey).toString().replaceRange(8, 57, ':');
-    String userName = user.name;
+    String userName = user?.name??'';
     if(userName==''){
-      userName = user.userName;
+      userName = user?.userName??'';
     }
     if(userName==''){
-      userName == user.displayName;
+      userName == user?.displayName;
     }
 
     if(userName==''){
       userName = userId;
     }
 
-    String userAvatar = user.picture;
+    String userAvatar = user?.picture??'';
     Widget defaultImageWidget = const Image(
       image: AssetImage("assets/img/avatar.png"),
     );
     Widget imageWidget = defaultImageWidget;
-    if(userAvatar.isNotEmpty){
+    if(userAvatar.isNotEmpty && userAvatar!=''){
       imageWidget =CachedNetworkImage(
         imageUrl: userAvatar,
         placeholder: (context , url){

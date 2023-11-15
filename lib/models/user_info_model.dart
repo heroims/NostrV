@@ -61,18 +61,28 @@ class UserFollowings {
 class UserInfoModel extends ChangeNotifier {
   late final BuildContext _context;
   late final String publicKey;
-  UserInfo? userInfo;
 
-  final UserFollowings followings = UserFollowings();
+  UserInfo? _userInfo;
+  UserInfo? get userInfo => _userInfo;
 
-  final Map<String,UserFollowings> followers = {};
+  UserFollowings _followings = UserFollowings();
+  UserFollowings get followings => _followings;
+
+  Map<String,UserFollowings> _followers = {};
+  Map<String,UserFollowings> get followers => _followers;
 
   final followersLimit = 100;
   final followersLastTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
   String _lastFollowersRequestUUID = '';
 
-  UserInfoModel(this._context, this.publicKey);
+  UserInfoModel(this._context, this.publicKey, {UserInfoModel? userInfoModel}){
+    if(userInfoModel!=null){
+      _followings = userInfoModel.followings;
+      _userInfo = userInfoModel.userInfo;
+      _followers = userInfoModel.followers;
+    }
+  }
 
   bool get followed {
     AppRouter appRouter = Provider.of<AppRouter>(_context, listen: false);
@@ -137,7 +147,7 @@ class UserInfoModel extends ChangeNotifier {
     relayPoolModel.relayWss.forEach((key, value) {
       relayPoolModel.addRequestSingle(key, requestWithFilter, (event){
         if(event!=null) {
-          userInfo=UserInfo.fromJson(jsonDecode(event.content));
+          _userInfo=UserInfo.fromJson(jsonDecode(event.content));
           // appRouter.realm.write(() => appRouter.realm.add(DBUser(
           //   publicKey,
           //   name: userInfo?.name,
