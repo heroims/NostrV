@@ -6,7 +6,7 @@ import 'package:nostr/nostr.dart';
 import 'package:nostr_app/models/user_info_model.dart';
 
 import '../generated/l10n.dart';
-import '../models/user_header_model.dart';
+import '../models/user_follow_model.dart';
 import '../router.dart';
 
 class UserItemCard extends StatelessWidget {

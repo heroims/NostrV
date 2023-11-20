@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nostr/nostr.dart';
-import 'package:nostr_app/models/user_header_model.dart';
+import 'package:nostr_app/models/user_follow_model.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 

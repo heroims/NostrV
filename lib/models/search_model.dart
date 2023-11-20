@@ -2,11 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:nostr/nostr.dart';
 import 'package:nostr_app/models/event_list_model.dart';
 import 'package:nostr_app/models/feed_list_model.dart';
-import 'package:nostr_app/models/relay_pool_model.dart';
-import 'package:nostr_app/models/user_info_model.dart';
-import 'package:provider/provider.dart';
-
-import 'nostr_filter.dart';
 
 class SearchModel extends ChangeNotifier {
   final FeedListModel feedListModel;

@@ -1,7 +1,7 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:nostr/nostr.dart';
-import 'package:nostr_app/models/user_header_model.dart';
+import 'package:nostr_app/models/user_follow_model.dart';
 import 'package:nostr_app/models/user_info_model.dart';
 import 'package:provider/provider.dart';
 

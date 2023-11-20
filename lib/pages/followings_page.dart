@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nostr_app/components/user_item_card.dart';
-import 'package:nostr_app/models/user_header_model.dart';
+import 'package:nostr_app/models/user_follow_model.dart';
 import 'package:nostr_app/models/user_info_model.dart';
 import 'package:provider/provider.dart';
 
@@ -43,7 +43,7 @@ class FollowingsPage extends StatelessWidget {
                           },
                         );
                       }
-                  );;
+                  );
                 }
             ),
 
