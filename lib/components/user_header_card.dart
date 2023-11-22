@@ -231,6 +231,8 @@ class UserHeaderCard extends StatelessWidget {
                     ],
                   ),
                   onPressed: (){
+                    UserInfoModel pushUserModel= UserInfoModel(context, model.userInfoModel.publicKey,userInfoModel: model.userInfoModel);
+                    context.pushNamed(Routers.relays.value,extra: pushUserModel);
 
                   })),
             ],

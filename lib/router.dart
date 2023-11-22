@@ -10,6 +10,8 @@ import 'package:nostr_app/pages/mnemonic_verify_page.dart';
 import 'package:nostr_app/pages/mnemonic_show_page.dart';
 import 'package:nostr_app/pages/profile_page.dart';
 import 'package:nostr_app/pages/feed_detail_page.dart';
+import 'package:nostr_app/pages/relay_info_page.dart';
+import 'package:nostr_app/pages/relays_page.dart';
 import 'package:nostr_app/pages/search_page.dart';
 import 'package:nostr_app/pages/welcome_page.dart';
 import 'package:nostr_app/realm/db_follower.dart';
@@ -18,6 +20,8 @@ import 'package:nostr_app/realm/db_user.dart';
 import 'package:realm/realm.dart';
 
 enum Routers {
+  relayInfo(13, 'relayInfo'),
+  relays(12, 'relays'),
   followers(11, 'followers'),
   followings(10, 'followings'),
   feedDetail(9, 'feed_detail'),
@@ -179,6 +183,40 @@ class AppRouter {
             }
 
             return MaterialPage(child: FollowersPage(userInfoModel: userInfoModel,));
+          }
+      ),
+      GoRoute(
+          name: Routers.relays.value,
+          path: '/${Routers.relays.value}',
+          pageBuilder: (context, state) {
+
+            String? pubKey = state.uri.queryParameters['id'];
+            UserInfoModel? userInfoModel;
+            if(pubKey!=null){
+              pubKey = Nip19.decodePubkey(pubKey);
+              userInfoModel = UserInfoModel(context,pubKey);
+            }
+            else {
+              if(state.extra!=null){
+                userInfoModel = state.extra as UserInfoModel;
+              }
+              else{
+                userInfoModel = UserInfoModel(context,Nip19.decodePubkey(nostrUserModel.currentUserSync!.publicKey));
+              }
+            }
+
+            return MaterialPage(child: RelaysPage(userInfoModel: userInfoModel,));
+          }
+      ),
+      GoRoute(
+          name: Routers.relayInfo.value,
+          path: '/${Routers.relayInfo.value}',
+          pageBuilder: (context, state) {
+            Map<String,dynamic> relayMap = {};
+            if(state.extra!=null){
+              relayMap=state.extra! as Map<String,dynamic>;
+            }
+            return MaterialPage(child: RelayInfoPage(relayInfo: relayMap,));
           }
       ),
       GoRoute(

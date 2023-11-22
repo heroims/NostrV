@@ -1,4 +1,5 @@
 
+import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
@@ -7,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:nostr/nostr.dart';
 import 'package:nostr_app/globals/storage_setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:web_socket_channel/io.dart';
 
 class RelayPoolModel extends ChangeNotifier {
   SharedPreferences? _prefs;
@@ -75,7 +77,12 @@ class RelayPoolModel extends ChangeNotifier {
 
     notifyListeners();
     try {
-      WebSocket socket = await WebSocket.connect(url);
+      WebSocket? tmpSocket;
+      WebSocket.connect(url).then((value){
+        tmpSocket = value;
+      });
+      await Future.delayed(const Duration(seconds: 3));
+      WebSocket socket = tmpSocket!;
       socket.listen((event) {
         final message = Message.deserialize(event);
 

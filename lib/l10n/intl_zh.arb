@@ -1,4 +1,5 @@
 {
+  "nativeByRelay": "中继",
   "actionSheetByReport": "请选择举报类型。",
   "reportByNudity": "裸体、色情等",
   "reportByProfanity": "脏话、仇恨言论等",
@@ -9,6 +10,7 @@
   "navByPrivateChat": "私信",
   "searchTabByPost": "帖子",
   "searchTabByUser": "用户",
+  "tipByUnSupportNip11": "不支持NIP11",
   "tipByReposted": "已转发",
   "repostByPostID": "转发",
   "shareByPostID": "分享",

@@ -48,6 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please add additional relays to fetch data."),
         "dialogByTitle": MessageLookupByLibrary.simpleMessage("Tip"),
         "muteUser": MessageLookupByLibrary.simpleMessage("Mute User"),
+        "nativeByRelay": MessageLookupByLibrary.simpleMessage("Relay"),
         "navByPrivateChat":
             MessageLookupByLibrary.simpleMessage("Private Chat"),
         "navByPublicChat": MessageLookupByLibrary.simpleMessage("Public Chat"),
@@ -87,6 +88,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "tipByOnThisUser": MessageLookupByLibrary.simpleMessage(
             "Currently positioned at the user page."),
         "tipByReposted": MessageLookupByLibrary.simpleMessage("Reposted"),
+        "tipByUnSupportNip11":
+            MessageLookupByLibrary.simpleMessage("Not supported by NIP11."),
         "tipReportRepeatedly": MessageLookupByLibrary.simpleMessage(
             "Please do not report repeatedly."),
         "userReplies": MessageLookupByLibrary.simpleMessage("Replies"),

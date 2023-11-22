@@ -50,6 +50,16 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Relay`
+  String get nativeByRelay {
+    return Intl.message(
+      'Relay',
+      name: 'nativeByRelay',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Please select the type of report.`
   String get actionSheetByReport {
     return Intl.message(
@@ -145,6 +155,16 @@ class S {
     return Intl.message(
       'User',
       name: 'searchTabByUser',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not supported by NIP11.`
+  String get tipByUnSupportNip11 {
+    return Intl.message(
+      'Not supported by NIP11.',
+      name: 'tipByUnSupportNip11',
       desc: '',
       args: [],
     );
