@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -90,10 +92,16 @@ class RelayItemCard extends StatelessWidget {
             headers: {"Accept": "application/nostr+json"},
           )
         ).then((value){
-          Navigator.pop(context);
-          print(value.data);
-          Map<String, dynamic> mapData = value.data;
+          Map<String, dynamic> mapData = {};
+
+          if(value.data is Map){
+            mapData = value.data;
+          }
+          else if(value.data is String){
+            mapData = jsonDecode(value.data);
+          }
           mapData['address']=relayModel.relayUrl;
+          Navigator.pop(context);
           context.pushNamed(Routers.relayInfo.value, extra:mapData );
         }).catchError((err){
           Navigator.pop(context);
