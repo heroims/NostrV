@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nostr/nostr.dart';
 import 'package:nostr_app/models/nostr_user_model.dart';
 import 'package:nostr_app/models/user_info_model.dart';
+import 'package:nostr_app/pages/feed_post_page.dart';
 import 'package:nostr_app/pages/followers_page.dart';
 import 'package:nostr_app/pages/followings_page.dart';
 import 'package:nostr_app/pages/home_page.dart';
@@ -20,7 +21,8 @@ import 'package:nostr_app/realm/db_user.dart';
 import 'package:realm/realm.dart';
 
 enum Routers {
-  relayInfo(13, 'relayInfo'),
+  feedPost(14, 'feed_post'),
+  relayInfo(13, 'relay_info'),
   relays(12, 'relays'),
   followers(11, 'followers'),
   followings(10, 'followings'),
@@ -237,6 +239,26 @@ class AppRouter {
 
 
             return MaterialPage(child: FeedDetailPage(noteId: noteId!));
+          }
+      ),
+      GoRoute(
+          name: Routers.feedPost.value,
+          path: '/${Routers.feed.value}/post',
+          pageBuilder: (context, state) {
+
+            String? noteId = state.uri.queryParameters['id'];
+
+            if(noteId!=null){
+              noteId = Nip19.decodeNote(noteId);
+            }
+            else {
+              if(state.extra!=null){
+                noteId = state.extra as String;
+              }
+            }
+
+
+            return MaterialPage(child: FeedPostPage(noteId: noteId));
           }
       ),
     ],

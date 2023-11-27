@@ -1,5 +1,7 @@
 {
-  "nativeByRelay": "中继",
+  "dialogByEditPop": "是否确定要退出当前编辑页面?",
+  "navByRelay": "中继",
+  "navByPost": "发布",
   "actionSheetByReport": "请选择举报类型。",
   "reportByNudity": "裸体、色情等",
   "reportByProfanity": "脏话、仇恨言论等",
@@ -10,6 +12,7 @@
   "navByPrivateChat": "私信",
   "searchTabByPost": "帖子",
   "searchTabByUser": "用户",
+  "tipNoFeedToPost": "无可上传的内容",
   "tipByUnSupportNip11": "不支持NIP11",
   "tipByReposted": "已转发",
   "repostByPostID": "转发",

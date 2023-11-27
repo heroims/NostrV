@@ -21,7 +21,7 @@ class RelayInfoPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
       appBar: AppBar(
-        title:Text(S.of(context).nativeByRelay),
+        title:Text(S.of(context).navByRelay),
       ),
       body: ListView.builder(
         itemCount: lblTitles.length,

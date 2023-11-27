@@ -46,7 +46,7 @@ class HomePage extends StatelessWidget{
                        icon: const Icon(Icons.add),
                        onPressed: () {
                          if (model.selectIndex == 0){
-
+                           context.pushNamed(Routers.feedPost.value);
                          }
                          else{
                            final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;

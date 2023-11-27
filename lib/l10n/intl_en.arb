@@ -1,5 +1,7 @@
 {
-  "nativeByRelay": "Relay",
+  "dialogByEditPop": "Are you sure you want to exit the current editing page?",
+  "navByRelay": "Relay",
+  "navByPost": "Post",
   "actionSheetByReport": "Please select the type of report.",
   "reportByNudity": "depictions of nudity, porn, etc.",
   "reportByProfanity": "profanity, hateful speech, etc.",
@@ -10,6 +12,7 @@
   "navByPrivateChat": "Private Chat",
   "searchTabByPost": "Post",
   "searchTabByUser": "User",
+  "tipNoFeedToPost": "No content to publish.",
   "tipByUnSupportNip11": "Not supported by NIP11.",
   "tipByReposted": "Reposted",
   "repostByPostID": "Repost",

@@ -44,14 +44,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "dialogByCreate": MessageLookupByLibrary.simpleMessage(
             "Please select a method to create an account."),
         "dialogByDone": MessageLookupByLibrary.simpleMessage("Done"),
+        "dialogByEditPop": MessageLookupByLibrary.simpleMessage(
+            "Are you sure you want to exit the current editing page?"),
         "dialogByNoDataInRelay": MessageLookupByLibrary.simpleMessage(
             "Please add additional relays to fetch data."),
         "dialogByTitle": MessageLookupByLibrary.simpleMessage("Tip"),
         "muteUser": MessageLookupByLibrary.simpleMessage("Mute User"),
-        "nativeByRelay": MessageLookupByLibrary.simpleMessage("Relay"),
+        "navByPost": MessageLookupByLibrary.simpleMessage("Post"),
         "navByPrivateChat":
             MessageLookupByLibrary.simpleMessage("Private Chat"),
         "navByPublicChat": MessageLookupByLibrary.simpleMessage("Public Chat"),
+        "navByRelay": MessageLookupByLibrary.simpleMessage("Relay"),
         "pageMnemonicDescribe": MessageLookupByLibrary.simpleMessage(
             "Please backup the mnemonic words"),
         "pageMnemonicNext": MessageLookupByLibrary.simpleMessage("Next"),
@@ -90,6 +93,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "tipByReposted": MessageLookupByLibrary.simpleMessage("Reposted"),
         "tipByUnSupportNip11":
             MessageLookupByLibrary.simpleMessage("Not supported by NIP11."),
+        "tipNoFeedToPost":
+            MessageLookupByLibrary.simpleMessage("No content to publish."),
         "tipReportRepeatedly": MessageLookupByLibrary.simpleMessage(
             "Please do not report repeatedly."),
         "userReplies": MessageLookupByLibrary.simpleMessage("Replies"),

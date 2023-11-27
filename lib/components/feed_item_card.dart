@@ -357,7 +357,9 @@ class FeedItemCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        IconButton(onPressed: (){}, icon: const Icon(Icons.chat_bubble_outline)),
+                        IconButton(onPressed: (){
+                          context.pushNamed(Routers.feedPost.value,extra: feed.id);
+                        }, icon: const Icon(Icons.chat_bubble_outline)),
                         IconButton(onPressed: (){
                           feedListModel.upvoteFeed(feed.id, !upvote);
                         }, icon: Icon(upvote ? Icons.thumb_up: Icons.thumb_up_off_alt_outlined)),

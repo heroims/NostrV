@@ -48,6 +48,8 @@ dependencies:
   cached_network_image:
   url_launcher:
   flutter_widget_from_html:
+  image_picker:
+  permission_handler:
   dio:
   share_plus:
 dev_dependencies:

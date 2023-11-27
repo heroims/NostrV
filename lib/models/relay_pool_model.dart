@@ -8,7 +8,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:nostr/nostr.dart';
 import 'package:nostr_app/globals/storage_setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:web_socket_channel/io.dart';
 
 class RelayPoolModel extends ChangeNotifier {
   SharedPreferences? _prefs;
@@ -63,6 +62,21 @@ class RelayPoolModel extends ChangeNotifier {
         _relaySubscriptionId[url] = Queue<String>();
       }
     }
+  }
+
+  void addEventSingle(Event event, Function(dynamic) response){
+    relayWss.forEach((key, value) async {
+      if(value!=null){
+        WebSocket? tmpSocket = await WebSocket.connect(key);
+        if(tmpSocket!=null){
+          tmpSocket.add(event.serialize());
+          tmpSocket.listen((event) {
+            response(event);
+            tmpSocket.close();
+          });
+        }
+      }
+    });
   }
 
   void stopRequestSingle(String url, String subscriptionId){

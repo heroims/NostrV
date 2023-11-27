@@ -50,11 +50,31 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Are you sure you want to exit the current editing page?`
+  String get dialogByEditPop {
+    return Intl.message(
+      'Are you sure you want to exit the current editing page?',
+      name: 'dialogByEditPop',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Relay`
-  String get nativeByRelay {
+  String get navByRelay {
     return Intl.message(
       'Relay',
-      name: 'nativeByRelay',
+      name: 'navByRelay',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Post`
+  String get navByPost {
+    return Intl.message(
+      'Post',
+      name: 'navByPost',
       desc: '',
       args: [],
     );
@@ -155,6 +175,16 @@ class S {
     return Intl.message(
       'User',
       name: 'searchTabByUser',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No content to publish.`
+  String get tipNoFeedToPost {
+    return Intl.message(
+      'No content to publish.',
+      name: 'tipNoFeedToPost',
       desc: '',
       args: [],
     );

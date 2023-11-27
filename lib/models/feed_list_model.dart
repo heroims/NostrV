@@ -258,7 +258,7 @@ class FeedListModel extends ChangeNotifier {
           _lastCreatedAt=feedList.last.createdAt;
         }
         notifyListeners();
-        _controller.finishLoad(response.isEmpty?IndicatorResult.noMore:IndicatorResult.success);
+        _controller.finishLoad(IndicatorResult.success);
         notifyListeners();
       });
     });

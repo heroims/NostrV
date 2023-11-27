@@ -38,13 +38,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "createByNormal": MessageLookupByLibrary.simpleMessage("普通"),
         "dialogByCreate": MessageLookupByLibrary.simpleMessage("请选择创建账户的方式。"),
         "dialogByDone": MessageLookupByLibrary.simpleMessage("确定"),
+        "dialogByEditPop":
+            MessageLookupByLibrary.simpleMessage("是否确定要退出当前编辑页面?"),
         "dialogByNoDataInRelay":
             MessageLookupByLibrary.simpleMessage("请添加其他中继，以便拉取数据。"),
         "dialogByTitle": MessageLookupByLibrary.simpleMessage("温馨提示"),
         "muteUser": MessageLookupByLibrary.simpleMessage("屏蔽用户"),
-        "nativeByRelay": MessageLookupByLibrary.simpleMessage("中继"),
+        "navByPost": MessageLookupByLibrary.simpleMessage("发布"),
         "navByPrivateChat": MessageLookupByLibrary.simpleMessage("私信"),
         "navByPublicChat": MessageLookupByLibrary.simpleMessage("公共聊天"),
+        "navByRelay": MessageLookupByLibrary.simpleMessage("中继"),
         "pageMnemonicDescribe": MessageLookupByLibrary.simpleMessage("请备份助记词"),
         "pageMnemonicNext": MessageLookupByLibrary.simpleMessage("下一步"),
         "pageMnemonicShowTip": MessageLookupByLibrary.simpleMessage(
@@ -74,6 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tipByOnThisUser": MessageLookupByLibrary.simpleMessage("正位于当前用户页面。"),
         "tipByReposted": MessageLookupByLibrary.simpleMessage("已转发"),
         "tipByUnSupportNip11": MessageLookupByLibrary.simpleMessage("不支持NIP11"),
+        "tipNoFeedToPost": MessageLookupByLibrary.simpleMessage("无可上传的内容"),
         "tipReportRepeatedly": MessageLookupByLibrary.simpleMessage("请勿重复举报"),
         "userReplies": MessageLookupByLibrary.simpleMessage("回复"),
         "userReposts": MessageLookupByLibrary.simpleMessage("转发"),
