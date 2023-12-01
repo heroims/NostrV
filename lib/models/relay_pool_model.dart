@@ -23,14 +23,22 @@ class RelayPoolModel extends ChangeNotifier {
   final Map<String, Function(dynamic)> _relaySingleResponses = {};
   final Map<String, Queue<String>> _relaySubscriptionId = {};
 
+  bool startedRelaysPool = false;
+
   Future<void> startRelayPool() async {
     final relays = (await prefs).getStringList(relaysSaveKey) ?? defaultRelayUrls;
     for (var element in relays) {
-      _relayWss[element] = null;
+      if(!_relayWss.containsKey(element)){
+        _relayWss[element] = null;
+      }
     }
     for (String url in relays) {
-      await addRelayWithUrl(url);
+      if(_relayWss[url] == null){
+        await addRelayWithUrl(url);
+      }
     }
+    startedRelaysPool = true;
+    notifyListeners();
   }
 
   void addRequest(String url, dynamic requestWithFilter, Function(List<Event>) response){
@@ -67,13 +75,16 @@ class RelayPoolModel extends ChangeNotifier {
   void addEventSingle(Event event, Function(dynamic) response){
     relayWss.forEach((key, value) async {
       if(value!=null){
-        WebSocket? tmpSocket = await WebSocket.connect(key);
-        if(tmpSocket!=null){
+        try{
+          WebSocket tmpSocket = await WebSocket.connect(key);
           tmpSocket.add(event.serialize());
           tmpSocket.listen((event) {
             response(event);
             tmpSocket.close();
           });
+        }
+        catch(_){
+
         }
       }
     });

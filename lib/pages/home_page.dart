@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nostr_app/models/tab_select_model.dart';
 import 'package:nostr_app/pages/feed_page.dart';
 import 'package:nostr_app/pages/notify_page.dart';
+import 'package:nostr_app/pages/setting_page.dart';
 import 'package:nostr_app/router.dart';
 import 'package:provider/provider.dart';
 
@@ -127,12 +128,15 @@ class HomePage extends StatelessWidget{
          ),
          body: Consumer<TabSelectModel>(
            builder: (context, model , child) {
+             const feedPage = FeedPage();
+             const messagePage = MessagePage();
+             const notifyPage = NotifyPage();
              return IndexedStack(
                index: model.selectIndex,
                children: const [
-                 FeedPage(),
-                 MessagePage(),
-                 NotifyPage()
+                 feedPage,
+                 messagePage,
+                 notifyPage,
                ],
              );
            },)

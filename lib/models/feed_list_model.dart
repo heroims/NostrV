@@ -269,11 +269,7 @@ class FeedListModel extends ChangeNotifier {
     Event event = Event.from(kind: 1984, content: '', tags: [['e', reportId, reportType]], privkey: Nip19.decodePrivkey((appRouter.nostrUserModel.currentUserSync)!.privateKey));
 
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
-    relayPoolModel.relayWss.forEach((key, value) {
-      if(value!=null){
-        value.add(event.serialize());
-      }
-    });
+    relayPoolModel.addEventSingle(event, (_){});
   }
 
   void isReportFeed(String reportId, String pubKey, Function(bool) callback) {
@@ -305,20 +301,18 @@ class FeedListModel extends ChangeNotifier {
     });
   }
 
-  void upvoteFeed(String upvoteId, bool upvote){
+  void upvoteFeed(Event feed, bool upvote){
     AppRouter appRouter = Provider.of<AppRouter>(_context, listen: false);
     Event event = Event.from(
         kind: 7,
         content: upvote?'+':'',
-        tags: [['e', upvoteId]],
+        tags: [['e', feed.id],['p', feed.pubkey]],
         privkey: Nip19.decodePrivkey((appRouter.nostrUserModel.currentUserSync)!.privateKey)
     );
-    upvoteFeedMap[upvoteId]=upvote;
+    upvoteFeedMap[feed.id]=upvote;
     notifyListeners();
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
-    relayPoolModel.relayWss.forEach((key, value) {
-      value!.add(event.serialize());
-    });
+    relayPoolModel.addEventSingle(event, (_){});
   }
 
   void isUpvoteFeed(String upvoteId, String pubKey, Function(bool) callback) {
@@ -383,20 +377,18 @@ class FeedListModel extends ChangeNotifier {
     Event event1 = Event.from(
         kind: 6,
         content: feed.serialize(),
-        tags: [['e', feed.id]],
+        tags: [['e', feed.id],['p', feed.pubkey]],
         privkey: Nip19.decodePrivkey((appRouter.nostrUserModel.currentUserSync)!.privateKey)
     );
     Event event2 = Event.from(
         kind: 16,
         content: feed.serialize(),
-        tags: [['e', feed.id], ['k', feed.kind.toString()]],
+        tags: [['e', feed.id], ['k', feed.kind.toString()],['p', feed.pubkey]],
         privkey: Nip19.decodePrivkey((appRouter.nostrUserModel.currentUserSync)!.privateKey)
     );
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
-    relayPoolModel.relayWss.forEach((key, value) {
-      value!.add(event1.serialize());
-      value.add(event2.serialize());
-    });
+    relayPoolModel.addEventSingle(event1, (_){});
+    relayPoolModel.addEventSingle(event2, (_){});
   }
 
   void isRepostFeed(String repostId, String pubKey, Function(bool) callback) {

@@ -12,12 +12,15 @@ class EventListModel extends ChangeNotifier {
   String? noteId;
   String? atUserId;
   String? searchKey;
-  List<int> kinds = [0];
+  List<int> kinds = [];
 
   EventListModel(this._controller,this._context, {this.pubKeys, this.noteId, this.atUserId, this.searchKey, List<int>? kinds}){
     if(kinds!=null){
       this.kinds.addAll(kinds);
       this.kinds = this.kinds.toSet().toList();
+    }
+    else{
+      this.kinds.add(0);
     }
   }
 

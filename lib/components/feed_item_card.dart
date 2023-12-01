@@ -361,7 +361,7 @@ class FeedItemCard extends StatelessWidget {
                           context.pushNamed(Routers.feedPost.value,extra: feed.id);
                         }, icon: const Icon(Icons.chat_bubble_outline)),
                         IconButton(onPressed: (){
-                          feedListModel.upvoteFeed(feed.id, !upvote);
+                          feedListModel.upvoteFeed(feed,!upvote);
                         }, icon: Icon(upvote ? Icons.thumb_up: Icons.thumb_up_off_alt_outlined)),
                         IconButton(onPressed: (){
                           showCupertinoModalPopup(context: context, builder: (context){

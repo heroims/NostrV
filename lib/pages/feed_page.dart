@@ -14,39 +14,46 @@ class FeedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final relayPoolModel = Provider.of<RelayPoolModel>(context, listen: false);
+
+    relayPoolModel.startRelayPool();
+
     final controller = EasyRefreshController(
       controlFinishRefresh: true,
       controlFinishLoad: true,
     );
     final feedListModel = FeedListModel(controller,context);
-    AppRouter appRouter = Provider.of<AppRouter>(context, listen: false);
 
-    relayPoolModel.startRelayPool().then((value) {
-      feedListModel.refreshFeed();
-      appRouter.nostrUserModel.currentUserInfo?.getUserInfo();
-      appRouter.nostrUserModel.currentUserInfo?.getUserFollowing();
-    });
     return ChangeNotifierProvider(
       create: (_) => feedListModel,
       builder: (context, child) {
-        return Scaffold(
-          body: EasyRefresh(
-            controller: controller,
-            header: const BezierHeader(),
-            footer: const ClassicFooter(),
-            onRefresh: () => feedListModel.refreshFeed(),
-            onLoad: () => feedListModel.loadMoreFeed(),
-            child: Consumer<FeedListModel>(
-              builder:(context, model, child) {
-                return ListView.builder(
-                    itemCount: model.feedList.length,
-                    itemBuilder: (context, index) {
-                      return FeedItemCard(feedListModel: model, itemIndex: index, cardType: FeedItemCardType.normal,);
-                    });
-              }
+        return Consumer<RelayPoolModel>(builder: (context, relayPoolModel, child){
+          if(relayPoolModel.startedRelaysPool && feedListModel.feedList.isEmpty){
+            feedListModel.refreshFeed();
+
+            AppRouter appRouter = Provider.of<AppRouter>(context, listen: false);
+
+            appRouter.nostrUserModel.currentUserInfo?.getUserInfo();
+            appRouter.nostrUserModel.currentUserInfo?.getUserFollowing();
+          }
+          return Scaffold(
+            body: EasyRefresh(
+              controller: controller,
+              header: const BezierHeader(),
+              footer: const ClassicFooter(),
+              onRefresh: () => feedListModel.refreshFeed(),
+              onLoad: () => feedListModel.loadMoreFeed(),
+              child: Consumer<FeedListModel>(
+                  builder:(context, model, child) {
+                    return ListView.builder(
+                        itemCount: model.feedList.length,
+                        itemBuilder: (context, index) {
+                          return FeedItemCard(feedListModel: model, itemIndex: index, cardType: FeedItemCardType.normal,);
+                        });
+                  }
+              ),
             ),
-          ),
-        );
+          );
+        });
       },
     );
   }
