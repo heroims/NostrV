@@ -14,6 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../generated/l10n.dart';
 import '../models/user_info_model.dart';
 import '../router.dart';
+import 'html_image_factory.dart';
 
 enum FeedItemCardType {
   normal,
@@ -310,6 +311,7 @@ class FeedItemCard extends StatelessWidget {
                       child: HtmlWidget(
                         replacedText,
                         enableCaching: true,
+                        factoryBuilder: ()=>PopupPhotoViewWidgetFactory(),
                         onTapUrl: (url) {
                           if (url.startsWith(RegExp(r"(nostr://\S+)"))) {
 
@@ -545,3 +547,4 @@ class FeedItemCard extends StatelessWidget {
   }
 
 }
+

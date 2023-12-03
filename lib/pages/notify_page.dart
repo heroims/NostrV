@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 
 import '../models/user_follow_model.dart';
 import '../models/user_info_model.dart';
+import '../router.dart';
 
 class NotifyPage extends StatelessWidget {
   const NotifyPage({super.key});
@@ -19,12 +20,13 @@ class NotifyPage extends StatelessWidget {
       controlFinishRefresh: true,
       controlFinishLoad: true,
     );
+    AppRouter appRouter = Provider.of<AppRouter>(context, listen: false);
+
     final eventListModel = EventListModel(
         controller,
         context,
         atUserId: Nip19.decodePubkey(
-          'npub10lgg9fa7cqfwqyk0amde4l08llpceudltwyqvzsltxg9mc9mx00sxvxpgc'
-            // appRouter.nostrUserModel.currentUserSync!.publicKey
+            appRouter.nostrUserModel.currentUserSync!.publicKey
         ),
         kinds: [1,3,6,7,16],
     );

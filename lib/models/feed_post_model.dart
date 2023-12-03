@@ -18,43 +18,48 @@ class FeedPostModel extends ChangeNotifier {
   FeedPostModel(this.textEditingController,{this.noteId});
 
   Future<void> postFeed(BuildContext context,AppRouter appRouter,RelayPoolModel relayPoolModel) async{
-    List<String> postImgUrls = [];
-    String postText = textEditingController.text;
-    Dio dio = Dio();
-    List<List<String>> tmpTag = [];
-    for(int i = 0; i < imageUrls.length; i++) {
-      final formData = FormData();
-      final tmpFile = await MultipartFile.fromFile(
-          imageUrls[i],
-        contentType: MediaType.parse('image/jpeg')
-      );
-      formData.files.add(MapEntry('image', tmpFile));
-      Response response = await dio.post(
+    try{
+      List<String> postImgUrls = [];
+      String postText = textEditingController.text;
+      Dio dio = Dio();
+      List<List<String>> tmpTag = [];
+      for(int i = 0; i < imageUrls.length; i++) {
+        final formData = FormData();
+        final tmpFile = await MultipartFile.fromFile(
+            imageUrls[i],
+            contentType: MediaType.parse('image/jpeg')
+        );
+        formData.files.add(MapEntry('image', tmpFile));
+        Response response = await dio.post(
           'https://nostrimg.com/api/upload',
           data: formData,
-      );
-      if(response.statusCode == 200){
-        String  tmpImgUrl = response.data['data']['link'];
-        postImgUrls.add(tmpImgUrl);
-        tmpTag.add(['r', tmpImgUrl]);
+        );
+        if(response.statusCode == 200){
+          String  tmpImgUrl = response.data['data']['link'];
+          postImgUrls.add(tmpImgUrl);
+          tmpTag.add(['r', tmpImgUrl]);
+        }
+      }
+      postText = '$postText\n${postImgUrls.join('\n')}';
+      NostrUser? tmpUser = await appRouter.nostrUserModel.currentUser;
+      if(tmpUser!=null){
+        String decodeKey = Nip19.decodePrivkey(tmpUser.privateKey);
+        Event tmpEvent = Event.from(kind: 1, content: postText, privkey: decodeKey);
+        if(noteId!=null){
+          tmpTag.add(['e', noteId!]);
+        }
+        if(tmpTag.isNotEmpty){
+          tmpEvent.tags=tmpTag;
+        }
+        tmpEvent.id=tmpEvent.getEventId();
+        tmpEvent.sig=tmpEvent.getSignature(decodeKey);
+        relayPoolModel.addEventSingle(tmpEvent, (_) {
+
+        });
       }
     }
-    postText = '$postText\n${postImgUrls.join('\n')}';
-    NostrUser? tmpUser = await appRouter.nostrUserModel.currentUser;
-    if(tmpUser!=null){
-      String decodeKey = Nip19.decodePrivkey(tmpUser.privateKey);
-      Event tmpEvent = Event.from(kind: 1, content: postText, privkey: decodeKey);
-      if(noteId!=null){
-        tmpTag.add(['e', noteId!]);
-      }
-      if(tmpTag.isNotEmpty){
-        tmpEvent.tags=tmpTag;
-      }
-      tmpEvent.id=tmpEvent.getEventId();
-      tmpEvent.sig=tmpEvent.getSignature(decodeKey);
-      relayPoolModel.addEventSingle(tmpEvent, (_) {
+    catch(_){
 
-      });
     }
   }
 

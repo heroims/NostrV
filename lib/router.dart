@@ -9,6 +9,7 @@ import 'package:nostr_app/pages/followings_page.dart';
 import 'package:nostr_app/pages/home_page.dart';
 import 'package:nostr_app/pages/mnemonic_verify_page.dart';
 import 'package:nostr_app/pages/mnemonic_show_page.dart';
+import 'package:nostr_app/pages/photo_page.dart';
 import 'package:nostr_app/pages/profile_page.dart';
 import 'package:nostr_app/pages/feed_detail_page.dart';
 import 'package:nostr_app/pages/relay_info_page.dart';
@@ -21,6 +22,7 @@ import 'package:nostr_app/realm/db_user.dart';
 import 'package:realm/realm.dart';
 
 enum Routers {
+  photoView(15, 'photo_view'),
   feedPost(14, 'feed_post'),
   relayInfo(13, 'relay_info'),
   relays(12, 'relays'),
@@ -219,6 +221,13 @@ class AppRouter {
               relayMap=state.extra! as Map<String,dynamic>;
             }
             return MaterialPage(child: RelayInfoPage(relayInfo: relayMap,));
+          }
+      ),
+      GoRoute(
+          name: Routers.photoView.value,
+          path: '/${Routers.photoView.value}',
+          pageBuilder: (context, state) {
+            return MaterialPage(child: PhotoPage(imageProvider: state.extra as ImageProvider,));
           }
       ),
       GoRoute(

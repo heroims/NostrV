@@ -12,6 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../generated/l10n.dart';
 import '../models/user_follow_model.dart';
 import '../router.dart';
+import 'html_image_factory.dart';
 
 class NotifyItemCard extends StatelessWidget {
   final UserInfo? userInfo;
@@ -282,6 +283,7 @@ class NotifyItemCard extends StatelessWidget {
                     child: HtmlWidget(
                       mainText,
                       enableCaching: true,
+                      factoryBuilder: ()=>PopupPhotoViewWidgetFactory(),
                       onTapUrl: (url) {
                         onTapContentLink(url, context);
                         return true;
@@ -317,6 +319,7 @@ class NotifyItemCard extends StatelessWidget {
                     child: HtmlWidget(
                       subContent,
                       enableCaching: true,
+                      factoryBuilder: ()=>PopupPhotoViewWidgetFactory(),
                       onTapUrl: (url) {
                         onTapContentLink(url, context);
                         return true;
