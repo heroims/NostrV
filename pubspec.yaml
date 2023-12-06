@@ -48,10 +48,13 @@ dependencies:
   cached_network_image:
   url_launcher:
   flutter_widget_from_html:
+  photo_view:
   image_picker:
   permission_handler:
   dio:
   share_plus:
+  crypto:
+  realm:
 dev_dependencies:
   flutter_test:
     sdk: flutter

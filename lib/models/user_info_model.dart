@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nostr/nostr.dart';
-import 'package:nostr_app/globals/storage_setting.dart';
 import 'package:nostr_app/models/nostr_user_model.dart';
+import 'package:nostr_app/models/realm_model.dart';
 import 'package:nostr_app/models/relay_pool_model.dart';
+import 'package:nostr_app/realm/db_follower.dart';
 import 'package:nostr_app/realm/db_user.dart';
 import 'package:provider/provider.dart';
 
@@ -27,12 +30,24 @@ class UserInfo{
         banner = json['banner']??'',
         lud06 = json['lud06']??'',
         lud16 = json['lud16']??'',
-        nip05 = json['nip05']??'',
+        nip05 = (json['nip05']!=null&&(json['nip05'] is String))?json['nip05']:'',
         userName = json['username']??'',
         picture = json['picture']??'',
         displayName = json['display_name']??'',
         about = json['about']??'',
         name = json['name']??'';
+
+  UserInfo.fromDBUser(DBUser user)
+      : website = user.website??'',
+        banner = user.banner??'',
+        lud06 = user.lud06??'',
+        lud16 = user.lud16??'',
+        nip05 = user.nip05??'',
+        userName = user.userName??'',
+        picture = user.picture??'',
+        displayName = user.displayName??'',
+        about = user.about??'',
+        name = user.name??'';
 
   Map<String, dynamic> toJson() => {
     'website': website,
@@ -68,19 +83,32 @@ class UserInfoModel extends ChangeNotifier {
   UserFollowings _followings = UserFollowings();
   UserFollowings get followings => _followings;
 
-  Map<String,UserFollowings> _followers = {};
-  Map<String,UserFollowings> get followers => _followers;
+  List<String> get followers {
+    final dbFollowers =realmModel.realm.query<DBFollower>("publicKey == \$0", [publicKey]);
+    if(dbFollowers.isNotEmpty){
+      return dbFollowers.map((e) => e.follower).toList();
+    }
+    return [];
+  }
 
   final followersLimit = 100;
   final followersLastTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
-  String _lastFollowersRequestUUID = '';
+  late RealmModel realmModel;
 
+  String _lastFollowersRequestUUID = '';
+  Map<String, WebSocket?> _privateSockets = {};
+  bool _isDisposed = false;
   UserInfoModel(this._context, this.publicKey, {UserInfoModel? userInfoModel}){
     if(userInfoModel!=null){
       _followings = userInfoModel.followings;
       _userInfo = userInfoModel.userInfo;
-      _followers = userInfoModel.followers;
+    }
+    realmModel = Provider.of<RealmModel>(_context, listen: false);
+
+    final findUser = realmModel.realm.find<DBUser>(publicKey);
+    if(findUser!=null){
+      _userInfo = UserInfo.fromDBUser(findUser);
     }
   }
 
@@ -134,8 +162,6 @@ class UserInfoModel extends ChangeNotifier {
   }
 
   void getUserInfo({Function? refreshCallback}){
-    // AppRouter appRouter = Provider.of<AppRouter>(_context, listen: false);
-
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
     final requestUUID =generate64RandomHexChars();
     Request requestWithFilter = Request(requestUUID, [
@@ -147,24 +173,28 @@ class UserInfoModel extends ChangeNotifier {
     relayPoolModel.relayWss.forEach((key, value) {
       relayPoolModel.addRequestSingle(key, requestWithFilter, (event){
         if(event!=null) {
-          _userInfo=UserInfo.fromJson(jsonDecode(event.content));
-          // appRouter.realm.write(() => appRouter.realm.add(DBUser(
-          //   publicKey,
-          //   name: userInfo?.name,
-          //   userName: userInfo?.userName,
-          //   displayName: userInfo?.displayName,
-          //   website: userInfo?.website,
-          //   lud06: userInfo?.lud06,
-          //   lud16: userInfo?.lud16,
-          //   nip05: userInfo?.nip05,
-          //   about: userInfo?.about,
-          //   picture: userInfo?.picture,
-          //   banner: userInfo?.banner
-          // )));
-          if(refreshCallback!=null){
-            refreshCallback();
+          if(!_isDisposed){
+            _userInfo=UserInfo.fromJson(jsonDecode(event.content));
+
+            realmModel.realm.write(() => realmModel.realm.add(DBUser(
+                publicKey,
+                name: userInfo?.name,
+                userName: userInfo?.userName,
+                displayName: userInfo?.displayName,
+                website: userInfo?.website,
+                lud06: userInfo?.lud06,
+                lud16: userInfo?.lud16,
+                nip05: userInfo?.nip05,
+                about: userInfo?.about,
+                picture: userInfo?.picture,
+                banner: userInfo?.banner
+            ),update: true));
+            if(refreshCallback!=null){
+              refreshCallback();
+            }
+
+            notifyListeners();
           }
-          notifyListeners();
         }
       });
     });
@@ -183,6 +213,17 @@ class UserInfoModel extends ChangeNotifier {
       });
     }
   }
+  void stopGetUserFollower(){
+    final requestUUID = _lastFollowersRequestUUID;
+    if(requestUUID!=''){
+      _privateSockets.forEach((key, value) {
+        if(value!=null){
+          value.add(Close(requestUUID).serialize());
+        }
+      });
+    }
+  }
+
   void getUserFollowing({Function? refreshCallback}){
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
     final requestUUID =generate64RandomHexChars();
@@ -193,25 +234,29 @@ class UserInfoModel extends ChangeNotifier {
         kinds: [3],
       )
     ]);
-
     relayPoolModel.relayWss.forEach((key, value) {
       final relayUrl = key;
       if(value!=null){
         relayPoolModel.addRequest(relayUrl, requestWithFilter, (events){
           if(events.isNotEmpty) {
-            try {
-              followings.relaysState.addAll(jsonDecode(events.first.content));
-            }
-            catch(_){}
-            for (var element in events.first.tags) {
-              if(element.isNotEmpty && element.first=='p') {
-                followings.profiles[element[1]]=Profile(element[1], element.length>2?element[2]: relayUrl, element.length>3?element[3]:'');
+            if(!_isDisposed) {
+              try {
+                Map<String, dynamic> relayInfo = jsonDecode(events.first.content);
+                followings.relaysState.addAll(relayInfo);
               }
+              catch(_){}
+              for (var element in events.first.tags) {
+                if(element.isNotEmpty && element.first=='p') {
+                  followings.profiles[element[1]]=Profile(element[1], element.length>2?element[2]: relayUrl, element.length>3?element[3]:'');
+                }
+              }
+
+              if(refreshCallback!=null){
+                refreshCallback();
+              }
+
+              notifyListeners();
             }
-            if(refreshCallback!=null){
-              refreshCallback();
-            }
-            notifyListeners();
           }
         });
       }
@@ -233,72 +278,114 @@ class UserInfoModel extends ChangeNotifier {
       final relayUrl = key;
       if(value!=null){
         relayPoolModel.addRequest(relayUrl, requestWithFilter, (events){
-          if(events.isNotEmpty) {
-            for (var element in events.first.tags) {
-              if(element.isNotEmpty && element.first=='r') {
-                bool readValue = false;
-                bool writeValue = false;
-                if(element.length>2){
-                  readValue = element[2]=='read';
-                  writeValue = element[2]=='write';
+            if(!_isDisposed) {
+              if(events.isNotEmpty) {
+                for (var element in events.first.tags) {
+                  if(element.isNotEmpty && element.first=='r') {
+                    bool readValue = false;
+                    bool writeValue = false;
+                    if(element.length>2){
+                      readValue = element[2]=='read';
+                      writeValue = element[2]=='write';
+                    }
+                    if(element.length>3){
+                      readValue = readValue | (element[3]=='read');
+                      writeValue = writeValue | (element[3]=='write');
+                    }
+                    followings.relaysState[element[1]]={'read':readValue,'write':writeValue};
+                  }
                 }
-                if(element.length>3){
-                  readValue = readValue | (element[3]=='read');
-                  writeValue = writeValue | (element[3]=='write');
+
+                if(refreshCallback!=null){
+                  refreshCallback();
                 }
-                followings.relaysState[element[1]]={'read':readValue,'write':writeValue};
-              }
+
+                notifyListeners();
             }
-            if(refreshCallback!=null){
-              refreshCallback();
-            }
-            notifyListeners();
           }
         });
       }
     });
+
+
   }
 
   void getUserFollower({Function? refreshCallback}){
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
     final requestUUID =generate64RandomHexChars();
-    Request requestWithFilter = Request(requestUUID, [
-      Filter(
-        kinds: [3],
-        p:[publicKey],
-      )
-    ]);
+    _lastFollowersRequestUUID = requestUUID;
+    relayPoolModel.getConnectSockets().then((sockets){
 
-    relayPoolModel.relayWss.forEach((key, value) {
-      final relayUrl = key;
-      if(value!=null){
-        relayPoolModel.addRequestSingle(relayUrl, requestWithFilter, (event){
-          final tmpFollowings = UserFollowings();
-          try {
-            if(event.content.isNotEmpty){
-              tmpFollowings.relaysState.addAll(jsonDecode(event.content));
+      _privateSockets = sockets;
+
+      Request requestWithFilter = Request(requestUUID, [
+        Filter(
+          kinds: [3],
+          p:[publicKey],
+        )
+      ]);
+
+      sockets.forEach((key, value) {
+        final relayUrl = key;
+        if(value!=null) {
+          value.add(requestWithFilter.serialize());
+          value.listen((eventData) {
+            if(!_isDisposed){
+              final message = Message.deserialize(eventData);
+
+              if(message.type=='EOSE'){
+                value.add(Close(requestUUID).serialize());
+              }
+
+              if(message.type=='EVENT'){
+                final event =message.message;
+                if(event is Event){
+                  realmModel.realm.writeAsync((){
+                    final tmpFollowings = UserFollowings();
+                    try {
+                      if(event.content.isNotEmpty){
+                        final relayInfo = jsonDecode(event.content);
+                        tmpFollowings.relaysState.addAll(relayInfo);
+                      }
+                    }
+                    catch(_){
+                    }
+                    for (var tagElement in event.tags) {
+                      if(tagElement.isNotEmpty && tagElement.first=='p') {
+                        tmpFollowings.profiles[tagElement[1]]=Profile(tagElement[1], tagElement.length>2?tagElement[2]: relayUrl, tagElement.length>3?tagElement[3]:'');
+                      }
+                    }
+
+                    followers.add(event.pubkey);
+                    realmModel.realm.add(
+                        DBFollower(
+                            md5.convert(utf8.encode(publicKey+event.pubkey)).toString(),
+                            publicKey,
+                            event.pubkey
+                        ),
+                        update: true
+                    );
+                  });
+
+                  if(refreshCallback!=null){
+                    refreshCallback();
+                  }
+                  notifyListeners();
+                }
+              }
+
             }
-          }
-          catch(_){
-          }
-          for (var tagElement in event.tags) {
-            if(tagElement.isNotEmpty && tagElement.first=='p') {
-              tmpFollowings.profiles[tagElement[1]]=Profile(tagElement[1], tagElement.length>2?tagElement[2]: relayUrl, tagElement.length>3?tagElement[3]:'');
-            }
-          }
-          followers[event.pubkey] = tmpFollowings;
-          if(refreshCallback!=null){
-            refreshCallback();
-          }
-          notifyListeners();
-        });
-      }
+
+          });
+        }
+      });
     });
   }
 
   @override
   void dispose() {
-    stopGetUserFollowing();
+    stopGetUserFollower();
+    _isDisposed = true;
     super.dispose();
   }
 }

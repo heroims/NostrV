@@ -16,10 +16,6 @@ import 'package:nostr_app/pages/relay_info_page.dart';
 import 'package:nostr_app/pages/relays_page.dart';
 import 'package:nostr_app/pages/search_page.dart';
 import 'package:nostr_app/pages/welcome_page.dart';
-import 'package:nostr_app/realm/db_follower.dart';
-import 'package:nostr_app/realm/db_following.dart';
-import 'package:nostr_app/realm/db_user.dart';
-import 'package:realm/realm.dart';
 
 enum Routers {
   photoView(15, 'photo_view'),
@@ -46,12 +42,8 @@ enum Routers {
 
 class AppRouter {
   final NostrUserModel nostrUserModel;
-  late Realm realm;
 
-  AppRouter({required this.nostrUserModel}){
-    final config = Configuration.local([DBUser.schema,DBFollower.schema,DBFollowing.schema]);
-    realm = Realm(config);
-  }
+  AppRouter({required this.nostrUserModel});
 
   // GoRouter configuration
   late final router = GoRouter(

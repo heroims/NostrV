@@ -2,10 +2,13 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nostr/nostr.dart';
 import 'package:nostr_app/models/nostr_filter.dart';
+import 'package:nostr_app/models/realm_model.dart';
 import 'package:nostr_app/models/relay_pool_model.dart';
 import 'package:nostr_app/models/user_info_model.dart';
 import 'package:nostr_app/router.dart';
 import 'package:provider/provider.dart';
+
+import '../realm/db_user.dart';
 
 class FeedListModel extends ChangeNotifier {
   late final EasyRefreshController _controller;
@@ -34,17 +37,18 @@ class FeedListModel extends ChangeNotifier {
   final int _limit = 10;
 
   final List<Event> feedList = [];
-  final Map<String, UserInfoModel> userMap = {};
 
   UserInfo? getUser(String publicKey){
-    if(userMap.containsKey(publicKey)){
-      return userMap[publicKey]!.userInfo;
+    RealmModel realmModel = Provider.of<RealmModel>(_context, listen: false);
+
+    final findUser = realmModel.realm.find<DBUser>(publicKey);
+    if(findUser!=null){
+      return UserInfo.fromDBUser(findUser);
     }
     else{
-      userMap[publicKey] = UserInfoModel(_context, publicKey);
-      userMap[publicKey]!.getUserInfo(refreshCallback: ()=>notifyListeners());
-      return null;
+      UserInfoModel(_context, publicKey).getUserInfo(refreshCallback: ()=>notifyListeners());
     }
+    return null;
   }
 
   void getRootNoteFeed(String rootNoteId){

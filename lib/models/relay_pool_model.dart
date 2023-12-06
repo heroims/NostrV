@@ -90,9 +90,18 @@ class RelayPoolModel extends ChangeNotifier {
     });
   }
 
+  Future<Map<String, WebSocket?>> getConnectSockets() async{
+    Map<String, WebSocket?> sockets = {};
+    for(String url in relayWss.keys){
+      WebSocket tmpSocket = await WebSocket.connect(url);
+      sockets[url] = tmpSocket;
+    }
+    return sockets;
+  }
+
   void stopRequestSingle(String url, String subscriptionId){
     if(relayWss.containsKey(url)&&relayWss[url]!=null){
-      relayWss[url]!.add(Close(subscriptionId));
+      relayWss[url]!.add(Close(subscriptionId).subscriptionId);
     }
   }
 
@@ -178,6 +187,7 @@ class RelayPoolModel extends ChangeNotifier {
     }
     catch(_) {
       relayWss[url]= null;
+      debugPrint("连接被断开！！！！！！！！");
     }
     finally {
       await (await prefs).setStringList(relaysSaveKey, relayWss.keys.toList());

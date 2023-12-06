@@ -10,19 +10,24 @@ import '../models/user_follow_model.dart';
 import '../router.dart';
 
 class UserItemCard extends StatelessWidget {
-  final UserInfo? userInfo;
   final UserFollowModel userFollowModel;
 
-  const UserItemCard({super.key, this.userInfo, required this.userFollowModel});
+  const UserItemCard({super.key, required this.userFollowModel});
 
   @override
   Widget build(BuildContext context) {
     UserFollowModel model = userFollowModel;
-    UserInfo? user = userInfo;
+    UserInfo? user = model.userInfo;
     if(user==null){
-      // userFollowModel.getUserInfo();
+      userFollowModel.getUserInfo();
     }
-    String userId = Nip19.encodePubkey(model.userInfoModel.publicKey).toString().replaceRange(8, 57, ':');
+    String userId = model.userInfoModel.publicKey;
+    try {
+      String encodePubKey = Nip19.encodePubkey(model.userInfoModel.publicKey);
+      userId = encodePubKey.toString().replaceRange(8, 57, ':');
+    }
+    catch(_){}
+
     String userName = user?.name??'';
     if(userName==''){
       userName = user?.userName??'';

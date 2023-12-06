@@ -9,6 +9,8 @@ import 'package:provider/provider.dart';
 import 'generated/l10n.dart';
 import 'package:nostr_app/router.dart';
 
+import 'models/realm_model.dart';
+
 void main(){
 
   runApp(const MyApp());
@@ -30,6 +32,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<RelayPoolModel>(
           lazy: false,
           create: (_) => RelayPoolModel(),
+        ),
+        ChangeNotifierProvider<RealmModel>(
+          lazy: false,
+          create: (_) => RealmModel(),
         ),
         Provider(
             lazy: false,

@@ -112,7 +112,7 @@ class ProfilePage extends StatelessWidget {
                         return SliverToBoxAdapter(
                           child: UserHeaderCard(userFollowModel: model,),
                         );
-                      }
+                      },
                   ),
                   Consumer<FeedListModel>(
                       builder:(context, model, child) {

@@ -12,7 +12,9 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../generated/l10n.dart';
+import '../models/realm_model.dart';
 import '../models/user_info_model.dart';
+import '../realm/db_user.dart';
 import '../router.dart';
 import 'html_image_factory.dart';
 
@@ -107,24 +109,28 @@ class FeedItemCard extends StatelessWidget {
           atText=atText.replaceAll("nostr:", "");
           String atUserName = atText.replaceRange(8, 57, ':');
           final atUserOriginId = Nip19.decodePubkey(atText);
-          if(feedListModel.userMap.containsKey(atUserOriginId)){
-            if(feedListModel.userMap[atUserOriginId]?.userInfo!=null){
-              atUserName = feedListModel.userMap[atUserOriginId]!.userInfo?.userName??'';
-              if(atUserName == ''){
-                atUserName = feedListModel.userMap[atUserOriginId]!.userInfo?.displayName??'';
-              }
-              if(atUserName == ''){
-                atUserName = feedListModel.userMap[atUserOriginId]!.userInfo?.name??'';
-              }
-              if(atUserName == ''){
-                atUserName = atText.replaceRange(8, 57, ':');
-              }
+
+          RealmModel realmModel = Provider.of<RealmModel>(context, listen: false);
+
+          final findUser = realmModel.realm.find<DBUser>(atUserOriginId);
+          if(findUser!=null){
+            final tmpUserInfo = UserInfo.fromDBUser(findUser);
+
+            atUserName = tmpUserInfo.userName;
+            if(atUserName == ''){
+              atUserName = tmpUserInfo.displayName;
+            }
+            if(atUserName == ''){
+              atUserName = tmpUserInfo.name;
+            }
+            if(atUserName == ''){
+              atUserName = atText.replaceRange(8, 57, ':');
             }
           }
           else{
-            feedListModel.userMap[atUserOriginId] = UserInfoModel(context, atUserOriginId);
-            feedListModel.userMap[atUserOriginId]?.getUserInfo();
+            UserInfoModel(context, atUserOriginId).getUserInfo();
           }
+
           String link = "nostr://${Routers.profile.value}?id=$atText";
           String replacedLink = "<a href='$link' style='text-decoration: none'>@$atUserName</a>"; // 替换为带有 <a> 标签的链接
           return replacedLink;
@@ -179,23 +185,26 @@ class FeedItemCard extends StatelessWidget {
         final atUserOriginId = element[1];
         final atUserID = Nip19.encodePubkey(atUserOriginId).toString();
         String atUserName = atUserID.replaceRange(8, 57, ':');
-        if(feedListModel.userMap.containsKey(atUserOriginId)){
-          if(feedListModel.userMap[atUserOriginId]?.userInfo!=null){
-            atUserName = feedListModel.userMap[atUserOriginId]!.userInfo?.userName??'';
-            if(atUserName == ''){
-              atUserName = feedListModel.userMap[atUserOriginId]!.userInfo?.displayName??'';
-            }
-            if(atUserName == ''){
-              atUserName = feedListModel.userMap[atUserOriginId]!.userInfo?.name??'';
-            }
-            if(atUserName == ''){
-              atUserName = atUserID.replaceRange(8, 57, ':');
-            }
+
+        RealmModel realmModel = Provider.of<RealmModel>(context, listen: false);
+
+        final findUser = realmModel.realm.find<DBUser>(atUserOriginId);
+        if(findUser!=null){
+          final tmpUserInfo = UserInfo.fromDBUser(findUser);
+          atUserName = tmpUserInfo.userName;
+          if(atUserName == ''){
+            atUserName = tmpUserInfo.displayName;
           }
+          if(atUserName == ''){
+            atUserName = tmpUserInfo.name;
+          }
+          if(atUserName == ''){
+            atUserName = atUserID.replaceRange(8, 57, ':');
+          }
+
         }
         else{
-          feedListModel.userMap[atUserOriginId] = UserInfoModel(context, atUserOriginId);
-          feedListModel.userMap[atUserOriginId]?.getUserInfo();
+          UserInfoModel(context, atUserOriginId).getUserInfo();
         }
         atUserText = "<a href='nostr://${Routers.profile.value}?id=$atUserID' style='text-decoration: none'>@$atUserName</a> $atUserText";
       }
@@ -252,7 +261,8 @@ class FeedItemCard extends StatelessWidget {
                           }
                           return;
                         }
-                        context.pushNamed(Routers.profile.value,extra: feedListModel.userMap[feed.pubkey]);
+
+                        context.pushNamed(Routers.profile.value,extra: UserInfoModel(context, feed.pubkey));
                       },
                       child: imageWidget,
                     )

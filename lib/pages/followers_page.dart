@@ -30,9 +30,9 @@ class FollowersPage extends StatelessWidget {
                   }
 
                   return ListView.builder(
-                      itemCount: userModel.followers.values.length,
+                      itemCount: userModel.followers.length,
                       itemBuilder: (context, index) {
-                        final profileKey = userModel.followers.keys.elementAt(index);
+                        final profileKey = userModel.followers[index];
                         UserFollowModel followModel = UserFollowModel(UserInfoModel(context, profileKey));
                         return ChangeNotifierProvider(
                           create: (_)=>followModel,

@@ -175,7 +175,7 @@ class SearchPage extends StatelessWidget {
                                                 create: (_)=>followModel,
                                                 builder: (context, child){
                                                   return Consumer<UserFollowModel>(builder: (context, model, child){
-                                                    return UserItemCard(userInfo: user,userFollowModel: model,);
+                                                    return UserItemCard(userFollowModel: model,);
                                                   });
                                                 },
                                               );

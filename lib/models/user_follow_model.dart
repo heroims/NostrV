@@ -7,7 +7,7 @@ class UserFollowModel extends ChangeNotifier {
   UserFollowModel(this.userInfoModel);
 
   bool followersDownloaded = false;
-
+  bool _disposed = false;
   UserInfo? get userInfo{
     return userInfoModel.userInfo;
   }
@@ -20,7 +20,7 @@ class UserFollowModel extends ChangeNotifier {
     return userInfoModel.followings;
   }
 
-  Map<String,UserFollowings> get followers{
+  List<String> get followers{
     return userInfoModel.followers;
   }
 
@@ -31,13 +31,17 @@ class UserFollowModel extends ChangeNotifier {
 
   void getUserInfo(){
     userInfoModel.getUserInfo(refreshCallback: (){
-      notifyListeners();
+      if(!_disposed) {
+        notifyListeners();
+      }
     });
   }
 
   void getUserFollowing(){
     userInfoModel.getUserFollowing(refreshCallback: (){
-      notifyListeners();
+      if(!_disposed) {
+        notifyListeners();
+      }
     });
   }
 
@@ -45,13 +49,25 @@ class UserFollowModel extends ChangeNotifier {
     followersDownloaded=true;
     notifyListeners();
     userInfoModel.getUserFollower(refreshCallback: (){
-      notifyListeners();
+      if(!_disposed) {
+        notifyListeners();
+      }
     });
   }
 
   void getUserRelay(){
     userInfoModel.getUserRelay(refreshCallback: (){
-      notifyListeners();
+      if(!_disposed){
+        notifyListeners();
+      }
     });
   }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    userInfoModel.dispose();
+    super.dispose();
+  }
+
 }
