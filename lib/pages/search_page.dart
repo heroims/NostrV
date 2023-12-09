@@ -56,8 +56,9 @@ class SearchPage extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title:Padding(
-              padding: const EdgeInsets.all(15),
+              padding: const EdgeInsets.only(top: 5),
               child: Container(
+                height: 45,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
                     color: Colors.white,
