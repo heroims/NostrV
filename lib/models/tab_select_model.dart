@@ -14,6 +14,9 @@ class TabSelectModel extends ChangeNotifier {
     if(tab == Routers.notify.value) {
       selectIndex = 2;
     }
+    if(tab == Routers.setting.value) {
+      selectIndex = 3;
+    }
   }
   void setIndex(int index){
     selectIndex = index;

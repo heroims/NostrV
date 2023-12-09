@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: S.delegate.supportedLocales,
-            title: 'Flutter Demo',
+            title: 'Nostr',
             theme: ThemeData(
               // This is the theme of your application.
               //
@@ -70,6 +70,16 @@ class MyApp extends StatelessWidget {
               // is not restarted.
               primarySwatch: Colors.blue,
               primaryColor: Colors.blue,
+              bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+                unselectedIconTheme: IconThemeData(color: Colors.black45),
+                selectedIconTheme: IconThemeData(color: Colors.blue),
+                // selectedItemColor: Colors.indigoAccent,
+                // unselectedItemColor: Colors.lightBlueAccent,
+                showSelectedLabels: false,
+                showUnselectedLabels: false,
+                type: BottomNavigationBarType.fixed,
+              )
+              // primaryIconTheme: const IconThemeData(color: Colors.blue),
             ),
           );
         }

@@ -105,8 +105,9 @@ class HomePage extends StatelessWidget{
              return BottomNavigationBar(
                items: const [
                  BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Feed'),
-                 BottomNavigationBarItem(icon: Icon(Icons.chat_bubble), label: 'Message'),
+                 BottomNavigationBarItem(icon: Icon(Icons.chat_bubble_outlined), label: 'Message'),
                  BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Notifications'),
+                 BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
                ],
                currentIndex: model.selectIndex,
                onTap: (index){
@@ -121,6 +122,9 @@ class HomePage extends StatelessWidget{
                    case 2:
                      context.goNamed(Routers.notify.value);
                      break;
+                   case 3:
+                     context.goNamed(Routers.setting.value);
+                     break;
                  }
                },
              );
@@ -131,12 +135,14 @@ class HomePage extends StatelessWidget{
              const feedPage = FeedPage();
              const messagePage = MessagePage();
              const notifyPage = NotifyPage();
+             const settingPage = SettingPage();
              return IndexedStack(
                index: model.selectIndex,
                children: const [
                  feedPage,
                  messagePage,
                  notifyPage,
+                 settingPage,
                ],
              );
            },)

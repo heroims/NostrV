@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nostr/nostr.dart';
 import 'package:nostr_app/models/nostr_user_model.dart';
 import 'package:nostr_app/models/user_info_model.dart';
+import 'package:nostr_app/pages/chat_page.dart';
 import 'package:nostr_app/pages/feed_post_page.dart';
 import 'package:nostr_app/pages/followers_page.dart';
 import 'package:nostr_app/pages/followings_page.dart';
@@ -18,6 +19,8 @@ import 'package:nostr_app/pages/search_page.dart';
 import 'package:nostr_app/pages/welcome_page.dart';
 
 enum Routers {
+  chat(17, 'chat'),
+  setting(16, 'setting'),
   photoView(15, 'photo_view'),
   feedPost(14, 'feed_post'),
   relayInfo(13, 'relay_info'),
@@ -76,7 +79,7 @@ class AppRouter {
       ),
       GoRoute(
           name: Routers.home.value,
-          path: '/${Routers.home.value}/:tab(${Routers.feed.value}|${Routers.message.value}|${Routers.notify.value})',
+          path: '/${Routers.home.value}/:tab(${Routers.feed.value}|${Routers.message.value}|${Routers.notify.value}|${Routers.setting.value})',
           pageBuilder: (context, state) {
             final tabStr = state.pathParameters['tab'];
             return MaterialPage(child: HomePage(tab: tabStr ?? Routers.feed.value));
@@ -103,6 +106,13 @@ class AppRouter {
           path: '/${Routers.notify.value}',
           redirect: (context, state) {
             return '/${Routers.home.value}/${Routers.notify.value}';
+          }
+      ),
+      GoRoute(
+          name: Routers.setting.value,
+          path: '/${Routers.setting.value}',
+          redirect: (context, state) {
+            return '/${Routers.home.value}/${Routers.setting.value}';
           }
       ),
       GoRoute(
@@ -220,6 +230,24 @@ class AppRouter {
           path: '/${Routers.photoView.value}',
           pageBuilder: (context, state) {
             return MaterialPage(child: PhotoPage(imageProvider: state.extra as ImageProvider,));
+          }
+      ),
+      GoRoute(
+          name: Routers.chat.value,
+          path: '/${Routers.chat.value}',
+          pageBuilder: (context, state) {
+            String? userId = state.uri.queryParameters['id'];
+
+            if(userId!=null){
+              userId = Nip19.decodePubkey(userId);
+            }
+            else {
+              if(state.extra!=null){
+                userId = state.extra as String;
+              }
+            }
+
+            return MaterialPage(child: ChatPage(publicKey:userId));
           }
       ),
       GoRoute(

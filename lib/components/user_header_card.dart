@@ -107,7 +107,9 @@ class UserHeaderCard extends StatelessWidget {
                       child: CupertinoButton(
                           padding: const EdgeInsets.all(0),
                           color: Colors.blue,
-                          onPressed: (){},
+                          onPressed: (){
+                            context.pushNamed(Routers.chat.value,extra: userFollowModel.userInfoModel.publicKey);
+                          },
                           child: const Icon(Icons.messenger)
                       ),
                     )
