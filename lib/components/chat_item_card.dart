@@ -1,14 +1,15 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:nostr/nostr.dart';
-import 'package:nostr_app/models/feed_list_model.dart';
+import 'package:nostr_app/models/chat_list_model.dart';
+import 'package:nostr_app/realm/db_message.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../generated/l10n.dart';
@@ -26,25 +27,42 @@ enum ChatItemCardType {
 }
 
 class ChatItemCard extends StatelessWidget {
-  final ChatItemCardType cardType;
-  final FeedListModel feedListModel;
+  final ChatListModel chatListModel;
   final int itemIndex;
 
-  const ChatItemCard({super.key,required this.feedListModel,required this.itemIndex,required this.cardType});
+  const ChatItemCard({super.key,required this.chatListModel,required this.itemIndex});
 
   @override
   Widget build(BuildContext context) {
     final appRouter = Provider.of<AppRouter>(context, listen: false);
-    final Event feed = feedListModel.feedList[itemIndex];
+    final DBMessage dbMessage = chatListModel.messageList[itemIndex];
 
-    UserInfo? user = feedListModel.getUser(feed.pubkey);
+    Event feed = Message.deserialize(dbMessage.meta).message;
+    UserInfo? user = chatListModel.getUser(feed.pubkey);
+    final selfPublicKey = Nip19.decodePubkey(appRouter.nostrUserModel.currentUserSync!.publicKey);
 
     bool isMine = false;
-    if(Nip19.encodePubkey(feed.pubkey) == appRouter.nostrUserModel.currentUserSync!.publicKey){
+    if(feed.pubkey == selfPublicKey){
       isMine = true;
     }
 
     String tmpContent = feed.content;
+    if(feed.kind == 4){
+      if(isMine){
+        for (var pTag in feed.tags) {
+          if(pTag.first=='p'){
+            (feed as EncryptedDirectMessage).pubkey = pTag[1];
+            break;
+          }
+        }
+      }
+      final priKey = Nip19.decodePrivkey(appRouter.nostrUserModel.currentUserSync!.privateKey);
+      tmpContent = (feed as EncryptedDirectMessage).getPlaintext(priKey);
+      if(isMine){
+        feed.pubkey = selfPublicKey;
+      }
+    }
+
     RegExp linkRegex = RegExp(r"(https?://\S+)");
     String replacedText = tmpContent.replaceAllMapped(
       linkRegex, (match) {
@@ -80,7 +98,6 @@ class ChatItemCard extends StatelessWidget {
       }
     },
     );
-
     RegExp tagRegex = RegExp(r"(#\S+)");
     replacedText = replacedText.replaceAllMapped(
       tagRegex, (match) {
@@ -162,113 +179,63 @@ class ChatItemCard extends StatelessWidget {
       );
     }
 
-    String replyText = '';
-    String atUserText = '';
-    String originAtNodeID = '';
-    for (var element in feed.tags) {
-      if(element.first=='e' && replyText == '' && element[1]!=feed.id){
-        originAtNodeID = element[1];
-        final atNodeID = Nip19.encodeNote(originAtNodeID).toString();
-        replyText = "${S.of(context).postByReply}${atNodeID.replaceRange(8, atNodeID.length-6, ':')}";
-      }
-
-      if(element.first=='p'){
-        final atUserOriginId = element[1];
-        final atUserID = Nip19.encodePubkey(atUserOriginId).toString();
-        String atUserName = atUserID.replaceRange(8, 57, ':');
-
-        RealmModel realmModel = Provider.of<RealmModel>(context, listen: false);
-
-        final findUser = realmModel.realm.find<DBUser>(atUserOriginId);
-        if(findUser!=null){
-          final tmpUserInfo = UserInfo.fromDBUser(findUser);
-          atUserName = tmpUserInfo.userName;
-          if(atUserName == ''){
-            atUserName = tmpUserInfo.displayName;
-          }
-          if(atUserName == ''){
-            atUserName = tmpUserInfo.name;
-          }
-          if(atUserName == ''){
-            atUserName = atUserID.replaceRange(8, 57, ':');
-          }
-
-        }
-        else{
-          UserInfoModel(context, atUserOriginId).getUserInfo();
-        }
-        atUserText = "<a href='nostr://${Routers.profile.value}?id=$atUserID' style='text-decoration: none'>@$atUserName</a> $atUserText";
-      }
-    }
-    if(atUserText!=''){
-      replacedText ="$replacedText<br/><br/>$atUserText";
-    }
+    // String replyText = '';
+    // String atUserText = '';
+    // String originAtNodeID = '';
+    // for (var element in feed.tags) {
+    //   if(element.first=='e' && replyText == '' && element[1]!=feed.id){
+    //     originAtNodeID = element[1];
+    //     final atNodeID = Nip19.encodeNote(originAtNodeID).toString();
+    //     replyText = "${S.of(context).postByReply}${atNodeID.replaceRange(8, atNodeID.length-6, ':')}";
+    //   }
+    //
+    //   if(element.first=='p'){
+    //     final atUserOriginId = element[1];
+    //     final atUserID = Nip19.encodePubkey(atUserOriginId).toString();
+    //     String atUserName = atUserID.replaceRange(8, 57, ':');
+    //
+    //     RealmModel realmModel = Provider.of<RealmModel>(context, listen: false);
+    //
+    //     final findUser = realmModel.realm.find<DBUser>(atUserOriginId);
+    //     if(findUser!=null){
+    //       final tmpUserInfo = UserInfo.fromDBUser(findUser);
+    //       atUserName = tmpUserInfo.userName;
+    //       if(atUserName == ''){
+    //         atUserName = tmpUserInfo.displayName;
+    //       }
+    //       if(atUserName == ''){
+    //         atUserName = tmpUserInfo.name;
+    //       }
+    //       if(atUserName == ''){
+    //         atUserName = atUserID.replaceRange(8, 57, ':');
+    //       }
+    //
+    //     }
+    //     else{
+    //       UserInfoModel(context, atUserOriginId).getUserInfo();
+    //     }
+    //     atUserText = "<a href='nostr://${Routers.profile.value}?id=$atUserID' style='text-decoration: none'>@$atUserName</a> $atUserText";
+    //   }
+    // }
+    // if(atUserText!=''){
+    //   replacedText ="$replacedText<br/><br/>$atUserText";
+    // }
     final formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.fromMillisecondsSinceEpoch(feed.createdAt*1000));
 
-    bool upvote = false;
-    if(feedListModel.upvoteFeedMap.containsKey(feed.id)){
-      upvote = feedListModel.upvoteFeedMap[feed.id]?? false;
-    }
-    else{
-      feedListModel.getUpvoteFeed(feed.id, Nip19.decodePubkey(appRouter.nostrUserModel.currentUserSync!.publicKey));
-    }
+    double avatarSize = 45;
+    double cardPadding = 10;
+    double cellPadding = 5;
 
-    List<Widget> widgets = [const SizedBox(width: 10,),];
+
+    List<Widget> widgets = [];
     if(isMine){
-      widgets.add(Expanded(child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Visibility(
-            visible: feed.kind!=4,
-            child: Container(
-              padding: const EdgeInsets.only(left: 10,right: 10,bottom: 5),
-              child: Text(
-                userName,
-              ),
+      widgets.add(Padding(
+          padding: EdgeInsets.only(left: cellPadding,right: cellPadding),
+          child: Card(child: Container(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width-avatarSize-cardPadding*2-cellPadding*2
             ),
-          ),
-          // Container(
-          //   padding: const EdgeInsets.only(left: 10,right: 10,bottom: 5),
-          //   child: Text(
-          //     formattedDate,
-          //     style: const TextStyle(
-          //       fontSize: 10,
-          //       fontWeight:  FontWeight.bold,
-          //     ),
-          //   ),
-          // ),
-          // Visibility(visible: replyText != '',child: Container(
-          //   height: 25,
-          //   padding: const EdgeInsets.only(left: 10,right: 10,bottom: 5),
-          //   child: CupertinoButton(
-          //     padding: const EdgeInsets.all(0),
-          //     child: Text(
-          //       replyText,
-          //       style: const TextStyle(
-          //         fontSize: 13,
-          //       ),
-          //     ),
-          //     onPressed: (){
-          //       final pageState = GoRouterState.of(context);
-          //       if(
-          //       pageState.name.toString() == Routers.feedDetail.value
-          //           &&feedListModel.noteId!=null
-          //           &&feedListModel.noteId==originAtNodeID
-          //       ){
-          //         ScaffoldMessenger.of(context).showSnackBar(
-          //           SnackBar(
-          //             content: Text(S.of(context).tipByOnThisPost),
-          //             duration: const Duration(seconds: 1),
-          //           ),
-          //         );
-          //         return;
-          //       }
-          //       context.pushNamed(Routers.feedDetail.value,extra: originAtNodeID);
-          //     },
-          //   ),
-          // ),),
-          Container(
-            padding: const EdgeInsets.only(left: 10,right: 10,bottom: 10),
+            padding: EdgeInsets.only(left: cardPadding,right: cardPadding,top: cardPadding,bottom: cardPadding),
             child: HtmlWidget(
               replacedText,
               enableCaching: true,
@@ -316,12 +283,10 @@ class ChatItemCard extends StatelessWidget {
                 return null;
               },
             ),
-          ),
-        ],
-      )));
+          ))));
       widgets.add(SizedBox(
-          width: 50,
-          height: 50,
+          width: avatarSize,
+          height: avatarSize,
           child: CupertinoButton(
             padding: const EdgeInsets.all(0),
             onPressed: (){
@@ -356,11 +321,13 @@ class ChatItemCard extends StatelessWidget {
             child: imageWidget,
           )
       ));
+      widgets.add(SizedBox(width: cardPadding,));
     }
     else{
+      widgets.add(SizedBox(width: cardPadding,));
       widgets.add(SizedBox(
-          width: 50,
-          height: 50,
+          width: avatarSize,
+          height: avatarSize,
           child: CupertinoButton(
             padding: const EdgeInsets.all(0),
             onPressed: (){
@@ -395,60 +362,14 @@ class ChatItemCard extends StatelessWidget {
             child: imageWidget,
           )
       ));
-      widgets.add(Expanded(child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Visibility(
-            visible: feed.kind!=4,
-            child: Container(
-              padding: const EdgeInsets.only(left: 10,right: 10,bottom: 5),
-              child: Text(
-                userName,
-              ),
+      widgets.add(Padding(
+        padding: EdgeInsets.only(left: cellPadding,right: cellPadding),
+        child: Card(
+          child:Container(
+            constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width-avatarSize-cardPadding*2-cellPadding*2
             ),
-          ),
-          // Container(
-          //   padding: const EdgeInsets.only(left: 10,right: 10,bottom: 5),
-          //   child: Text(
-          //     formattedDate,
-          //     style: const TextStyle(
-          //       fontSize: 10,
-          //       fontWeight:  FontWeight.bold,
-          //     ),
-          //   ),
-          // ),
-          // Visibility(visible: replyText != '',child: Container(
-          //   height: 25,
-          //   padding: const EdgeInsets.only(left: 10,right: 10,bottom: 5),
-          //   child: CupertinoButton(
-          //     padding: const EdgeInsets.all(0),
-          //     child: Text(
-          //       replyText,
-          //       style: const TextStyle(
-          //         fontSize: 13,
-          //       ),
-          //     ),
-          //     onPressed: (){
-          //       final pageState = GoRouterState.of(context);
-          //       if(
-          //       pageState.name.toString() == Routers.feedDetail.value
-          //           &&feedListModel.noteId!=null
-          //           &&feedListModel.noteId==originAtNodeID
-          //       ){
-          //         ScaffoldMessenger.of(context).showSnackBar(
-          //           SnackBar(
-          //             content: Text(S.of(context).tipByOnThisPost),
-          //             duration: const Duration(seconds: 1),
-          //           ),
-          //         );
-          //         return;
-          //       }
-          //       context.pushNamed(Routers.feedDetail.value,extra: originAtNodeID);
-          //     },
-          //   ),
-          // ),),
-          Container(
-            padding: const EdgeInsets.only(left: 10,right: 10,bottom: 10),
+            padding: EdgeInsets.only(left: cardPadding,right: cardPadding, top: cardPadding,bottom: cardPadding),
             child: HtmlWidget(
               replacedText,
               enableCaching: true,
@@ -497,19 +418,29 @@ class ChatItemCard extends StatelessWidget {
               },
             ),
           ),
-        ],
-      )));
+        ),
+      )
+      );
     }
-    return Card(
-      child: Column(
-        children: [
-          const SizedBox(height: 10,),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: widgets,
-          )
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: cardPadding,),
+        Visibility(
+          visible: feed.kind!=4 && !isMine,
+          child: Container(
+            padding: EdgeInsets.only(left: cardPadding,right: cardPadding,bottom: cellPadding),
+            child: Text(
+              userName,
+            ),
+          ),
+        ),
+        Row(
+          mainAxisAlignment: isMine? MainAxisAlignment.end : MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: widgets,
+        )
+      ],
     );
   }
 

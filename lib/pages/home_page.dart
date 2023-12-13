@@ -66,6 +66,7 @@ class HomePage extends StatelessWidget{
                                PopupMenuItem<String>(
                                  child: Text(S.of(context).navByPrivateChat),
                                  onTap: () {
+                                   context.pushNamed(Routers.contract.value);
                                  },
                                ),
                                PopupMenuItem<String>(

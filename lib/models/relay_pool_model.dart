@@ -92,7 +92,9 @@ class RelayPoolModel extends ChangeNotifier {
 
   Future<Map<String, WebSocket?>> getConnectSockets() async{
     Map<String, WebSocket?> sockets = {};
-    for(String url in relayWss.keys){
+    final relays = (await prefs).getStringList(relaysSaveKey) ?? defaultRelayUrls;
+
+    for(String url in relays){
       WebSocket tmpSocket = await WebSocket.connect(url);
       sockets[url] = tmpSocket;
     }

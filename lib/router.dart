@@ -4,6 +4,7 @@ import 'package:nostr/nostr.dart';
 import 'package:nostr_app/models/nostr_user_model.dart';
 import 'package:nostr_app/models/user_info_model.dart';
 import 'package:nostr_app/pages/chat_page.dart';
+import 'package:nostr_app/pages/contract_page.dart';
 import 'package:nostr_app/pages/feed_post_page.dart';
 import 'package:nostr_app/pages/followers_page.dart';
 import 'package:nostr_app/pages/followings_page.dart';
@@ -19,6 +20,7 @@ import 'package:nostr_app/pages/search_page.dart';
 import 'package:nostr_app/pages/welcome_page.dart';
 
 enum Routers {
+  contract(18, 'contract'),
   chat(17, 'chat'),
   setting(16, 'setting'),
   photoView(15, 'photo_view'),
@@ -233,21 +235,29 @@ class AppRouter {
           }
       ),
       GoRoute(
+          name: Routers.contract.value,
+          path: '/${Routers.contract.value}',
+          pageBuilder: (context, state) {
+            return const MaterialPage(child: ContractPage());
+          }
+      ),
+      GoRoute(
           name: Routers.chat.value,
           path: '/${Routers.chat.value}',
           pageBuilder: (context, state) {
             String? userId = state.uri.queryParameters['id'];
-
+            void Function()? refreshChannel;
             if(userId!=null){
               userId = Nip19.decodePubkey(userId);
             }
             else {
               if(state.extra!=null){
-                userId = state.extra as String;
+                userId = (state.extra! as Map)['publicKey'];
+                refreshChannel = (state.extra! as Map)['refreshChannel'];
               }
             }
 
-            return MaterialPage(child: ChatPage(publicKey:userId));
+            return MaterialPage(child: ChatPage(refreshChannel: refreshChannel,publicKey:userId,));
           }
       ),
       GoRoute(

@@ -1,19 +1,38 @@
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
+import 'package:nostr/nostr.dart';
+import 'package:nostr_app/components/chat_item_card.dart';
+import 'package:nostr_app/models/chat_list_model.dart';
 import 'package:nostr_app/models/chat_tool_model.dart';
+import 'package:nostr_app/router.dart';
 import 'package:provider/provider.dart';
 
 class ChatPage extends StatelessWidget{
   final String? publicKey;
-  const ChatPage({super.key, this.publicKey});
+  final String? channelId;
+  final void Function()? refreshChannel;
+  const ChatPage({super.key, this.publicKey, this.channelId, this.refreshChannel});
 
   @override
   Widget build(BuildContext context) {
     final editController = TextEditingController();
+    final controller = EasyRefreshController(
+      controlFinishRefresh: true,
+      controlFinishLoad: false,
+    );
+    final chatListModel = ChatListModel(context, controller, userId: publicKey, channelId: channelId);
+
+
+    AppRouter appRouter = Provider.of<AppRouter>(context, listen: false);
 
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context)=> ChatToolModel(editController),
+          create: (context)=> chatListModel,
+          lazy: false,
+        ),
+        ChangeNotifierProvider(
+          create: (context)=> ChatToolModel(context,editController,userId: publicKey,channelId: channelId,refreshChannel: refreshChannel),
           lazy: false,
         )
 ,      ],
@@ -22,14 +41,29 @@ class ChatPage extends StatelessWidget{
           appBar: AppBar(
             title: const Text('Chat'),
           ),
-          body: Stack(
-            children: [
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
+          body: EasyRefresh(
+            controller: controller,
+            header: const BezierHeader(),
+            onRefresh: () => chatListModel.loadMoreMessage(),
+            child: Column(
+              children: [
+                Expanded(child: Consumer<ChatListModel>(
+                    builder:(context, model, child) {
+                      return ListView.builder(
+                          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                          itemCount: model.messageList.length,
+                          itemBuilder: (context, index) {
+                            return ChatItemCard(chatListModel: model, itemIndex: index,);
+                          }
+                      );
+                    }
+                ),),
+                Container(
                   color: Colors.grey[200],
                   child: Consumer<ChatToolModel>(
                       builder:(context, model, child){
+                        final privateKey = Nip19.decodePrivkey(appRouter.nostrUserModel.currentUserSync!.privateKey);
+
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -37,14 +71,14 @@ class ChatPage extends StatelessWidget{
                               children: [
                                 IconButton(
                                   onPressed: () {
-
+                                    model.cameraAddImage(privateKey);
                                   },
                                   icon: const Icon(Icons.camera_alt_outlined),
                                 ),
                                 const SizedBox(width: 5),
                                 IconButton(
                                   onPressed: () {
-
+                                    model.photosAddImage(privateKey);
                                   },
                                   icon: const Icon(Icons.photo_outlined),
                                 ),
@@ -78,7 +112,7 @@ class ChatPage extends StatelessWidget{
                             ),
                             IconButton(
                                 onPressed: (){
-
+                                  model.sendMessage(privateKey);
                                 },
                                 icon: const Icon(Icons.send)
                             ),
@@ -87,8 +121,8 @@ class ChatPage extends StatelessWidget{
                       }
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

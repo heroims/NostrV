@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'generated/l10n.dart';
 import 'package:nostr_app/router.dart';
 
+import 'models/chat_listen_model.dart';
 import 'models/realm_model.dart';
 
 void main(){
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<RelayPoolModel>(

@@ -12,7 +12,9 @@ import '../router.dart';
 class UserItemCard extends StatelessWidget {
   final UserFollowModel userFollowModel;
 
-  const UserItemCard({super.key, required this.userFollowModel});
+  final void Function(String publicKey) ? customOnTap;
+
+  const UserItemCard({super.key, this.customOnTap, required this.userFollowModel});
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +105,12 @@ class UserItemCard extends StatelessWidget {
         ),
       ),
       onTap: (){
-        context.pushNamed(Routers.profile.value,queryParameters: {'id':Nip19.encodePubkey(model.userInfoModel.publicKey)});
+        if(customOnTap!=null){
+          customOnTap!(model.userInfoModel.publicKey);
+        }
+        else{
+          context.pushNamed(Routers.profile.value,queryParameters: {'id':Nip19.encodePubkey(model.userInfoModel.publicKey)});
+        }
       },
     );
   }

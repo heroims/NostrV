@@ -174,26 +174,32 @@ class UserInfoModel extends ChangeNotifier {
       relayPoolModel.addRequestSingle(key, requestWithFilter, (event){
         if(event!=null) {
           if(!_isDisposed){
-            _userInfo=UserInfo.fromJson(jsonDecode(event.content));
+            try{
+              _userInfo=UserInfo.fromJson(jsonDecode(event.content));
 
-            realmModel.realm.write(() => realmModel.realm.add(DBUser(
-                publicKey,
-                name: userInfo?.name,
-                userName: userInfo?.userName,
-                displayName: userInfo?.displayName,
-                website: userInfo?.website,
-                lud06: userInfo?.lud06,
-                lud16: userInfo?.lud16,
-                nip05: userInfo?.nip05,
-                about: userInfo?.about,
-                picture: userInfo?.picture,
-                banner: userInfo?.banner
-            ),update: true));
-            if(refreshCallback!=null){
-              refreshCallback();
+              realmModel.realm.write(() => realmModel.realm.add(DBUser(
+                  publicKey,
+                  name: userInfo?.name,
+                  userName: userInfo?.userName,
+                  displayName: userInfo?.displayName,
+                  website: userInfo?.website,
+                  lud06: userInfo?.lud06,
+                  lud16: userInfo?.lud16,
+                  nip05: userInfo?.nip05,
+                  about: userInfo?.about,
+                  picture: userInfo?.picture,
+                  banner: userInfo?.banner
+              ),update: true));
+              if(refreshCallback!=null){
+                refreshCallback();
+              }
+
+              notifyListeners();
+            }
+            catch(_){
+              debugPrint("error content");
             }
 
-            notifyListeners();
           }
         }
       });

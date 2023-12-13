@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:nostr_app/components/user_item_card.dart';
@@ -146,6 +144,7 @@ class SearchPage extends StatelessWidget {
                               child: Consumer<FeedListModel>(
                                   builder:(context, model, child) {
                                     return CustomScrollView(
+                                      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                                       slivers: [
                                         SliverList.builder(
                                             itemCount: model.feedList.length,
@@ -170,7 +169,6 @@ class SearchPage extends StatelessWidget {
                                             itemCount: model.eventList.length,
                                             itemBuilder: (context, index) {
                                               final event = model.eventList[index];
-                                              UserInfo user = UserInfo.fromJson(jsonDecode(event.content));
                                               UserFollowModel followModel = UserFollowModel(UserInfoModel(context, event.pubkey));
                                               return ChangeNotifierProvider(
                                                 create: (_)=>followModel,
