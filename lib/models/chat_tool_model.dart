@@ -17,7 +17,7 @@ class ChatToolModel extends ChangeNotifier {
   late TextEditingController textEditingController;
   final BuildContext  _context;
 
-  late RealmModel realmModel;
+  late RealmToolModel realmModel;
   late RelayPoolModel pool;
 
   String? userId;
@@ -26,7 +26,7 @@ class ChatToolModel extends ChangeNotifier {
   final void Function()? refreshChannel;
 
   ChatToolModel(this._context, this.textEditingController,{this.userId, this.channelId,this.publicMessage,this.refreshChannel}){
-    realmModel = Provider.of<RealmModel>(_context, listen: false);
+    realmModel = Provider.of<RealmToolModel>(_context, listen: false);
     pool = Provider.of<RelayPoolModel>(_context, listen: false);
   }
 
@@ -71,9 +71,6 @@ class ChatToolModel extends ChangeNotifier {
       event.id = event.getEventId();
       event.sig = event.getSignature(privateKey);
       pool.addEventSingle(event, (data) {
-        realmModel.realm.add<DBMessage>(
-            DBMessage(event.id, event.pubkey, event.content, DateTime.fromMillisecondsSinceEpoch(event.createdAt*1000), channelId!, publicMessage!.id, userId!, event.serialize(), channelId!)
-        );
         clearInput();
       });
     }

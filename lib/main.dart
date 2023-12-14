@@ -35,9 +35,9 @@ class MyApp extends StatelessWidget {
           lazy: false,
           create: (_) => RelayPoolModel(),
         ),
-        ChangeNotifierProvider<RealmModel>(
+        ChangeNotifierProvider<RealmToolModel>(
           lazy: false,
-          create: (_) => RealmModel(),
+          create: (_) => RealmToolModel(),
         ),
         Provider(
             lazy: false,

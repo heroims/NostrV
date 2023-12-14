@@ -5,10 +5,10 @@ import 'package:realm/realm.dart';
 import '../realm/db_follower.dart';
 import '../realm/db_user.dart';
 
-class RealmModel extends ChangeNotifier {
+class RealmToolModel extends ChangeNotifier {
   late Realm realm;
 
-  RealmModel(){
+  RealmToolModel(){
     final config = Configuration.local(
         [
           DBUser.schema,

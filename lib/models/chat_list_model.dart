@@ -19,8 +19,35 @@ class ChatListModel extends ChangeNotifier {
 
   String? userId;
   String? channelId;
+  late StreamSubscription _subscription;
 
   ChatListModel(this._context, this._controller, {this.userId, this.channelId}){
+    RealmToolModel realmModel = Provider.of<RealmToolModel>(_context, listen: false);
+
+    String dbChannelId = '';
+    if(userId!=null){
+      AppRouter router = Provider.of<AppRouter>(_context, listen: false);
+
+      String selfPubKey = Nip19.decodePubkey(router.nostrUserModel.currentUserSync!.publicKey);
+      List<String> tmpIds =[selfPubKey, userId!];
+      tmpIds.sort();
+      dbChannelId = md5.convert(utf8.encode(tmpIds.join(""))).toString();
+    }
+    if(channelId!=null){
+      dbChannelId = channelId!;
+    }
+    final dbResults = realmModel.realm.query<DBMessage>("dbChannelId == '$dbChannelId' SORT(created DESC)");
+    _subscription = dbResults.changes.listen((event) {
+      if(event.inserted.isNotEmpty){
+        for (var eIndex in event.inserted) {
+          final insertDM = event.results[eIndex];
+
+          _messageList.add(insertDM);
+          _readCount+=1;
+          _loadMessage();
+        }}
+    });
+
     loadMoreMessage();
   }
 
@@ -30,8 +57,7 @@ class ChatListModel extends ChangeNotifier {
   List<DBMessage> get messageList => _messageList;
 
   UserInfo? getUser(String publicKey){
-    RealmModel realmModel = Provider.of<RealmModel>(_context, listen: false);
-
+    RealmToolModel realmModel = Provider.of<RealmToolModel>(_context, listen: false);
     final findUser = realmModel.realm.find<DBUser>(publicKey);
     if(findUser!=null){
       return UserInfo.fromDBUser(findUser);
@@ -44,7 +70,7 @@ class ChatListModel extends ChangeNotifier {
 
   void _loadMessage(){
 
-    RealmModel realmModel = Provider.of<RealmModel>(_context, listen: false);
+    RealmToolModel realmModel = Provider.of<RealmToolModel>(_context, listen: false);
     if(userId!=null){
       AppRouter router = Provider.of<AppRouter>(_context, listen: false);
 
@@ -71,5 +97,11 @@ class ChatListModel extends ChangeNotifier {
     _readCount += _limit;
     _loadMessage();
     _controller.finishRefresh();
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
   }
 }

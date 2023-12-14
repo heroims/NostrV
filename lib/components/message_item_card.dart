@@ -165,9 +165,6 @@ class MessageItemCard extends StatelessWidget {
               Routers.chat.value,
               extra: {
                 'publicKey': isMine?dbMessage.to:feed.pubkey,
-                'refreshChannel': (){
-                  chatListenModel.refreshList();
-                }
               });
         }
         else if(feed.kind==42){

@@ -94,7 +94,7 @@ class UserInfoModel extends ChangeNotifier {
   final followersLimit = 100;
   final followersLastTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
-  late RealmModel realmModel;
+  late RealmToolModel realmModel;
 
   String _lastFollowersRequestUUID = '';
   Map<String, WebSocket?> _privateSockets = {};
@@ -104,7 +104,7 @@ class UserInfoModel extends ChangeNotifier {
       _followings = userInfoModel.followings;
       _userInfo = userInfoModel.userInfo;
     }
-    realmModel = Provider.of<RealmModel>(_context, listen: false);
+    realmModel = Provider.of<RealmToolModel>(_context, listen: false);
 
     final findUser = realmModel.realm.find<DBUser>(publicKey);
     if(findUser!=null){

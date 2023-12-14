@@ -39,7 +39,7 @@ class FeedListModel extends ChangeNotifier {
   final List<Event> feedList = [];
 
   UserInfo? getUser(String publicKey){
-    RealmModel realmModel = Provider.of<RealmModel>(_context, listen: false);
+    RealmToolModel realmModel = Provider.of<RealmToolModel>(_context, listen: false);
 
     final findUser = realmModel.realm.find<DBUser>(publicKey);
     if(findUser!=null){

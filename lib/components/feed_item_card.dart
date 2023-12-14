@@ -110,7 +110,7 @@ class FeedItemCard extends StatelessWidget {
           String atUserName = atText.replaceRange(8, 57, ':');
           final atUserOriginId = Nip19.decodePubkey(atText);
 
-          RealmModel realmModel = Provider.of<RealmModel>(context, listen: false);
+          RealmToolModel realmModel = Provider.of<RealmToolModel>(context, listen: false);
 
           final findUser = realmModel.realm.find<DBUser>(atUserOriginId);
           if(findUser!=null){
@@ -186,7 +186,7 @@ class FeedItemCard extends StatelessWidget {
         final atUserID = Nip19.encodePubkey(atUserOriginId).toString();
         String atUserName = atUserID.replaceRange(8, 57, ':');
 
-        RealmModel realmModel = Provider.of<RealmModel>(context, listen: false);
+        RealmToolModel realmModel = Provider.of<RealmToolModel>(context, listen: false);
 
         final findUser = realmModel.realm.find<DBUser>(atUserOriginId);
         if(findUser!=null){

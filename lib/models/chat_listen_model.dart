@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 
@@ -14,12 +15,13 @@ import '../realm/db_user.dart';
 
 class ChatListenModel extends ChangeNotifier {
   late final BuildContext _context;
+  late StreamSubscription _subscription;
 
   ChatListenModel(this._context,){
-    RealmModel realmModel = Provider.of<RealmModel>(_context, listen: false);
+    RealmToolModel realmModel = Provider.of<RealmToolModel>(_context, listen: false);
     final dbResults = realmModel.realm.query<DBMessage>("TRUEPREDICATE SORT(created DESC) DISTINCT(dbChannelId)");
     _channelLists = dbResults.toList();
-    dbResults.changes.listen((event) {
+    _subscription = dbResults.changes.listen((event) {
       _channelLists = event.results.toList();
       notifyListeners();
     });
@@ -28,16 +30,8 @@ class ChatListenModel extends ChangeNotifier {
   late List<DBMessage> _channelLists=[];
   List<DBMessage> get channelLists => _channelLists;
 
-  void refreshList(){
-    RealmModel realmModel = Provider.of<RealmModel>(_context, listen: false);
-
-    final dbResults = realmModel.realm.query<DBMessage>("TRUEPREDICATE SORT(created DESC) DISTINCT(dbChannelId)");
-    _channelLists = dbResults.toList();
-    notifyListeners();
-  }
-
   void listenMessage() {
-    RealmModel realmModel = Provider.of<RealmModel>(_context, listen: false);
+    RealmToolModel realmModel = Provider.of<RealmToolModel>(_context, listen: false);
 
     final dbDMResults = realmModel.realm.query<DBMessage>('TRUEPREDICATE SORT(created DESC) LIMIT(1)');
     final dbPubResults = realmModel.realm.query<DBMessage>("channelId != '' SORT(created DESC) DISTINCT(channelId)");
@@ -87,57 +81,58 @@ class ChatListenModel extends ChangeNotifier {
         if(value!=null){
           value.add(requestWithFilter.serialize());
           value.listen((metaData) {
-            final messageData = Message.deserialize(metaData);
-            if (messageData.type == 'EVENT') {
-              Event element = messageData.message as Event;
-              String tmpChannelId = '';
-              String replyId = '';
-              String to = '';
-              for (var tag in element.tags) {
-                if(
-                    element.kind == 42
-                    && tag.first == 'e'
-                    && tag[3] == 'root'
-                ){
-                  tmpChannelId = tag[1];
+            try{
+              final messageData = Message.deserialize(metaData);
+              if (messageData.type == 'EVENT') {
+                Event element = messageData.message as Event;
+                String tmpChannelId = '';
+                String replyId = '';
+                String to = '';
+                for (var tag in element.tags) {
+                  if(
+                  element.kind == 42
+                      && tag.first == 'e'
+                      && tag[3] == 'root'
+                  ){
+                    tmpChannelId = tag[1];
+                  }
+                  if(
+                  element.kind == 42
+                      && tag.first == 'e'
+                      && tag[3] == 'reply'
+                  ){
+                    replyId = tag[1];
+                  }
+                  if(
+                  element.kind == 4
+                      && tag.first == 'e'
+                  ){
+                    replyId = tag[1];
+                  }
+                  if(tag.first == 'p'){
+                    to = tag[1];
+                  }
                 }
-                if(
-                    element.kind == 42
-                    && tag.first == 'e'
-                    && tag[3] == 'reply'
-                ){
-                  replyId = tag[1];
+
+                String messageChannelId = '';
+                if(element.kind == 4){
+                  List<String> tmpIds =[element.pubkey, to];
+                  tmpIds.sort();
+
+                  messageChannelId = md5.convert(utf8.encode(tmpIds.join(""))).toString();
                 }
-                if(
-                    element.kind == 4
-                    && tag.first == 'e'
-                ){
-                  replyId = tag[1];
+                if(element.kind == 42){
+                  messageChannelId = tmpChannelId;
                 }
-                if(tag.first == 'p'){
-                  to = tag[1];
-                }
+
+                DBMessage message =DBMessage(element.id, element.pubkey, element.content, DateTime.fromMillisecondsSinceEpoch(element.createdAt.toInt()*1000), tmpChannelId, replyId, to, element.serialize(), messageChannelId);
+                realmModel.realm.writeAsync(() {
+                  realmModel.realm.add(message, update: true);
+                });
+
               }
-
-              String messageChannelId = '';
-              if(element.kind == 4){
-                List<String> tmpIds =[element.pubkey, to];
-                tmpIds.sort();
-
-                messageChannelId = md5.convert(utf8.encode(tmpIds.join(""))).toString();
-              }
-              if(element.kind == 42){
-                messageChannelId = tmpChannelId;
-              }
-
-              DBMessage message =DBMessage(element.id, element.pubkey, element.content, DateTime.fromMillisecondsSinceEpoch(element.createdAt.toInt()*1000), tmpChannelId, replyId, to, element.serialize(), messageChannelId);
-              realmModel.realm.writeAsync(() {
-                realmModel.realm.add(message, update: true);
-              }).then((value){
-                refreshList();
-              });
-
             }
+            catch(_){}
           });
         }
       });
@@ -145,7 +140,7 @@ class ChatListenModel extends ChangeNotifier {
   }
 
   UserInfo? getUser(String publicKey){
-    RealmModel realmModel = Provider.of<RealmModel>(_context, listen: false);
+    RealmToolModel realmModel = Provider.of<RealmToolModel>(_context, listen: false);
 
     final findUser = realmModel.realm.find<DBUser>(publicKey);
     if(findUser!=null){
@@ -155,6 +150,12 @@ class ChatListenModel extends ChangeNotifier {
       UserInfoModel(_context, publicKey).getUserInfo(refreshCallback: ()=>notifyListeners());
     }
     return null;
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
   }
 }
 

@@ -118,7 +118,7 @@ class ChatItemCard extends StatelessWidget {
           String atUserName = atText.replaceRange(8, 57, ':');
           final atUserOriginId = Nip19.decodePubkey(atText);
 
-          RealmModel realmModel = Provider.of<RealmModel>(context, listen: false);
+          RealmToolModel realmModel = Provider.of<RealmToolModel>(context, listen: false);
 
           final findUser = realmModel.realm.find<DBUser>(atUserOriginId);
           if(findUser!=null){
