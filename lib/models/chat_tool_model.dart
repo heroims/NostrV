@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:io';
-import 'package:crypto/crypto.dart';
 import 'package:http_parser/http_parser.dart';
 
 import 'package:dio/dio.dart';
@@ -14,8 +12,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class ChatToolModel extends ChangeNotifier {
-  late TextEditingController textEditingController;
+  final TextEditingController _textEditingController;
   final BuildContext  _context;
+  final ScrollController _scrollController;
 
   late RealmToolModel realmModel;
   late RelayPoolModel pool;
@@ -25,20 +24,20 @@ class ChatToolModel extends ChangeNotifier {
   DBMessage? publicMessage;
   final void Function()? refreshChannel;
 
-  ChatToolModel(this._context, this.textEditingController,{this.userId, this.channelId,this.publicMessage,this.refreshChannel}){
+  ChatToolModel(this._context, this._textEditingController, this._scrollController,{this.userId, this.channelId,this.publicMessage,this.refreshChannel}){
     realmModel = Provider.of<RealmToolModel>(_context, listen: false);
     pool = Provider.of<RelayPoolModel>(_context, listen: false);
   }
 
   void clearInput(){
-    textEditingController.text = '';
+    _textEditingController.text = '';
     notifyListeners();
 
   }
 
   void sendMessage(String privateKey){
-    if(textEditingController.text != ''){
-      _sendText(textEditingController.text, privateKey);
+    if(_textEditingController.text != ''){
+      _sendText(_textEditingController.text, privateKey);
     }
   }
 
@@ -49,6 +48,11 @@ class ChatToolModel extends ChangeNotifier {
 
       pool.addEventSingle(event, (data) {
         clearInput();
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeOut,
+        );
       });
     }
 
@@ -72,6 +76,11 @@ class ChatToolModel extends ChangeNotifier {
       event.sig = event.getSignature(privateKey);
       pool.addEventSingle(event, (data) {
         clearInput();
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeOut,
+        );
       });
     }
   }

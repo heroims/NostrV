@@ -16,6 +16,7 @@ class ChatPage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     final editController = TextEditingController();
+    final scrollController = ScrollController();
     final controller = EasyRefreshController(
       controlFinishRefresh: true,
       controlFinishLoad: false,
@@ -32,7 +33,7 @@ class ChatPage extends StatelessWidget{
           lazy: false,
         ),
         ChangeNotifierProvider(
-          create: (context)=> ChatToolModel(context,editController,userId: publicKey,channelId: channelId,refreshChannel: refreshChannel),
+          create: (context)=> ChatToolModel(context,editController,scrollController,userId: publicKey,channelId: channelId,refreshChannel: refreshChannel),
           lazy: false,
         )
 ,      ],
@@ -50,6 +51,7 @@ class ChatPage extends StatelessWidget{
                 Expanded(child: Consumer<ChatListModel>(
                     builder:(context, model, child) {
                       return ListView.builder(
+                          controller: scrollController,
                           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                           itemCount: model.messageList.length,
                           itemBuilder: (context, index) {
