@@ -34,10 +34,7 @@ class PopupPhotoViewWidgetFactory extends WidgetFactory {
                 onTap: (){
                   context.pushNamed(Routers.photoView.value,extra: imageProvider);
                 },
-                child: Hero(
-                    tag: url,
-                    child:Image(image: imageProvider, fit: BoxFit.fill,)
-                ),
+                child: Image(image: imageProvider, fit: BoxFit.fill,),
               );
             },
             errorWidget: (context, _, error) =>
