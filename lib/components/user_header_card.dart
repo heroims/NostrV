@@ -120,7 +120,9 @@ class UserHeaderCard extends StatelessWidget {
                   child: CupertinoButton(
                     padding: const EdgeInsets.all(0),
                     color: Colors.blue,
-                    onPressed: (){},
+                    onPressed: (){
+                      context.pushNamed(Routers.profileEdit.value, queryParameters: {'id':Nip19.encodePubkey(userFollowModel.userInfoModel.publicKey)});
+                    },
                     child: Text(S.of(context).avatarCardByEdit),
                   ),
                 )

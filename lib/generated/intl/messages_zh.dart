@@ -63,6 +63,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "postDetailByMain": MessageLookupByLibrary.simpleMessage("评论"),
         "postDetailByPrevious": MessageLookupByLibrary.simpleMessage("引用的"),
         "postDetailByRoot": MessageLookupByLibrary.simpleMessage("主评论"),
+        "profileEditByAbout": MessageLookupByLibrary.simpleMessage("简介"),
+        "profileEditByAvatar": MessageLookupByLibrary.simpleMessage("头像链接"),
+        "profileEditByBanner": MessageLookupByLibrary.simpleMessage("横幅链接"),
+        "profileEditByLud16":
+            MessageLookupByLibrary.simpleMessage("闪电地址(xxx@xxx.xxx)"),
+        "profileEditByName": MessageLookupByLibrary.simpleMessage("显示名称"),
+        "profileEditByNip05":
+            MessageLookupByLibrary.simpleMessage("Nostr地址(xxx@xxx.xxx)"),
+        "profileEditByWebsite": MessageLookupByLibrary.simpleMessage("网站链接"),
         "reportByIllegal": MessageLookupByLibrary.simpleMessage("在某些地区可能违法"),
         "reportByImpersonation": MessageLookupByLibrary.simpleMessage("冒充别人"),
         "reportByNudity": MessageLookupByLibrary.simpleMessage("裸体、色情等"),
@@ -79,6 +88,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tipByUnSupportNip11": MessageLookupByLibrary.simpleMessage("不支持NIP11"),
         "tipNoFeedToPost": MessageLookupByLibrary.simpleMessage("无可上传的内容"),
         "tipReportRepeatedly": MessageLookupByLibrary.simpleMessage("请勿重复举报"),
+        "tipUpdateUserFailed": MessageLookupByLibrary.simpleMessage("用户信息上传失败"),
         "userReplies": MessageLookupByLibrary.simpleMessage("回复"),
         "userReposts": MessageLookupByLibrary.simpleMessage("转发"),
         "userUpvote": MessageLookupByLibrary.simpleMessage("点赞")

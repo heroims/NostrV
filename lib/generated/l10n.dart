@@ -180,6 +180,16 @@ class S {
     );
   }
 
+  /// `Update userinfo failed.`
+  String get tipUpdateUserFailed {
+    return Intl.message(
+      'Update userinfo failed.',
+      name: 'tipUpdateUserFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `No content to publish.`
   String get tipNoFeedToPost {
     return Intl.message(
@@ -385,6 +395,96 @@ class S {
     return Intl.message(
       'Followed',
       name: 'avatarCardByFollowed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Display Name`
+  String get profileEditByName {
+    return Intl.message(
+      'Display Name',
+      name: 'profileEditByName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `About me`
+  String get profileEditByAbout {
+    return Intl.message(
+      'About me',
+      name: 'profileEditByAbout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Avatar Url`
+  String get profileEditByAvatar {
+    return Intl.message(
+      'Avatar Url',
+      name: 'profileEditByAvatar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Banner Url`
+  String get profileEditByBanner {
+    return Intl.message(
+      'Banner Url',
+      name: 'profileEditByBanner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Website Url`
+  String get profileEditByWebsite {
+    return Intl.message(
+      'Website Url',
+      name: 'profileEditByWebsite',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nostr Address(xxx@xxx.xxx)`
+  String get profileEditByNip05 {
+    return Intl.message(
+      'Nostr Address(xxx@xxx.xxx)',
+      name: 'profileEditByNip05',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `LN Address(xxx@xxx.xxx)`
+  String get profileEditByLud16 {
+    return Intl.message(
+      'LN Address(xxx@xxx.xxx)',
+      name: 'profileEditByLud16',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Camera`
+  String get profileEditByCamera {
+    return Intl.message(
+      'Camera',
+      name: 'profileEditByCamera',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Album`
+  String get profileEditByAlbum {
+    return Intl.message(
+      'Album',
+      name: 'profileEditByAlbum',
       desc: '',
       args: [],
     );

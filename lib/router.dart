@@ -12,6 +12,7 @@ import 'package:nostr_app/pages/home_page.dart';
 import 'package:nostr_app/pages/mnemonic_verify_page.dart';
 import 'package:nostr_app/pages/mnemonic_show_page.dart';
 import 'package:nostr_app/pages/photo_page.dart';
+import 'package:nostr_app/pages/profile_edit_page.dart';
 import 'package:nostr_app/pages/profile_page.dart';
 import 'package:nostr_app/pages/feed_detail_page.dart';
 import 'package:nostr_app/pages/relay_info_page.dart';
@@ -20,6 +21,7 @@ import 'package:nostr_app/pages/search_page.dart';
 import 'package:nostr_app/pages/welcome_page.dart';
 
 enum Routers {
+  profileEdit(19, 'profile_edit'),
   contract(18, 'contract'),
   chat(17, 'chat'),
   setting(16, 'setting'),
@@ -145,6 +147,29 @@ class AppRouter {
             }
 
             return MaterialPage(child: ProfilePage(userInfoModel: userInfoModel,));
+          }
+      ),
+      GoRoute(
+          name: Routers.profileEdit.value,
+          path: '/${Routers.profile.value}/edit',
+          pageBuilder: (context, state) {
+
+            String? pubKey = state.uri.queryParameters['id'];
+            UserInfoModel? userInfoModel;
+            if(pubKey!=null){
+              pubKey = Nip19.decodePubkey(pubKey);
+              userInfoModel = UserInfoModel(context,pubKey);
+            }
+            else {
+              if(state.extra!=null){
+                userInfoModel = state.extra as UserInfoModel;
+              }
+              else{
+                userInfoModel = UserInfoModel(context,Nip19.decodePubkey(nostrUserModel.currentUserSync!.publicKey));
+              }
+            }
+
+            return MaterialPage(child: ProfileEditPage(userInfoModel: userInfoModel,));
           }
       ),
       GoRoute(

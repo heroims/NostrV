@@ -72,6 +72,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "postDetailByPrevious":
             MessageLookupByLibrary.simpleMessage("Previous"),
         "postDetailByRoot": MessageLookupByLibrary.simpleMessage("Root"),
+        "profileEditByAbout": MessageLookupByLibrary.simpleMessage("About me"),
+        "profileEditByAlbum": MessageLookupByLibrary.simpleMessage("Album"),
+        "profileEditByAvatar":
+            MessageLookupByLibrary.simpleMessage("Avatar Url"),
+        "profileEditByBanner":
+            MessageLookupByLibrary.simpleMessage("Banner Url"),
+        "profileEditByCamera": MessageLookupByLibrary.simpleMessage("Camera"),
+        "profileEditByLud16":
+            MessageLookupByLibrary.simpleMessage("LN Address(xxx@xxx.xxx)"),
+        "profileEditByName":
+            MessageLookupByLibrary.simpleMessage("Display Name"),
+        "profileEditByNip05":
+            MessageLookupByLibrary.simpleMessage("Nostr Address(xxx@xxx.xxx)"),
+        "profileEditByWebsite":
+            MessageLookupByLibrary.simpleMessage("Website Url"),
         "reportByIllegal": MessageLookupByLibrary.simpleMessage(
             "may be illegal in some jurisdiction"),
         "reportByImpersonation":
@@ -97,6 +112,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("No content to publish."),
         "tipReportRepeatedly": MessageLookupByLibrary.simpleMessage(
             "Please do not report repeatedly."),
+        "tipUpdateUserFailed":
+            MessageLookupByLibrary.simpleMessage("Update userinfo failed."),
         "userReplies": MessageLookupByLibrary.simpleMessage("Replies"),
         "userReposts": MessageLookupByLibrary.simpleMessage("Reposts"),
         "userUpvote": MessageLookupByLibrary.simpleMessage("Upvote")
