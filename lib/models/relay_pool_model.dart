@@ -107,52 +107,29 @@ class RelayPoolModel extends ChangeNotifier {
     }
   }
 
-  Future<void> addRelayWithUrl (String url) async {
+  Future<void> addRelayWithUrl (String url, {bool autoConnect = true}) async {
 
     relayWss[url]= null;
 
     notifyListeners();
     try {
-      WebSocket? tmpSocket;
-      WebSocket.connect(url).then((value){
-        tmpSocket = value;
-      });
-      await Future.delayed(const Duration(seconds: 3));
-      WebSocket socket = tmpSocket!;
-      socket.listen((event) {
-        final message = Message.deserialize(event);
+      WebSocket? tmpSocket = await WebSocket.connect(url);
+      if(tmpSocket!=null){
+        Timer.periodic(const Duration(seconds: 10), (timer) {
+          if (tmpSocket.closeCode == null) {
+            tmpSocket.add('0');
+          } else {
+            timer.cancel();
+          }
+        });
+        tmpSocket.listen((event) {
+          final message = Message.deserialize(event);
 
-        switch (message.type){
-          case 'EOSE':
-            final subscriptionId = jsonDecode(message.message)[0];
-            final key = '$url/$subscriptionId';
-            socket.add(Close(subscriptionId).serialize());
-            if(_relayResponses.containsKey(key)){
-              List tmpList = (_relayResponses[key])![0];
-              List<Event> eventList = List.generate(tmpList.length, (index) => tmpList[index]);
-              (_relayResponses[key])![1](eventList);
-              _relayResponses.remove(key);
-            }
-            if(_relaySingleResponses.containsKey(key)){
-              _relaySingleResponses.remove(key);
-            }
-            if(_relaySubscriptionId.containsKey(url)&&_relaySubscriptionId[url]!.isNotEmpty){
-              _relaySubscriptionId[url]!.removeFirst();
-            }
-            break;
-          case 'EVENT':
-            final key = '$url/${(message.message as Event).subscriptionId}';
-            if(_relayResponses.containsKey(key)){
-              ((_relayResponses[key])![0] as List).add(message.message);
-            }
-            if(_relaySingleResponses.containsKey(key)){
-              _relaySingleResponses[key]!(message.message);
-            }
-            break;
-          case 'OK':
-            if(_relaySubscriptionId.containsKey(url)&&_relaySubscriptionId[url]!.isNotEmpty){
-              final subscriptionId = _relaySubscriptionId[url]!.removeFirst();
+          switch (message.type){
+            case 'EOSE':
+              final subscriptionId = jsonDecode(message.message)[0];
               final key = '$url/$subscriptionId';
+              tmpSocket.add(Close(subscriptionId).serialize());
               if(_relayResponses.containsKey(key)){
                 List tmpList = (_relayResponses[key])![0];
                 List<Event> eventList = List.generate(tmpList.length, (index) => tmpList[index]);
@@ -162,30 +139,68 @@ class RelayPoolModel extends ChangeNotifier {
               if(_relaySingleResponses.containsKey(key)){
                 _relaySingleResponses.remove(key);
               }
-            }
-            break;
-          case 'NOTICE':
-            if(_relaySubscriptionId.containsKey(url)&&_relaySubscriptionId[url]!.isNotEmpty){
-              final subscriptionId = _relaySubscriptionId[url]!.removeFirst();
-              final key = '$url/$subscriptionId';
+              if(_relaySubscriptionId.containsKey(url)&&_relaySubscriptionId[url]!.isNotEmpty){
+                _relaySubscriptionId[url]!.removeFirst();
+              }
+              break;
+            case 'EVENT':
+              final key = '$url/${(message.message as Event).subscriptionId}';
               if(_relayResponses.containsKey(key)){
-                List tmpList = (_relayResponses[key])![0];
-                List<Event> eventList = List.generate(tmpList.length, (index) => tmpList[index]);
-                (_relayResponses[key])![1](eventList);
-                _relayResponses.remove(key);
+                ((_relayResponses[key])![0] as List).add(message.message);
               }
               if(_relaySingleResponses.containsKey(key)){
-                _relaySingleResponses[key]!(Exception(jsonDecode(message.message)[0]));
-                _relaySingleResponses.remove(key);
+                _relaySingleResponses[key]!(message.message);
               }
-            }
-            break;
-          default:
-            break;
-        }
+              break;
+            case 'OK':
+              if(_relaySubscriptionId.containsKey(url)&&_relaySubscriptionId[url]!.isNotEmpty){
+                final subscriptionId = _relaySubscriptionId[url]!.removeFirst();
+                final key = '$url/$subscriptionId';
+                if(_relayResponses.containsKey(key)){
+                  List tmpList = (_relayResponses[key])![0];
+                  List<Event> eventList = List.generate(tmpList.length, (index) => tmpList[index]);
+                  (_relayResponses[key])![1](eventList);
+                  _relayResponses.remove(key);
+                }
+                if(_relaySingleResponses.containsKey(key)){
+                  _relaySingleResponses.remove(key);
+                }
+              }
+              break;
+            case 'NOTICE':
+              if(_relaySubscriptionId.containsKey(url)&&_relaySubscriptionId[url]!.isNotEmpty){
+                final subscriptionId = _relaySubscriptionId[url]!.removeFirst();
+                final key = '$url/$subscriptionId';
+                if(_relayResponses.containsKey(key)){
+                  List tmpList = (_relayResponses[key])![0];
+                  List<Event> eventList = List.generate(tmpList.length, (index) => tmpList[index]);
+                  (_relayResponses[key])![1](eventList);
+                  _relayResponses.remove(key);
+                }
+                if(_relaySingleResponses.containsKey(key)){
+                  _relaySingleResponses[key]!(Exception(jsonDecode(message.message)[0]));
+                  _relaySingleResponses.remove(key);
+                }
+              }
+              break;
+            default:
+              break;
+          }
 
-      });
-      relayWss[url] = socket;
+        },
+          onDone: () {
+            if(autoConnect){
+              addRelayWithUrl(url);
+            }
+          },
+          onError: (error) {
+            relayWss[url]= null;
+          },
+          cancelOnError: true,
+        );
+        relayWss[url] = tmpSocket;
+      }
+
     }
     catch(_) {
       relayWss[url]= null;
