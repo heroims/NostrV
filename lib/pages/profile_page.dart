@@ -64,11 +64,11 @@ class ProfilePage extends StatelessWidget {
                     Offset.zero & overlay.size,
                   );
                   final menuItem = [
-                    PopupMenuItem<String>(
-                      child: Text(S.of(context).userReplies),
-                      onTap: () {
-                      },
-                    ),
+                    // PopupMenuItem<String>(
+                    //   child: Text(S.of(context).userReplies),
+                    //   onTap: () {
+                    //   },
+                    // ),
                     PopupMenuItem<String>(
                       child: Text(S.of(context).userUpvote),
                       onTap: () {
