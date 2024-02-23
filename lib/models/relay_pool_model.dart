@@ -10,6 +10,7 @@ import 'package:nostr_app/globals/storage_setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RelayPoolModel extends ChangeNotifier {
+  String _closeRelayUrl = '';
   SharedPreferences? _prefs;
   final relaysSaveKey = 'relays';
   Future<SharedPreferences> get prefs async {
@@ -109,7 +110,7 @@ class RelayPoolModel extends ChangeNotifier {
 
   Future<void> addRelayWithUrl (String url, {bool autoConnect = true}) async {
 
-    relayWss[url]= null;
+    _relayWss[url]= null;
 
     notifyListeners();
     try {
@@ -189,39 +190,42 @@ class RelayPoolModel extends ChangeNotifier {
 
         },
           onDone: () {
-            if(autoConnect){
-              addRelayWithUrl(url);
+            if(_closeRelayUrl == url){
+              _closeRelayUrl = '';
+            }
+            else{
+              if(autoConnect){
+                addRelayWithUrl(url);
+              }
             }
           },
           onError: (error) {
-            relayWss[url]= null;
+            _relayWss[url]= null;
           },
           cancelOnError: true,
         );
-        relayWss[url] = tmpSocket;
+        _relayWss[url] = tmpSocket;
       }
 
     }
     catch(_) {
-      relayWss[url]= null;
+      _relayWss[url]= null;
       debugPrint("连接被断开！！！！！！！！");
     }
     finally {
-      await (await prefs).setStringList(relaysSaveKey, relayWss.keys.toList());
+      await (await prefs).setStringList(relaysSaveKey, _relayWss.keys.toList());
       notifyListeners();
     }
   }
 
   Future<void> deleteRelayWithUrl (String url) async {
-    if(relayWss.containsKey(url)) {
+    if(_relayWss.containsKey(url)) {
       try {
-        if(relayWss[url]!=null){
-          await relayWss[url]!.close();
+        if(_relayWss[url]!=null){
+          await _relayWss[url]!.close();
         }
-        relayWss.remove(url);
-
-        notifyListeners();
-
+        _relayWss.remove(url);
+        _closeRelayUrl = url;
         if(_relayResponses.containsKey(url)){
           _relayResponses.remove(url);
         }
@@ -233,6 +237,7 @@ class RelayPoolModel extends ChangeNotifier {
           relaysList.remove(url);
           await (await prefs).setStringList(relaysSaveKey, relaysList);
         }
+        notifyListeners();
       }
     }
   }

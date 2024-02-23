@@ -80,6 +80,26 @@ class S {
     );
   }
 
+  /// `Relay Manager`
+  String get settingByRelay {
+    return Intl.message(
+      'Relay Manager',
+      name: 'settingByRelay',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recommended relays`
+  String get tipRecommendRelay {
+    return Intl.message(
+      'Recommended relays',
+      name: 'tipRecommendRelay',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Please select the type of report.`
   String get actionSheetByReport {
     return Intl.message(

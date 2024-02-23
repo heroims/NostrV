@@ -100,6 +100,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "repostByPostID": MessageLookupByLibrary.simpleMessage("Repost"),
         "searchTabByPost": MessageLookupByLibrary.simpleMessage("Post"),
         "searchTabByUser": MessageLookupByLibrary.simpleMessage("User"),
+        "settingByRelay": MessageLookupByLibrary.simpleMessage("Relay Manager"),
         "shareByPostID": MessageLookupByLibrary.simpleMessage("Share"),
         "tipByOnThisPost": MessageLookupByLibrary.simpleMessage(
             "Currently positioned at the main comment."),
@@ -110,6 +111,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Not supported by NIP11."),
         "tipNoFeedToPost":
             MessageLookupByLibrary.simpleMessage("No content to publish."),
+        "tipRecommendRelay":
+            MessageLookupByLibrary.simpleMessage("Recommended relays"),
         "tipReportRepeatedly": MessageLookupByLibrary.simpleMessage(
             "Please do not report repeatedly."),
         "tipUpdateUserFailed":

@@ -2,6 +2,8 @@
   "dialogByEditPop": "Are you sure you want to exit the current editing page?",
   "navByRelay": "Relay",
   "navByPost": "Post",
+  "settingByRelay": "Relay Manager",
+  "tipRecommendRelay": "Recommended relays",
   "actionSheetByReport": "Please select the type of report.",
   "reportByNudity": "depictions of nudity, porn, etc.",
   "reportByProfanity": "profanity, hateful speech, etc.",

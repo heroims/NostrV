@@ -1,16 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nostr_app/models/relay_manager_model.dart';
 import 'package:nostr_app/models/relay_pool_model.dart';
 import 'package:provider/provider.dart';
 
 class RelayInfoModel extends ChangeNotifier{
   final BuildContext _context;
-  RelayInfoModel(this._context,{required this.relayUrl});
+
+  RelayManagerModel? relayManager;
+
+  RelayInfoModel(this._context,{required this.relayUrl, this.relayManager});
 
   String relayUrl = "";
   bool get addStatus {
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
-    return relayPoolModel.relayWss.containsKey(relayUrl);
+    bool result = relayPoolModel.relayWss.containsKey(relayUrl);
+    return result;
   }
 
   void addRelay() {
@@ -40,6 +45,9 @@ class RelayInfoModel extends ChangeNotifier{
     relayPoolModel.addRelayWithUrl(relayUrl).then((value){
       Navigator.pop(_context);
       notifyListeners();
+      if(relayManager!= null){
+        relayManager?.refreshRelays();
+      }
     }, onError: (_){
       Navigator.pop(_context);
     });
@@ -49,6 +57,9 @@ class RelayInfoModel extends ChangeNotifier{
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
     relayPoolModel.deleteRelayWithUrl(relayUrl).then((value){
       notifyListeners();
+      if(relayManager!= null){
+        relayManager?.refreshRelays();
+      }
     });
   }
 }

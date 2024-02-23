@@ -19,8 +19,10 @@ import 'package:nostr_app/pages/relay_info_page.dart';
 import 'package:nostr_app/pages/relays_page.dart';
 import 'package:nostr_app/pages/search_page.dart';
 import 'package:nostr_app/pages/welcome_page.dart';
+import 'package:nostr_app/pages/relay_manager_page.dart';
 
 enum Routers {
+  relayManager(20, 'relay_manager'),
   profileEdit(19, 'profile_edit'),
   contract(18, 'contract'),
   chat(17, 'chat'),
@@ -250,6 +252,28 @@ class AppRouter {
               relayMap=state.extra! as Map<String,dynamic>;
             }
             return MaterialPage(child: RelayInfoPage(relayInfo: relayMap,));
+          }
+      ),
+      GoRoute(
+          name: Routers.relayManager.value,
+          path: '/${Routers.relayManager.value}',
+          pageBuilder: (context, state) {
+            String? pubKey = state.uri.queryParameters['id'];
+            UserInfoModel? userInfoModel;
+            if(pubKey!=null){
+              pubKey = Nip19.decodePubkey(pubKey);
+              userInfoModel = UserInfoModel(context,pubKey);
+            }
+            else {
+              if(state.extra!=null){
+                userInfoModel = state.extra as UserInfoModel;
+              }
+              else{
+                userInfoModel = UserInfoModel(context,Nip19.decodePubkey(nostrUserModel.currentUserSync!.publicKey));
+              }
+            }
+
+            return MaterialPage(child: RelayManagerPage(userInfoModel: userInfoModel,));
           }
       ),
       GoRoute(
