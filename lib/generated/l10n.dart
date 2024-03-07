@@ -80,6 +80,16 @@ class S {
     );
   }
 
+  /// `Key Manager`
+  String get settingByKey {
+    return Intl.message(
+      'Key Manager',
+      name: 'settingByKey',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Relay Manager`
   String get settingByRelay {
     return Intl.message(
@@ -580,6 +590,16 @@ class S {
     );
   }
 
+  /// `Keystore Password Error`
+  String get tipByKeystorePwError {
+    return Intl.message(
+      'Keystore Password Error',
+      name: 'tipByKeystorePwError',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Tip`
   String get dialogByTitle {
     return Intl.message(
@@ -595,6 +615,36 @@ class S {
     return Intl.message(
       'Done',
       name: 'dialogByDone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy`
+  String get dialogByCopy {
+    return Intl.message(
+      'Copy',
+      name: 'dialogByCopy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Failed`
+  String get dialogByAddFailed {
+    return Intl.message(
+      'Add Failed',
+      name: 'dialogByAddFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Input can't be empty`
+  String get dialogByInputFailed {
+    return Intl.message(
+      'Input can\'t be empty',
+      name: 'dialogByInputFailed',
       desc: '',
       args: [],
     );
@@ -645,6 +695,36 @@ class S {
     return Intl.message(
       'Cancel',
       name: 'createByCancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export Nostr Private Key`
+  String get exportByNostrKey {
+    return Intl.message(
+      'Export Nostr Private Key',
+      name: 'exportByNostrKey',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export Nostr Private Key`
+  String get exportByWalletKey {
+    return Intl.message(
+      'Export Nostr Private Key',
+      name: 'exportByWalletKey',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export Keystore`
+  String get exportByKeystore {
+    return Intl.message(
+      'Export Keystore',
+      name: 'exportByKeystore',
       desc: '',
       args: [],
     );

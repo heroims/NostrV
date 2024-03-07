@@ -1,12 +1,8 @@
-import 'dart:io';
-import 'package:http_parser/http_parser.dart';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 
 
 class RelayManagerModel extends ChangeNotifier {
-
   List<dynamic> recommendedRelays = [];
 
   Future<void> getRecommendRelays() async{
@@ -26,6 +22,10 @@ class RelayManagerModel extends ChangeNotifier {
   }
 
   void refreshRelays(){
+    notifyListeners();
+  }
+
+  void addRelay(){
     notifyListeners();
   }
 

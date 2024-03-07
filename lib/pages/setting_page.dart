@@ -15,7 +15,7 @@ class SettingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lblTitles = [S.of(context).settingByRelay, '密钥管理', '屏蔽管理', '通知过滤', 'Version', 'Software', 'Contact'];
+    final lblTitles = [S.of(context).settingByRelay, S.of(context).settingByKey, '屏蔽管理', '通知过滤', 'Version', 'Software', 'Contact'];
 
     return Scaffold(
       // backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
@@ -52,6 +52,9 @@ class SettingPage extends StatelessWidget {
                 switch (index) {
                   case 0:
                     context.pushNamed(Routers.relayManager.value);
+                    break;
+                  case 1:
+                    context.pushNamed(Routers.keyManager.value);
                     break;
                   default:
                     break;

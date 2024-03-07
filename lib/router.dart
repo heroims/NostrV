@@ -9,6 +9,7 @@ import 'package:nostr_app/pages/feed_post_page.dart';
 import 'package:nostr_app/pages/followers_page.dart';
 import 'package:nostr_app/pages/followings_page.dart';
 import 'package:nostr_app/pages/home_page.dart';
+import 'package:nostr_app/pages/key_manager_page.dart';
 import 'package:nostr_app/pages/mnemonic_verify_page.dart';
 import 'package:nostr_app/pages/mnemonic_show_page.dart';
 import 'package:nostr_app/pages/photo_page.dart';
@@ -22,6 +23,7 @@ import 'package:nostr_app/pages/welcome_page.dart';
 import 'package:nostr_app/pages/relay_manager_page.dart';
 
 enum Routers {
+  keyManager(21, 'key_manager'),
   relayManager(20, 'relay_manager'),
   profileEdit(19, 'profile_edit'),
   contract(18, 'contract'),
@@ -274,6 +276,13 @@ class AppRouter {
             }
 
             return MaterialPage(child: RelayManagerPage(userInfoModel: userInfoModel,));
+          }
+      ),
+      GoRoute(
+          name: Routers.keyManager.value,
+          path: '/${Routers.keyManager.value}',
+          pageBuilder: (context, state) {
+            return MaterialPage(child: KeyManagerPage());
           }
       ),
       GoRoute(

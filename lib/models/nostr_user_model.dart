@@ -147,7 +147,7 @@ class NostrUserModel extends ChangeNotifier {
   }
 
   String exportKeystore(NostrUser user, String password){
-    final wallet = Wallet.createNew(EthPrivateKey.fromHex(user.privateKey), password, Random());
+    final wallet = Wallet.createNew(EthPrivateKey.fromHex(Nip19.decodePrivkey(user.privateKey)), password, Random());
     return wallet.toJson();
   }
 

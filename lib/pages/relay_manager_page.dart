@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nostr_app/components/relay_item_card.dart';
 import 'package:nostr_app/models/relay_info_model.dart';
@@ -15,6 +16,7 @@ class RelayManagerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController editController = TextEditingController();
     final relayManagerModel = RelayManagerModel();
     final relayPoolModel = Provider.of<RelayPoolModel>(context, listen: false);
     return MultiProvider(
@@ -26,6 +28,64 @@ class RelayManagerPage extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               title:Text(S.of(context).avatarCardByRelays),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: () {
+                    showCupertinoDialog(
+                      context: context,
+                      builder: (context) {
+                        return CupertinoAlertDialog(
+                          title: Text(S.of(context).dialogByTitle),
+                          content: Column(
+                            children: [
+                              const SizedBox(height: 10,),
+                              CupertinoTextField(
+                                controller: editController,
+                              ),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                                onPressed: (){
+                                  if(editController.text.isEmpty){
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(S.of(context).dialogByInputFailed),
+                                        duration: const Duration(seconds: 1),
+                                      ),
+                                    );
+                                    return;
+                                  }
+                                  relayPoolModel.addRelayWithUrl(editController.text).then((value){
+                                    relayManagerModel.refreshRelays();
+                                    editController.clear();
+                                    Navigator.pop(context);
+                                  },onError: (){
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(S.of(context).dialogByAddFailed),
+                                        duration: const Duration(seconds: 1),
+                                      ),
+                                    );
+                                    Navigator.pop(context);
+                                  });
+                                },
+                                child: Text(S.of(context).dialogByDone)
+                            ),
+                            TextButton(
+                                onPressed: (){
+                                  Navigator.pop(context);
+                                },
+                                child: Text(S.of(context).createByCancel)
+                            )
+                          ],
+                        );
+                      },
+                    );
+                  },
+                )
+              ],
             ),
             body: Consumer<RelayManagerModel>(
                 builder: (context, listModel, child){

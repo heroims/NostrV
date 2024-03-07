@@ -41,14 +41,24 @@ class MessageLookup extends MessageLookupByLibrary {
         "createByCancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "createByHDNode": MessageLookupByLibrary.simpleMessage("HD Node"),
         "createByNormal": MessageLookupByLibrary.simpleMessage("Normal"),
+        "dialogByAddFailed": MessageLookupByLibrary.simpleMessage("Add Failed"),
+        "dialogByCopy": MessageLookupByLibrary.simpleMessage("Copy"),
         "dialogByCreate": MessageLookupByLibrary.simpleMessage(
             "Please select a method to create an account."),
         "dialogByDone": MessageLookupByLibrary.simpleMessage("Done"),
         "dialogByEditPop": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to exit the current editing page?"),
+        "dialogByInputFailed":
+            MessageLookupByLibrary.simpleMessage("Input can\'t be empty"),
         "dialogByNoDataInRelay": MessageLookupByLibrary.simpleMessage(
             "Please add additional relays to fetch data."),
         "dialogByTitle": MessageLookupByLibrary.simpleMessage("Tip"),
+        "exportByKeystore":
+            MessageLookupByLibrary.simpleMessage("Export Keystore"),
+        "exportByNostrKey":
+            MessageLookupByLibrary.simpleMessage("Export Nostr Private Key"),
+        "exportByWalletKey":
+            MessageLookupByLibrary.simpleMessage("Export Nostr Private Key"),
         "muteUser": MessageLookupByLibrary.simpleMessage("Mute User"),
         "navByPost": MessageLookupByLibrary.simpleMessage("Post"),
         "navByPrivateChat":
@@ -100,8 +110,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "repostByPostID": MessageLookupByLibrary.simpleMessage("Repost"),
         "searchTabByPost": MessageLookupByLibrary.simpleMessage("Post"),
         "searchTabByUser": MessageLookupByLibrary.simpleMessage("User"),
+        "settingByKey": MessageLookupByLibrary.simpleMessage("Key Manager"),
         "settingByRelay": MessageLookupByLibrary.simpleMessage("Relay Manager"),
         "shareByPostID": MessageLookupByLibrary.simpleMessage("Share"),
+        "tipByKeystorePwError":
+            MessageLookupByLibrary.simpleMessage("Keystore Password Error"),
         "tipByOnThisPost": MessageLookupByLibrary.simpleMessage(
             "Currently positioned at the main comment."),
         "tipByOnThisUser": MessageLookupByLibrary.simpleMessage(
