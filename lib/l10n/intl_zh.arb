@@ -52,6 +52,7 @@
   "tipByOnThisPost": "正位于当前主评论。",
   "tipByOnThisUser": "正位于当前用户页面。",
   "tipByKeystorePwError": "Keystore密码设置错误",
+  "tipBySearchQuery": "请输入搜索关键词",
   "dialogByTitle": "温馨提示",
   "dialogByDone": "确定",
   "dialogByCopy": "复制",

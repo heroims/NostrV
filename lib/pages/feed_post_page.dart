@@ -196,7 +196,7 @@ class FeedPostPage extends StatelessWidget{
                             onPressed: () {
                               FocusScope.of(context).unfocus();
                             },
-                            child: const Text('Done'),
+                            child: Text(S.of(context).dialogByDone),
                           ),
                         ),
                       ],

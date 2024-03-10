@@ -250,6 +250,16 @@ class S {
     );
   }
 
+  /// `Enter your search query`
+  String get tipBySearchQuery {
+    return Intl.message(
+      'Enter your search query',
+      name: 'tipBySearchQuery',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Repost`
   String get repostByPostID {
     return Intl.message(

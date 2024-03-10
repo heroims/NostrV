@@ -95,6 +95,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tipByOnThisPost": MessageLookupByLibrary.simpleMessage("正位于当前主评论。"),
         "tipByOnThisUser": MessageLookupByLibrary.simpleMessage("正位于当前用户页面。"),
         "tipByReposted": MessageLookupByLibrary.simpleMessage("已转发"),
+        "tipBySearchQuery": MessageLookupByLibrary.simpleMessage("请输入搜索关键词"),
         "tipByUnSupportNip11": MessageLookupByLibrary.simpleMessage("不支持NIP11"),
         "tipNoFeedToPost": MessageLookupByLibrary.simpleMessage("无可上传的内容"),
         "tipRecommendRelay": MessageLookupByLibrary.simpleMessage("推荐中继"),

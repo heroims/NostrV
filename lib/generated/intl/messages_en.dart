@@ -120,6 +120,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "tipByOnThisUser": MessageLookupByLibrary.simpleMessage(
             "Currently positioned at the user page."),
         "tipByReposted": MessageLookupByLibrary.simpleMessage("Reposted"),
+        "tipBySearchQuery":
+            MessageLookupByLibrary.simpleMessage("Enter your search query"),
         "tipByUnSupportNip11":
             MessageLookupByLibrary.simpleMessage("Not supported by NIP11."),
         "tipNoFeedToPost":

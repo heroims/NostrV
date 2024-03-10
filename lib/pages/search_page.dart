@@ -84,7 +84,7 @@ class SearchPage extends StatelessWidget {
                                 fontSize: 18
                             ),
                             decoration: InputDecoration(
-                              hintText: 'Enter your search query',
+                              hintText: S.of(context).tipBySearchQuery,
                               border: InputBorder.none,
                               suffixIcon: IconButton(
                                 icon: const Icon(Icons.close),

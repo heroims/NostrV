@@ -19,6 +19,7 @@
   "tipNoFeedToPost": "No content to publish.",
   "tipByUnSupportNip11": "Not supported by NIP11.",
   "tipByReposted": "Reposted",
+  "tipBySearchQuery": "Enter your search query",
   "repostByPostID": "Repost",
   "shareByPostID": "Share",
   "copyByPostID": "Copy Post ID",
