@@ -114,7 +114,7 @@ class ContractPage extends StatelessWidget {
                                   builder: (context, child){
                                     return Consumer<UserFollowModel>(builder: (context, model, child){
                                       return UserItemCard(userFollowModel: model, customOnTap: (publicKey){
-                                        context.pushNamed(Routers.chat.value,extra: publicKey);
+                                        context.pushNamed(Routers.chat.value,extra:{"publicKey": publicKey});
                                       },);
                                     });
                                   },

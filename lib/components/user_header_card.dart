@@ -108,7 +108,7 @@ class UserHeaderCard extends StatelessWidget {
                           padding: const EdgeInsets.all(0),
                           color: Colors.blue,
                           onPressed: (){
-                            context.pushNamed(Routers.chat.value,extra: userFollowModel.userInfoModel.publicKey);
+                            context.pushNamed(Routers.chat.value,extra:{"publicKey": userFollowModel.userInfoModel.publicKey});
                           },
                           child: const Icon(Icons.messenger)
                       ),
