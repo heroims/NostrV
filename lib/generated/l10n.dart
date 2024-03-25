@@ -50,6 +50,16 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Error Card`
+  String get cardOfError {
+    return Intl.message(
+      'Error Card',
+      name: 'cardOfError',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Are you sure you want to exit the current editing page?`
   String get dialogByEditPop {
     return Intl.message(

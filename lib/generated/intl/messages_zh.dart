@@ -29,6 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "avatarCardByFollowers": MessageLookupByLibrary.simpleMessage("被关注"),
         "avatarCardByFollowing": MessageLookupByLibrary.simpleMessage("已关注"),
         "avatarCardByRelays": MessageLookupByLibrary.simpleMessage("中继器"),
+        "cardOfError": MessageLookupByLibrary.simpleMessage("异常卡片"),
         "copyByPost": MessageLookupByLibrary.simpleMessage("复制信息"),
         "copyByPostID": MessageLookupByLibrary.simpleMessage("复制NoteID"),
         "copyByUserID": MessageLookupByLibrary.simpleMessage("复制用户ID"),

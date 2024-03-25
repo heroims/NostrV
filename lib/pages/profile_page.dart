@@ -1,6 +1,7 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nostr/nostr.dart';
 import 'package:nostr_app/models/user_follow_model.dart';
 import 'package:nostr_app/models/user_info_model.dart';
@@ -73,7 +74,8 @@ class ProfilePage extends StatelessWidget {
                     PopupMenuItem<String>(
                       child: Text(S.of(context).userUpvoteList),
                       onTap: () {
-                      },
+                        context.pushNamed(Routers.upvoteFeed.value, queryParameters: {'id':Nip19.encodePubkey(userFollowModel.userInfoModel.publicKey)});
+                        },
                     ),
                     PopupMenuItem<String>(
                       child: Text(S.of(context).userRepostsList),

@@ -33,6 +33,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "avatarCardByFollowing":
             MessageLookupByLibrary.simpleMessage("Following"),
         "avatarCardByRelays": MessageLookupByLibrary.simpleMessage("Relays"),
+        "cardOfError": MessageLookupByLibrary.simpleMessage("Error Card"),
         "copyByPost": MessageLookupByLibrary.simpleMessage("Copy Post"),
         "copyByPostID": MessageLookupByLibrary.simpleMessage("Copy Post ID"),
         "copyByUserID": MessageLookupByLibrary.simpleMessage("Copy User ID"),

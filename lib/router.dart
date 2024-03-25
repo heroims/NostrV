@@ -20,10 +20,12 @@ import 'package:nostr_app/pages/feed_detail_page.dart';
 import 'package:nostr_app/pages/relay_info_page.dart';
 import 'package:nostr_app/pages/relays_page.dart';
 import 'package:nostr_app/pages/search_page.dart';
+import 'package:nostr_app/pages/upvote_feed_page.dart';
 import 'package:nostr_app/pages/welcome_page.dart';
 import 'package:nostr_app/pages/relay_manager_page.dart';
 
 enum Routers {
+  upvoteFeed(23, 'upvote_feed'),
   muteManager(22, 'mute_manager'),
   keyManager(21, 'key_manager'),
   relayManager(20, 'relay_manager'),
@@ -348,6 +350,27 @@ class AppRouter {
           }
       ),
       GoRoute(
+          name: Routers.upvoteFeed.value,
+          path: '/${Routers.upvoteFeed.value}',
+          pageBuilder: (context, state) {
+
+            String? pubKey = state.uri.queryParameters['id'];
+            if(pubKey!=null){
+              pubKey = Nip19.decodePubkey(pubKey);
+            }
+            else {
+              if(state.extra!=null){
+                pubKey = state.extra as String;
+              }
+              else{
+                pubKey = Nip19.decodePubkey(nostrUserModel.currentUserSync!.publicKey);
+              }
+            }
+
+            return MaterialPage(child: UpvoteFeedPage(publicKey: pubKey,));
+          }
+      ),
+      GoRoute(
           name: Routers.feedPost.value,
           path: '/${Routers.feed.value}/post',
           pageBuilder: (context, state) {
@@ -362,7 +385,6 @@ class AppRouter {
                 noteId = state.extra as String;
               }
             }
-
 
             return MaterialPage(child: FeedPostPage(noteId: noteId));
           }
