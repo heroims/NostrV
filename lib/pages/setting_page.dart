@@ -1,27 +1,17 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nostr/nostr.dart';
-import 'package:provider/provider.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../generated/l10n.dart';
-import '../models/relay_pool_model.dart';
 import '../router.dart';
-
 class SettingPage extends StatelessWidget {
   const SettingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final lblTitles = [S.of(context).settingByRelay, S.of(context).settingByKey, '屏蔽管理', '通知过滤', 'Version', 'Software', 'Contact'];
-
+    final lblTitles = [S.of(context).settingByRelay, S.of(context).settingByKey, S.of(context).settingByMute, S.of(context).settingByNotify, S.of(context).settingByVersion];
+    PackageInfo.fromPlatform().then((value) => value.version);
     return Scaffold(
-      // backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
-      // appBar: AppBar(
-      //   title:Text(S.of(context).navByRelay),
-      // ),
       body: ListView.builder(
           itemCount: lblTitles.length,
           itemBuilder: (context, index){
@@ -36,7 +26,43 @@ class SettingPage extends StatelessWidget {
                       height: 40,
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(
+                        child:index == lblTitles.length-1 ? Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              lblTitles[index],
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            FutureBuilder<PackageInfo>(
+                              future: PackageInfo.fromPlatform(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  PackageInfo? packageInfo = snapshot.data;
+                                  return Text(
+                                    packageInfo==null?'':packageInfo.version,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  );
+                                } else {
+                                  return const Text(
+                                    '',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+
+                          ],
+                        ):
+                        Text(
                           lblTitles[index],
                           style: const TextStyle(
                             fontSize: 16,
@@ -55,6 +81,9 @@ class SettingPage extends StatelessWidget {
                     break;
                   case 1:
                     context.pushNamed(Routers.keyManager.value);
+                    break;
+                  case 2:
+                    context.pushNamed(Routers.muteManager.value);
                     break;
                   default:
                     break;

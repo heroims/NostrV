@@ -136,6 +136,41 @@ class FeedListModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void refreshFeedFromIds(List<String>? eventIds){
+    if(eventIds==null || eventIds.isEmpty){
+      return;
+    }
+    final requestUUID =generate64RandomHexChars();
+    NostrFilter filter = NostrFilter(
+      ids: eventIds,
+    );
+
+    Request requestWithFilter = Request(requestUUID, [
+      filter
+    ]);
+
+    RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
+    feedList.clear();
+    relayPoolModel.addRequest(relayPoolModel.relayWss.keys.first, requestWithFilter, (response){
+      feedList.addAll(response.where((event2) => !(feedList.any((event1) => event1.id == event2.id))));
+      feedList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      if (feedList.isNotEmpty){
+        _lastCreatedAt=feedList.last.createdAt;
+      }
+      notifyListeners();
+      for(int i=1;i<relayPoolModel.relayWss.keys.length;i++){
+        relayPoolModel.addRequest(relayPoolModel.relayWss.keys.elementAt(i), requestWithFilter, (response){
+          feedList.addAll(response.where((event2) => !(feedList.any((event1) => event1.id == event2.id))));
+          feedList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          if (feedList.isNotEmpty){
+            _lastCreatedAt=feedList.last.createdAt;
+          }
+          notifyListeners();
+        });
+      }
+    });
+  }
+
   void refreshFeed(){
     _lastCreatedAt = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     final requestUUID =generate64RandomHexChars();
@@ -181,10 +216,13 @@ class FeedListModel extends ChangeNotifier {
     Request requestWithFilter = Request(requestUUID, [
       filter
     ]);
+
+    AppRouter appRouter = Provider.of<AppRouter>(_context, listen: false);
+
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
     feedList.clear();
     relayPoolModel.addRequest(relayPoolModel.relayWss.keys.first, requestWithFilter, (response){
-      feedList.addAll(response.where((event2) => !feedList.any((event1) => event1.id == event2.id)));
+      feedList.addAll(response.where((event2) => !(feedList.any((event1) => event1.id == event2.id) || appRouter.nostrUserModel.currentUserInfo!.muteEvents.any((muteEventId) => event2.id == muteEventId)  || appRouter.nostrUserModel.currentUserInfo!.muteUsers.any((mutePubKey) => event2.pubkey == mutePubKey))));
       feedList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       if (feedList.isNotEmpty){
         _lastCreatedAt=feedList.last.createdAt;
@@ -197,7 +235,7 @@ class FeedListModel extends ChangeNotifier {
 
       for(int i=1;i<relayPoolModel.relayWss.keys.length;i++){
         relayPoolModel.addRequest(relayPoolModel.relayWss.keys.elementAt(i), requestWithFilter, (response){
-          feedList.addAll(response.where((event2) => !feedList.any((event1) => event1.id == event2.id)));
+          feedList.addAll(response.where((event2) => !(feedList.any((event1) => event1.id == event2.id)  || appRouter.nostrUserModel.currentUserInfo!.muteEvents.any((muteEventId) => event2.id == muteEventId)  || appRouter.nostrUserModel.currentUserInfo!.muteUsers.any((mutePubKey) => event2.pubkey == mutePubKey))));
           feedList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
           if (feedList.isNotEmpty){
             _lastCreatedAt=feedList.last.createdAt;
@@ -253,10 +291,11 @@ class FeedListModel extends ChangeNotifier {
     Request requestWithFilter = Request(requestUUID, [
       filter
     ]);
+    AppRouter appRouter = Provider.of<AppRouter>(_context, listen: false);
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
     relayPoolModel.relayWss.forEach((key, value) {
       relayPoolModel.addRequest(key, requestWithFilter, (response){
-        feedList.addAll(response.where((event2) => !feedList.any((event1) => event1.id == event2.id)));
+        feedList.addAll(response.where((event2) => !(feedList.any((event1) => event1.id == event2.id)  || !appRouter.nostrUserModel.currentUserInfo!.muteEvents.any((muteEventId) => event2.id == muteEventId)  || !appRouter.nostrUserModel.currentUserInfo!.muteUsers.any((mutePubKey) => event2.pubkey == mutePubKey))));
         feedList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
         if (feedList.isNotEmpty){
           _lastCreatedAt=feedList.last.createdAt;

@@ -221,6 +221,12 @@ class FeedItemCard extends StatelessWidget {
     else{
       feedListModel.getUpvoteFeed(feed.id, Nip19.decodePubkey(appRouter.nostrUserModel.currentUserSync!.publicKey));
     }
+
+    bool isMute = false;
+    try{
+      isMute = appRouter.nostrUserModel.currentUserInfo!.muteEvents.contains(feed.id);
+    }
+    catch(_){}
     return GestureDetector(
       child: Card(
         child: Column(
@@ -515,6 +521,45 @@ class FeedItemCard extends StatelessWidget {
 
                                     },
                                     child: Text(S.of(context).copyByPost),
+                                  ),
+                                  CupertinoActionSheetAction(
+                                      onPressed: (){
+                                        Navigator.pop(context);
+                                        showCupertinoDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return CupertinoAlertDialog(
+                                              title: Text(S.of(context).dialogByTitle),
+                                              content: Column(
+                                                children: [
+                                                  const SizedBox(height: 10,),
+                                                  Text(S.of(context).dialogByMuteEvent),
+                                                ],
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: (){
+
+                                                      appRouter.nostrUserModel.currentUserInfo?.muting(context ,true, feed.id).then((value){
+                                                        Navigator.pop(context);
+                                                      },onError: (e){
+                                                        Navigator.pop(context);
+                                                      });
+                                                    },
+                                                    child: Text(S.of(context).dialogByMute)
+                                                ),
+                                                TextButton(
+                                                    onPressed: (){
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text(S.of(context).createByCancel)
+                                                )
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: Text(isMute ? S.of(context).dialogByCancelMute : S.of(context).dialogByMute)
                                   ),
                                   CupertinoActionSheetAction(
                                       isDestructiveAction: true,

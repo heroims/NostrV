@@ -83,6 +83,16 @@ class UserInfoModel extends ChangeNotifier {
   UserFollowings _followings = UserFollowings();
   UserFollowings get followings => _followings;
 
+  bool get isMute {
+    AppRouter appRouter = Provider.of<AppRouter>(_context, listen: false);
+
+    try {
+      return appRouter.nostrUserModel.currentUserInfo!.muteUsers.contains(publicKey);
+    }
+    catch(_){}
+    return false;
+  }
+
   List<String> get followers {
     final dbFollowers =realmModel.realm.query<DBFollower>("publicKey == \$0", [publicKey]);
     if(dbFollowers.isNotEmpty){
@@ -90,6 +100,11 @@ class UserInfoModel extends ChangeNotifier {
     }
     return [];
   }
+
+  Set<String> muteUsers = <String>{};
+  Set<String> muteEvents = <String>{};
+
+  List<List<String>> originMuteData = [];
 
   final followersLimit = 100;
   final followersLastTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
@@ -121,6 +136,20 @@ class UserInfoModel extends ChangeNotifier {
       }
       else{
         return ownUserInfo.followings.profiles.containsKey(publicKey);
+      }
+    }
+    return false;
+  }
+
+  bool get muted {
+    AppRouter appRouter = Provider.of<AppRouter>(_context, listen: false);
+    if(appRouter.nostrUserModel.currentUserInfo!=null){
+      UserInfoModel ownUserInfo = appRouter.nostrUserModel.currentUserInfo!;
+      if(ownUserInfo.publicKey == publicKey){
+        return false;
+      }
+      else{
+        return ownUserInfo.muteUsers.contains(publicKey);
       }
     }
     return false;
@@ -160,6 +189,161 @@ class UserInfoModel extends ChangeNotifier {
       });
     }
   }
+
+  void reportUser(String reportType, [String content = ""]) {
+    AppRouter appRouter = Provider.of<AppRouter>(_context, listen: false);
+    Event event = Event.from(kind: 1984, content: content, tags: [['p', publicKey, reportType]], privkey: Nip19.decodePrivkey((appRouter.nostrUserModel.currentUserSync)!.privateKey));
+
+    RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
+    relayPoolModel.addEventSingle(event, (_){});
+  }
+
+  void isReportUser(String pubKey, Function(bool) callback) {
+    final requestUUID =generate64RandomHexChars();
+    Request requestWithFilter = Request(requestUUID, [
+      Filter(
+        kinds: [1984],
+        p: [pubKey],
+      )
+    ]);
+    RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
+    bool isReport = false;
+    int tryCount = 0;
+    relayPoolModel.relayWss.forEach((key, value) {
+      relayPoolModel.addRequest(key, requestWithFilter, (response){
+        tryCount += 1;
+        if(response.isNotEmpty) {
+          isReport = true;
+        }
+        if(tryCount>=relayPoolModel.relayWss.length){
+          callback(isReport);
+        }
+      });
+      if (isReport) {
+        return;
+      }
+
+    });
+  }
+
+  Future<void> muting(BuildContext context, bool mute, [String? eventId]) async{
+    AppRouter appRouter = Provider.of<AppRouter>(context, listen: false);
+
+    RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(context, listen: false);
+    NostrUser? tmpUser = await appRouter.nostrUserModel.currentUser;
+    final ownerMuteUsers = appRouter.nostrUserModel.currentUserInfo?.muteUsers??<String>{};
+    final ownerMuteEvents = appRouter.nostrUserModel.currentUserInfo?.muteEvents??<String>{};
+
+    if(tmpUser!=null){
+      List<List<String>> formatMuteInfo = [];
+
+      String decodeKey = Nip19.decodePrivkey(tmpUser.privateKey);
+      Event tmpEvent = Event.from(kind: 10000, content: '', privkey: decodeKey);
+
+      if(eventId!=null&&eventId!=''){
+        if(mute){
+          formatMuteInfo.add(['e', eventId]);
+          appRouter.nostrUserModel.currentUserInfo?.muteEvents.add(eventId);
+        }
+        else{
+          appRouter.nostrUserModel.currentUserInfo?.muteEvents.remove(eventId);
+        }
+
+        for (var element in ownerMuteEvents) {
+          if(!mute && element == eventId){
+            continue;
+          }
+          formatMuteInfo.add(['e', element]);
+        }
+
+        for (var element in originMuteData) {
+          if(element.first!='e'){
+            formatMuteInfo.add(element);
+          }
+        }
+      }
+      else{
+        if(publicKey == appRouter.nostrUserModel.currentUserInfo?.publicKey){
+          return;
+        }
+        if(mute){
+          formatMuteInfo.add(['p',publicKey]);
+          appRouter.nostrUserModel.currentUserInfo?.muteUsers.add(publicKey);
+        }
+        else{
+          appRouter.nostrUserModel.currentUserInfo?.muteUsers.remove(publicKey);
+        }
+
+        for (var element in ownerMuteUsers) {
+          if(!mute && element == publicKey){
+            continue;
+          }
+          formatMuteInfo.add(['p', element]);
+        }
+        for (var element in originMuteData) {
+          if(element.first!='p'){
+            formatMuteInfo.add(element);
+          }
+        }
+
+        if(publicKey == Nip19.decodePubkey(tmpUser!.publicKey)){
+          return ;
+        }
+      }
+      tmpEvent.tags=formatMuteInfo;
+      tmpEvent.id = tmpEvent.getEventId();
+      tmpEvent.sig=tmpEvent.getSignature(decodeKey);
+      relayPoolModel.addEventSingle(tmpEvent, (res) {
+        if(res!=null){
+          originMuteData = formatMuteInfo;
+          notifyListeners();
+        }
+      });
+    }
+  }
+
+  void getMuteInfo({Function? refreshCallback}){
+    RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
+    final requestUUID =generate64RandomHexChars();
+    Request requestWithFilter = Request(requestUUID, [
+      Filter(
+        authors: [publicKey],
+        kinds: [10000],
+      )
+    ]);
+    relayPoolModel.relayWss.forEach((key, value) {
+      relayPoolModel.addRequestSingle(key, requestWithFilter, (event){
+        if(event!=null) {
+          if(!_isDisposed){
+            try{
+              originMuteData=(event as Event).tags;
+              muteUsers.clear();
+              for (var tag in event.tags) {
+                if(tag.first=="p"){
+                  muteUsers.add(tag[1]);
+                }
+                if(tag.first=="e"){
+                  muteEvents.add(tag[1]);
+                }
+              }
+
+              if(refreshCallback!=null){
+                refreshCallback();
+              }
+
+              notifyListeners();
+            }
+            catch(_){
+              debugPrint("error content");
+            }
+
+          }
+        }
+      });
+    });
+
+  }
+
 
   void getUserInfo({Function? refreshCallback}){
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);

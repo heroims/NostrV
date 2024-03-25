@@ -84,52 +84,55 @@ class ChatListenModel extends ChangeNotifier {
             try{
               final messageData = Message.deserialize(metaData);
               if (messageData.type == 'EVENT') {
+
                 Event element = messageData.message as Event;
-                String tmpChannelId = '';
-                String replyId = '';
-                String to = '';
-                for (var tag in element.tags) {
-                  if(
-                  element.kind == 42
-                      && tag.first == 'e'
-                      && tag[3] == 'root'
-                  ){
-                    tmpChannelId = tag[1];
+                if(!appRouter.nostrUserModel.currentUserInfo!.muteUsers.any((mutePubKey) => mutePubKey == element.pubkey)){
+                  String tmpChannelId = '';
+                  String replyId = '';
+                  String to = '';
+                  for (var tag in element.tags) {
+                    if(
+                    element.kind == 42
+                        && tag.first == 'e'
+                        && tag[3] == 'root'
+                    ){
+                      tmpChannelId = tag[1];
+                    }
+                    if(
+                    element.kind == 42
+                        && tag.first == 'e'
+                        && tag[3] == 'reply'
+                    ){
+                      replyId = tag[1];
+                    }
+                    if(
+                    element.kind == 4
+                        && tag.first == 'e'
+                    ){
+                      replyId = tag[1];
+                    }
+                    if(tag.first == 'p'){
+                      to = tag[1];
+                    }
                   }
-                  if(
-                  element.kind == 42
-                      && tag.first == 'e'
-                      && tag[3] == 'reply'
-                  ){
-                    replyId = tag[1];
+
+                  String messageChannelId = '';
+                  if(element.kind == 4){
+                    List<String> tmpIds =[element.pubkey, to];
+                    tmpIds.sort();
+
+                    messageChannelId = md5.convert(utf8.encode(tmpIds.join(""))).toString();
                   }
-                  if(
-                  element.kind == 4
-                      && tag.first == 'e'
-                  ){
-                    replyId = tag[1];
+                  if(element.kind == 42){
+                    messageChannelId = tmpChannelId;
                   }
-                  if(tag.first == 'p'){
-                    to = tag[1];
-                  }
+
+                  DBMessage message =DBMessage(element.id, element.pubkey, element.content, DateTime.fromMillisecondsSinceEpoch(element.createdAt.toInt()*1000), tmpChannelId, replyId, to, element.serialize(), messageChannelId);
+                  realmModel.realm.writeAsync(() {
+                    realmModel.realm.add(message, update: true);
+                  });
+
                 }
-
-                String messageChannelId = '';
-                if(element.kind == 4){
-                  List<String> tmpIds =[element.pubkey, to];
-                  tmpIds.sort();
-
-                  messageChannelId = md5.convert(utf8.encode(tmpIds.join(""))).toString();
-                }
-                if(element.kind == 42){
-                  messageChannelId = tmpChannelId;
-                }
-
-                DBMessage message =DBMessage(element.id, element.pubkey, element.content, DateTime.fromMillisecondsSinceEpoch(element.createdAt.toInt()*1000), tmpChannelId, replyId, to, element.serialize(), messageChannelId);
-                realmModel.realm.writeAsync(() {
-                  realmModel.realm.add(message, update: true);
-                });
-
               }
             }
             catch(_){}

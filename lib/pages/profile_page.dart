@@ -1,4 +1,5 @@
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nostr/nostr.dart';
 import 'package:nostr_app/models/user_follow_model.dart';
@@ -70,23 +71,112 @@ class ProfilePage extends StatelessWidget {
                     //   },
                     // ),
                     PopupMenuItem<String>(
-                      child: Text(S.of(context).userUpvote),
+                      child: Text(S.of(context).userUpvoteList),
                       onTap: () {
                       },
                     ),
                     PopupMenuItem<String>(
-                      child: Text(S.of(context).userReposts),
-                      onTap: () {
-                      },
+                      child: Text(S.of(context).userRepostsList),
                     ),
                   ];
                   if(pubKey!=Nip19.decodePubkey(appRouter.nostrUserModel.currentUserSync!.publicKey)){
                     menuItem.addAll([
                       PopupMenuItem<String>(
                         child: Text(S.of(context).reportUser),
+                        onTap: (){
+                          showCupertinoModalPopup(
+                              context: context,
+                              builder: (context){
+                                void reportFeed(String reportType){
+                                  appRouter.nostrUserModel.currentUser.then((user) {
+                                    userInfoModel.isReportUser(pubKey, (isReport) {
+                                      if(!isReport){
+                                        userInfoModel.reportUser(reportType);
+                                      }
+                                      else{
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text(S.of(context).tipReportRepeatedly),
+                                            duration: const Duration(seconds: 1),
+                                          ),
+                                        );
+                                      }
+                                      Navigator.pop(context);
+                                    });
+                                  });
+                                }
+
+                                return CupertinoActionSheet(
+                                  title: Text(S.of(context).dialogByTitle),
+                                  message: Text(S.of(context).actionSheetByReport),
+                                  actions: [
+                                    CupertinoActionSheetAction(onPressed: (){
+                                      reportFeed('nudity');
+                                    }, child: Text(S.of(context).reportByNudity)),
+                                    CupertinoActionSheetAction(onPressed: (){
+                                      reportFeed('profanity');
+                                    }, child: Text(S.of(context).reportByProfanity)),
+                                    CupertinoActionSheetAction(onPressed: (){
+                                      reportFeed('illegal');
+                                    }, child: Text(S.of(context).reportByIllegal)),
+                                    CupertinoActionSheetAction(onPressed: (){
+                                      reportFeed('impersonation');
+                                    }, child: Text(S.of(context).reportByImpersonation)),
+                                    CupertinoActionSheetAction(onPressed: (){
+                                      reportFeed('spam');
+                                    }, child: Text(S.of(context).reportBySpam)),
+                                    CupertinoActionSheetAction(
+                                        isDestructiveAction: true,
+                                        onPressed: (){
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text(S.of(context).createByCancel)),
+                                  ],
+                                );
+                              });
+                        }
                       ),
                       PopupMenuItem<String>(
-                        child: Text(S.of(context).muteUser),
+                        child: Text(userInfoModel.muted?S.of(context).unMuteUser: S.of(context).muteUser),
+                        onTap: () {
+                          if(userInfoModel.muted){
+                            userInfoModel.muting(context,false).then((value){
+                              Navigator.pop(context);
+                            });
+                          }
+                          else{
+                            showCupertinoDialog(
+                              context: context,
+                              builder: (context) {
+                                return CupertinoAlertDialog(
+                                  title: Text(S.of(context).dialogByTitle),
+                                  content: Column(
+                                    children: [
+                                      const SizedBox(height: 10,),
+                                      Text(S.of(context).dialogByMuteDescribe),
+                                    ],
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: (){
+                                          userInfoModel.muting(context,true).then((value){
+                                            Navigator.pop(context);
+                                          });
+                                        },
+                                        child: Text(S.of(context).dialogByMute)
+                                    ),
+                                    TextButton(
+                                        onPressed: (){
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text(S.of(context).createByCancel)
+                                    )
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                        },
                       ),
                     ]);
                   }

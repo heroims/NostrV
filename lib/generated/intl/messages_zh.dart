@@ -37,18 +37,26 @@ class MessageLookup extends MessageLookupByLibrary {
         "createByHDNode": MessageLookupByLibrary.simpleMessage("HD Node"),
         "createByNormal": MessageLookupByLibrary.simpleMessage("普通"),
         "dialogByAddFailed": MessageLookupByLibrary.simpleMessage("添加失败"),
+        "dialogByCancelMute": MessageLookupByLibrary.simpleMessage("取消屏蔽"),
         "dialogByCopy": MessageLookupByLibrary.simpleMessage("复制"),
         "dialogByCreate": MessageLookupByLibrary.simpleMessage("请选择创建账户的方式。"),
         "dialogByDone": MessageLookupByLibrary.simpleMessage("确定"),
         "dialogByEditPop":
             MessageLookupByLibrary.simpleMessage("是否确定要退出当前编辑页面?"),
         "dialogByInputFailed": MessageLookupByLibrary.simpleMessage("输入不能为空"),
+        "dialogByMute": MessageLookupByLibrary.simpleMessage("屏蔽"),
+        "dialogByMuteDescribe":
+            MessageLookupByLibrary.simpleMessage("屏蔽后，您将不会收到这个用户的发帖或私信"),
+        "dialogByMuteEvent":
+            MessageLookupByLibrary.simpleMessage("屏蔽后，您将不会看到到这条帖子"),
+        "dialogByMuteReason": MessageLookupByLibrary.simpleMessage("屏蔽理由"),
         "dialogByNoDataInRelay":
             MessageLookupByLibrary.simpleMessage("请添加其他中继，以便拉取数据。"),
         "dialogByTitle": MessageLookupByLibrary.simpleMessage("温馨提示"),
         "exportByKeystore": MessageLookupByLibrary.simpleMessage("导出Keystore"),
         "exportByNostrKey": MessageLookupByLibrary.simpleMessage("导出Nostr私钥"),
         "exportByWalletKey": MessageLookupByLibrary.simpleMessage("导出钱包私钥"),
+        "mutePost": MessageLookupByLibrary.simpleMessage("屏蔽帖子"),
         "muteUser": MessageLookupByLibrary.simpleMessage("屏蔽用户"),
         "navByPost": MessageLookupByLibrary.simpleMessage("发布"),
         "navByPrivateChat": MessageLookupByLibrary.simpleMessage("私信"),
@@ -88,7 +96,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "searchTabByPost": MessageLookupByLibrary.simpleMessage("帖子"),
         "searchTabByUser": MessageLookupByLibrary.simpleMessage("用户"),
         "settingByKey": MessageLookupByLibrary.simpleMessage("密钥管理"),
+        "settingByMute": MessageLookupByLibrary.simpleMessage("屏蔽管理"),
+        "settingByNotify": MessageLookupByLibrary.simpleMessage("通知管理"),
         "settingByRelay": MessageLookupByLibrary.simpleMessage("中继管理"),
+        "settingByVersion": MessageLookupByLibrary.simpleMessage("版本"),
         "shareByPostID": MessageLookupByLibrary.simpleMessage("分享"),
         "tipByKeystorePwError":
             MessageLookupByLibrary.simpleMessage("Keystore密码设置错误"),
@@ -101,8 +112,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "tipRecommendRelay": MessageLookupByLibrary.simpleMessage("推荐中继"),
         "tipReportRepeatedly": MessageLookupByLibrary.simpleMessage("请勿重复举报"),
         "tipUpdateUserFailed": MessageLookupByLibrary.simpleMessage("用户信息上传失败"),
+        "unMuteUser": MessageLookupByLibrary.simpleMessage("取消屏蔽"),
         "userReplies": MessageLookupByLibrary.simpleMessage("回复"),
+        "userRepliesList": MessageLookupByLibrary.simpleMessage("回复列表"),
         "userReposts": MessageLookupByLibrary.simpleMessage("转发"),
-        "userUpvote": MessageLookupByLibrary.simpleMessage("点赞")
+        "userRepostsList": MessageLookupByLibrary.simpleMessage("转发列表"),
+        "userUpvote": MessageLookupByLibrary.simpleMessage("点赞"),
+        "userUpvoteList": MessageLookupByLibrary.simpleMessage("点赞列表")
       };
 }

@@ -100,6 +100,36 @@ class S {
     );
   }
 
+  /// `Mute Manager`
+  String get settingByMute {
+    return Intl.message(
+      'Mute Manager',
+      name: 'settingByMute',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Notify Manager`
+  String get settingByNotify {
+    return Intl.message(
+      'Notify Manager',
+      name: 'settingByNotify',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Version`
+  String get settingByVersion {
+    return Intl.message(
+      'Version',
+      name: 'settingByVersion',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Recommended relays`
   String get tipRecommendRelay {
     return Intl.message(
@@ -360,6 +390,36 @@ class S {
     );
   }
 
+  /// `Replies List`
+  String get userRepliesList {
+    return Intl.message(
+      'Replies List',
+      name: 'userRepliesList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upvote List`
+  String get userUpvoteList {
+    return Intl.message(
+      'Upvote List',
+      name: 'userUpvoteList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reposts List`
+  String get userRepostsList {
+    return Intl.message(
+      'Reposts List',
+      name: 'userRepostsList',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Report User`
   String get reportUser {
     return Intl.message(
@@ -375,6 +435,26 @@ class S {
     return Intl.message(
       'Mute User',
       name: 'muteUser',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mute Post`
+  String get mutePost {
+    return Intl.message(
+      'Mute Post',
+      name: 'mutePost',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `unMute User`
+  String get unMuteUser {
+    return Intl.message(
+      'unMute User',
+      name: 'unMuteUser',
       desc: '',
       args: [],
     );
@@ -675,6 +755,56 @@ class S {
     return Intl.message(
       'Please select a method to create an account.',
       name: 'dialogByCreate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reason for blocking`
+  String get dialogByMuteReason {
+    return Intl.message(
+      'Reason for blocking',
+      name: 'dialogByMuteReason',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mute`
+  String get dialogByMute {
+    return Intl.message(
+      'Mute',
+      name: 'dialogByMute',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `UnMute`
+  String get dialogByCancelMute {
+    return Intl.message(
+      'UnMute',
+      name: 'dialogByCancelMute',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You will not receive posts or private messages from this user after blocking them.`
+  String get dialogByMuteDescribe {
+    return Intl.message(
+      'You will not receive posts or private messages from this user after blocking them.',
+      name: 'dialogByMuteDescribe',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You will not be able to see this post after blocking.`
+  String get dialogByMuteEvent {
+    return Intl.message(
+      'You will not be able to see this post after blocking.',
+      name: 'dialogByMuteEvent',
       desc: '',
       args: [],
     );

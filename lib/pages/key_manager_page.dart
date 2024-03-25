@@ -1,15 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nostr_app/components/relay_item_card.dart';
-import 'package:nostr_app/models/relay_info_model.dart';
-import 'package:nostr_app/models/user_info_model.dart';
 import 'package:provider/provider.dart';
 
-import '../components/sliver_header.dart';
 import '../generated/l10n.dart';
-import '../models/relay_manager_model.dart';
-import '../models/relay_pool_model.dart';
 import '../router.dart';
 
 class KeyManagerPage extends StatelessWidget {

@@ -42,6 +42,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "createByHDNode": MessageLookupByLibrary.simpleMessage("HD Node"),
         "createByNormal": MessageLookupByLibrary.simpleMessage("Normal"),
         "dialogByAddFailed": MessageLookupByLibrary.simpleMessage("Add Failed"),
+        "dialogByCancelMute": MessageLookupByLibrary.simpleMessage("UnMute"),
         "dialogByCopy": MessageLookupByLibrary.simpleMessage("Copy"),
         "dialogByCreate": MessageLookupByLibrary.simpleMessage(
             "Please select a method to create an account."),
@@ -50,6 +51,13 @@ class MessageLookup extends MessageLookupByLibrary {
             "Are you sure you want to exit the current editing page?"),
         "dialogByInputFailed":
             MessageLookupByLibrary.simpleMessage("Input can\'t be empty"),
+        "dialogByMute": MessageLookupByLibrary.simpleMessage("Mute"),
+        "dialogByMuteDescribe": MessageLookupByLibrary.simpleMessage(
+            "You will not receive posts or private messages from this user after blocking them."),
+        "dialogByMuteEvent": MessageLookupByLibrary.simpleMessage(
+            "You will not be able to see this post after blocking."),
+        "dialogByMuteReason":
+            MessageLookupByLibrary.simpleMessage("Reason for blocking"),
         "dialogByNoDataInRelay": MessageLookupByLibrary.simpleMessage(
             "Please add additional relays to fetch data."),
         "dialogByTitle": MessageLookupByLibrary.simpleMessage("Tip"),
@@ -59,6 +67,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Export Nostr Private Key"),
         "exportByWalletKey":
             MessageLookupByLibrary.simpleMessage("Export Nostr Private Key"),
+        "mutePost": MessageLookupByLibrary.simpleMessage("Mute Post"),
         "muteUser": MessageLookupByLibrary.simpleMessage("Mute User"),
         "navByPost": MessageLookupByLibrary.simpleMessage("Post"),
         "navByPrivateChat":
@@ -111,7 +120,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "searchTabByPost": MessageLookupByLibrary.simpleMessage("Post"),
         "searchTabByUser": MessageLookupByLibrary.simpleMessage("User"),
         "settingByKey": MessageLookupByLibrary.simpleMessage("Key Manager"),
+        "settingByMute": MessageLookupByLibrary.simpleMessage("Mute Manager"),
+        "settingByNotify":
+            MessageLookupByLibrary.simpleMessage("Notify Manager"),
         "settingByRelay": MessageLookupByLibrary.simpleMessage("Relay Manager"),
+        "settingByVersion": MessageLookupByLibrary.simpleMessage("Version"),
         "shareByPostID": MessageLookupByLibrary.simpleMessage("Share"),
         "tipByKeystorePwError":
             MessageLookupByLibrary.simpleMessage("Keystore Password Error"),
@@ -132,8 +145,12 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please do not report repeatedly."),
         "tipUpdateUserFailed":
             MessageLookupByLibrary.simpleMessage("Update userinfo failed."),
+        "unMuteUser": MessageLookupByLibrary.simpleMessage("unMute User"),
         "userReplies": MessageLookupByLibrary.simpleMessage("Replies"),
+        "userRepliesList": MessageLookupByLibrary.simpleMessage("Replies List"),
         "userReposts": MessageLookupByLibrary.simpleMessage("Reposts"),
-        "userUpvote": MessageLookupByLibrary.simpleMessage("Upvote")
+        "userRepostsList": MessageLookupByLibrary.simpleMessage("Reposts List"),
+        "userUpvote": MessageLookupByLibrary.simpleMessage("Upvote"),
+        "userUpvoteList": MessageLookupByLibrary.simpleMessage("Upvote List")
       };
 }

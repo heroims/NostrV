@@ -33,6 +33,7 @@ class FeedPage extends StatelessWidget {
             AppRouter appRouter = Provider.of<AppRouter>(context, listen: false);
 
             appRouter.nostrUserModel.currentUserInfo?.getUserInfo();
+            appRouter.nostrUserModel.currentUserInfo?.getMuteInfo();
             appRouter.nostrUserModel.currentUserInfo?.getUserFollowing();
           }
           return Scaffold(

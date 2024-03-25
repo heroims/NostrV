@@ -12,6 +12,7 @@ import 'package:nostr_app/pages/home_page.dart';
 import 'package:nostr_app/pages/key_manager_page.dart';
 import 'package:nostr_app/pages/mnemonic_verify_page.dart';
 import 'package:nostr_app/pages/mnemonic_show_page.dart';
+import 'package:nostr_app/pages/mute_manager_page.dart';
 import 'package:nostr_app/pages/photo_page.dart';
 import 'package:nostr_app/pages/profile_edit_page.dart';
 import 'package:nostr_app/pages/profile_page.dart';
@@ -23,6 +24,7 @@ import 'package:nostr_app/pages/welcome_page.dart';
 import 'package:nostr_app/pages/relay_manager_page.dart';
 
 enum Routers {
+  muteManager(22, 'mute_manager'),
   keyManager(21, 'key_manager'),
   relayManager(20, 'relay_manager'),
   profileEdit(19, 'profile_edit'),
@@ -282,7 +284,14 @@ class AppRouter {
           name: Routers.keyManager.value,
           path: '/${Routers.keyManager.value}',
           pageBuilder: (context, state) {
-            return MaterialPage(child: KeyManagerPage());
+            return const MaterialPage(child: KeyManagerPage());
+          }
+      ),
+      GoRoute(
+          name: Routers.muteManager.value,
+          path: '/${Routers.muteManager.value}',
+          pageBuilder: (context, state) {
+            return const MaterialPage(child: MuteManagerPage());
           }
       ),
       GoRoute(
