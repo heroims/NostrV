@@ -34,7 +34,7 @@ class EventListModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void refreshEvent({Function? refreshCallback}){
+  void refreshEvent({Function(List<Event>,bool)? refreshCallback}){
     _lastCreatedAt = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     final requestUUID =generate64RandomHexChars();
     NostrFilter filter = NostrFilter(
@@ -92,7 +92,7 @@ class EventListModel extends ChangeNotifier {
         _controller.finishRefresh();
         _controller.resetFooter();
         if(refreshCallback!=null){
-          refreshCallback();
+          refreshCallback(response,true);
         }
       }
 
@@ -106,14 +106,14 @@ class EventListModel extends ChangeNotifier {
           notifyListeners();
           _controller.finishLoad(response.isEmpty?IndicatorResult.noMore:IndicatorResult.success);
           if(refreshCallback!=null){
-            refreshCallback();
+            refreshCallback(response,false);
           }
         });
       }
     });
   }
 
-  void loadMoreEvent({Function? refreshCallback}){
+  void loadMoreEvent({Function(List<Event>)? refreshCallback}){
     final requestUUID =generate64RandomHexChars();
     NostrFilter filter = NostrFilter(
       kinds: kinds,
@@ -169,7 +169,7 @@ class EventListModel extends ChangeNotifier {
         _controller.finishLoad(response.isEmpty?IndicatorResult.noMore:IndicatorResult.success);
         notifyListeners();
         if(refreshCallback!=null){
-          refreshCallback();
+          refreshCallback(response);
         }
       });
     });

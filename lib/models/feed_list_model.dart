@@ -425,15 +425,15 @@ class FeedListModel extends ChangeNotifier {
         tags: [['e', feed.id],['p', feed.pubkey]],
         privkey: Nip19.decodePrivkey((appRouter.nostrUserModel.currentUserSync)!.privateKey)
     );
-    Event event2 = Event.from(
-        kind: 16,
-        content: feed.serialize(),
-        tags: [['e', feed.id], ['k', feed.kind.toString()],['p', feed.pubkey]],
-        privkey: Nip19.decodePrivkey((appRouter.nostrUserModel.currentUserSync)!.privateKey)
-    );
+    // Event event2 = Event.from(
+    //     kind: 16,
+    //     content: feed.serialize(),
+    //     tags: [['e', feed.id], ['k', feed.kind.toString()],['p', feed.pubkey]],
+    //     privkey: Nip19.decodePrivkey((appRouter.nostrUserModel.currentUserSync)!.privateKey)
+    // );
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
     relayPoolModel.addEventSingle(event1, (_){});
-    relayPoolModel.addEventSingle(event2, (_){});
+    // relayPoolModel.addEventSingle(event2, (_){});
   }
 
   void isRepostFeed(String repostId, String pubKey, Function(bool) callback) {
