@@ -1,7 +1,5 @@
 import 'package:easy_refresh/easy_refresh.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:nostr_app/components/feed_item_card.dart';
 import 'package:nostr_app/components/mute_user_card.dart';
 import 'package:nostr_app/models/feed_list_model.dart';

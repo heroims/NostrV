@@ -22,17 +22,33 @@ class NotifyPage extends StatelessWidget {
     );
     AppRouter appRouter = Provider.of<AppRouter>(context, listen: false);
 
+    final kinds =<int>[];
+    final nostrUser = appRouter.nostrUserModel.currentUserSync;
+    if(nostrUser!= null){
+      if(nostrUser.notifyReply){
+        kinds.add(1);
+      }
+      if(nostrUser.notifyFollow){
+        kinds.add(3);
+      }
+      if(nostrUser.notifyReply){
+        kinds.add(6);
+      }
+      if(nostrUser.notifyUpvote){
+        kinds.add(7);
+      }
+    }
     final eventListModel = EventListModel(
         controller,
         context,
         atUserId: Nip19.decodePubkey(
             appRouter.nostrUserModel.currentUserSync!.publicKey
         ),
-        kinds: [1,3,6,7,16],
+        kinds: kinds,
     );
 
     return Consumer<RelayPoolModel>(builder: (context, relayPoolModel, child){
-      if(relayPoolModel.startedRelaysPool&&eventListModel.eventList.isEmpty) {
+      if(relayPoolModel.startedRelaysPool&&eventListModel.eventList.isEmpty&&kinds.isNotEmpty) {
         eventListModel.refreshEvent();
       }
       return ChangeNotifierProvider(
@@ -40,7 +56,7 @@ class NotifyPage extends StatelessWidget {
         builder: (context, child) {
           return Scaffold(
             body: EasyRefresh(
-              controller: controller,
+              controller: kinds.isNotEmpty ? controller:EasyRefreshController(),
               header: const BezierHeader(),
               footer: const ClassicFooter(),
               onRefresh: () => eventListModel.refreshEvent(),

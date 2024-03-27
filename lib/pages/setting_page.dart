@@ -85,6 +85,9 @@ class SettingPage extends StatelessWidget {
                   case 2:
                     context.pushNamed(Routers.muteManager.value);
                     break;
+                  case 3:
+                    context.pushNamed(Routers.notifyManager.value);
+                    break;
                   default:
                     break;
                 }

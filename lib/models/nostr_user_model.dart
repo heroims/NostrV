@@ -16,15 +16,29 @@ class NostrUser{
   final String publicKey;
   final String privateKey;
 
+  bool notifyReply = true;
+  bool notifyFollow = true;
+  bool notifyUpvote = true;
+  bool notifyRepost = true;
+
   NostrUser(this.publicKey,this.privateKey);
 
   NostrUser.fromJson(Map<String, dynamic> json)
       : publicKey = json['pub_key'],
-        privateKey = json['pri_key'];
+        privateKey = json['pri_key'],
+        notifyReply = json['notify_reply'] ?? true,
+        notifyFollow = json['notify_follow'] ?? true,
+        notifyUpvote = json['notify_upvote'] ?? true,
+        notifyRepost = json['notify_repost'] ?? true;
+
 
   Map<String, dynamic> toJson() => {
     'pub_key': publicKey,
     'pri_key': privateKey,
+    'notify_reply': notifyReply,
+    'notify_follow': notifyFollow,
+    'notify_upvote': notifyUpvote,
+    'notify_repost': notifyRepost,
   };
 }
 
@@ -68,46 +82,46 @@ class NostrUserModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  late List<NostrUser>? _userList;
-  Future<List<NostrUser>> get userList async{
-    if(_userList==null){
-      String? json = await storage.read(key: 'nostr_user_list',iOptions: iosSecureStorageOptions,aOptions: androidSecureStorageOptions);
-      if(json!=null){
-        List<Map<String, dynamic>> userListMap = jsonDecode(json);
-        _userList = userListMap.map((item) => NostrUser.fromJson(item)).toList();
-        notifyListeners();
-      }
-    }
-    _userList??=[];
-    return _userList!;
-  }
+  // late List<NostrUser>? _userList;
+  // Future<List<NostrUser>> get userList async{
+  //   if(_userList==null){
+  //     String? json = await storage.read(key: 'nostr_user_list',iOptions: iosSecureStorageOptions,aOptions: androidSecureStorageOptions);
+  //     if(json!=null){
+  //       List<Map<String, dynamic>> userListMap = jsonDecode(json);
+  //       _userList = userListMap.map((item) => NostrUser.fromJson(item)).toList();
+  //       notifyListeners();
+  //     }
+  //   }
+  //   _userList??=[];
+  //   return _userList!;
+  // }
 
-  Future<void> loadCurrentNostrUser() async{
-    String? json = await storage.read(key: 'nostr_user',iOptions: iosSecureStorageOptions,aOptions: androidSecureStorageOptions);
-    if(_currentUser==null){
-      if(json!=null){
-        Map<String, dynamic> userMap = jsonDecode(json);
-        _currentUser = NostrUser.fromJson(userMap);
-        notifyListeners();
-      }
-    }
-  }
+  // Future<void> loadCurrentNostrUser() async{
+  //   String? json = await storage.read(key: 'nostr_user',iOptions: iosSecureStorageOptions,aOptions: androidSecureStorageOptions);
+  //   if(_currentUser==null){
+  //     if(json!=null){
+  //       Map<String, dynamic> userMap = jsonDecode(json);
+  //       _currentUser = NostrUser.fromJson(userMap);
+  //       notifyListeners();
+  //     }
+  //   }
+  // }
 
   Future<void> saveCurrentNostrUser(String userKey,dynamic userValue) async {
     String json =jsonEncode(userValue);
     await storage.write(key:userKey, value: json,iOptions: iosSecureStorageOptions,aOptions: androidSecureStorageOptions);
   }
 
-  Future<void> checkoutNostrUser(int index) async{
+  // Future<void> checkoutNostrUser(int index) async{
+  //
+  // }
 
-  }
-
-  Future<void> addNostrUser(dynamic userValue) async {
-    String json = JsonEncoder(userValue) as String;
-    (await userList).add(userValue);
-    await storage.write(key:'nostr_user_list', value: json, iOptions: iosSecureStorageOptions,aOptions: androidSecureStorageOptions);
-
-  }
+  // Future<void> addNostrUser(dynamic userValue) async {
+  //   String json = JsonEncoder(userValue) as String;
+  //   (await userList).add(userValue);
+  //   await storage.write(key:'nostr_user_list', value: json, iOptions: iosSecureStorageOptions,aOptions: androidSecureStorageOptions);
+  //
+  // }
 
   Future<void> createNormalAccount() async {
     final randomKeys = Keychain.generate();

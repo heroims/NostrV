@@ -63,6 +63,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "navByPrivateChat": MessageLookupByLibrary.simpleMessage("私信"),
         "navByPublicChat": MessageLookupByLibrary.simpleMessage("公共聊天"),
         "navByRelay": MessageLookupByLibrary.simpleMessage("中继"),
+        "notifyByFollow": MessageLookupByLibrary.simpleMessage("关注"),
+        "notifyByReply": MessageLookupByLibrary.simpleMessage("评论"),
+        "notifyByRepost": MessageLookupByLibrary.simpleMessage("转发"),
+        "notifyByUpvote": MessageLookupByLibrary.simpleMessage("点赞"),
         "pageMnemonicDescribe": MessageLookupByLibrary.simpleMessage("请备份助记词"),
         "pageMnemonicNext": MessageLookupByLibrary.simpleMessage("下一步"),
         "pageMnemonicShowTip": MessageLookupByLibrary.simpleMessage(

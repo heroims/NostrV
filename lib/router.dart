@@ -13,6 +13,7 @@ import 'package:nostr_app/pages/key_manager_page.dart';
 import 'package:nostr_app/pages/mnemonic_verify_page.dart';
 import 'package:nostr_app/pages/mnemonic_show_page.dart';
 import 'package:nostr_app/pages/mute_manager_page.dart';
+import 'package:nostr_app/pages/notify_manager_page.dart';
 import 'package:nostr_app/pages/photo_page.dart';
 import 'package:nostr_app/pages/profile_edit_page.dart';
 import 'package:nostr_app/pages/profile_page.dart';
@@ -26,6 +27,7 @@ import 'package:nostr_app/pages/welcome_page.dart';
 import 'package:nostr_app/pages/relay_manager_page.dart';
 
 enum Routers {
+  notifyManager(25, 'notify_manager'),
   repostFeed(24, 'repost_feed'),
   upvoteFeed(23, 'upvote_feed'),
   muteManager(22, 'mute_manager'),
@@ -296,6 +298,13 @@ class AppRouter {
           path: '/${Routers.muteManager.value}',
           pageBuilder: (context, state) {
             return const MaterialPage(child: MuteManagerPage());
+          }
+      ),
+      GoRoute(
+          name: Routers.notifyManager.value,
+          path: '/${Routers.notifyManager.value}',
+          pageBuilder: (context, state) {
+            return const MaterialPage(child: NotifyManagerPage());
           }
       ),
       GoRoute(

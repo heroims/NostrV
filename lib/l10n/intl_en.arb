@@ -1,4 +1,8 @@
 {
+  "notifyByReply": "Reply",
+  "notifyByFollow": "Follow",
+  "notifyByUpvote": "Upvote",
+  "notifyByRepost": "Repost",
   "cardOfError": "Error Card",
   "dialogByEditPop": "Are you sure you want to exit the current editing page?",
   "navByRelay": "Relay",

@@ -50,6 +50,46 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Reply`
+  String get notifyByReply {
+    return Intl.message(
+      'Reply',
+      name: 'notifyByReply',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Follow`
+  String get notifyByFollow {
+    return Intl.message(
+      'Follow',
+      name: 'notifyByFollow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upvote`
+  String get notifyByUpvote {
+    return Intl.message(
+      'Upvote',
+      name: 'notifyByUpvote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Repost`
+  String get notifyByRepost {
+    return Intl.message(
+      'Repost',
+      name: 'notifyByRepost',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Error Card`
   String get cardOfError {
     return Intl.message(

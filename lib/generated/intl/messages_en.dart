@@ -75,6 +75,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Private Chat"),
         "navByPublicChat": MessageLookupByLibrary.simpleMessage("Public Chat"),
         "navByRelay": MessageLookupByLibrary.simpleMessage("Relay"),
+        "notifyByFollow": MessageLookupByLibrary.simpleMessage("Follow"),
+        "notifyByReply": MessageLookupByLibrary.simpleMessage("Reply"),
+        "notifyByRepost": MessageLookupByLibrary.simpleMessage("Repost"),
+        "notifyByUpvote": MessageLookupByLibrary.simpleMessage("Upvote"),
         "pageMnemonicDescribe": MessageLookupByLibrary.simpleMessage(
             "Please backup the mnemonic words"),
         "pageMnemonicNext": MessageLookupByLibrary.simpleMessage("Next"),

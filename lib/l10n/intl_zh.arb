@@ -1,4 +1,8 @@
 {
+  "notifyByReply": "评论",
+  "notifyByFollow": "关注",
+  "notifyByUpvote": "点赞",
+  "notifyByRepost": "转发",
   "cardOfError": "异常卡片",
   "dialogByEditPop": "是否确定要退出当前编辑页面?",
   "navByRelay": "中继",
