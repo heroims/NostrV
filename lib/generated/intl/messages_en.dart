@@ -34,6 +34,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Following"),
         "avatarCardByRelays": MessageLookupByLibrary.simpleMessage("Relays"),
         "cardOfError": MessageLookupByLibrary.simpleMessage("Error Card"),
+        "connectByAlby": MessageLookupByLibrary.simpleMessage("Alby Connect"),
+        "connectByCancel": MessageLookupByLibrary.simpleMessage("Disconnect"),
+        "connectByInput": MessageLookupByLibrary.simpleMessage("Connect"),
+        "connectByMutiny":
+            MessageLookupByLibrary.simpleMessage("Mutiny Connect"),
+        "connectByScan": MessageLookupByLibrary.simpleMessage("Scan Connect"),
         "copyByPost": MessageLookupByLibrary.simpleMessage("Copy Post"),
         "copyByPostID": MessageLookupByLibrary.simpleMessage("Copy Post ID"),
         "copyByUserID": MessageLookupByLibrary.simpleMessage("Copy User ID"),
@@ -47,6 +53,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "dialogByCopy": MessageLookupByLibrary.simpleMessage("Copy"),
         "dialogByCreate": MessageLookupByLibrary.simpleMessage(
             "Please select a method to create an account."),
+        "dialogByDisconnectTip": MessageLookupByLibrary.simpleMessage(
+            "Are you sure you want to disconnect?"),
         "dialogByDone": MessageLookupByLibrary.simpleMessage("Done"),
         "dialogByEditPop": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to exit the current editing page?"),
@@ -90,6 +98,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "pageWelcomeGo": MessageLookupByLibrary.simpleMessage("Go"),
         "pageWelcomeImport": MessageLookupByLibrary.simpleMessage("Import"),
         "pageWelcomeTitle": MessageLookupByLibrary.simpleMessage("Welcome"),
+        "placeholderByConnectAddress":
+            MessageLookupByLibrary.simpleMessage("Connect Address"),
         "postByReply": MessageLookupByLibrary.simpleMessage("reply:"),
         "postDetailByComment": MessageLookupByLibrary.simpleMessage("Comment"),
         "postDetailByMain": MessageLookupByLibrary.simpleMessage("Main"),
@@ -125,6 +135,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "searchTabByPost": MessageLookupByLibrary.simpleMessage("Post"),
         "searchTabByUser": MessageLookupByLibrary.simpleMessage("User"),
         "settingByKey": MessageLookupByLibrary.simpleMessage("Key Manager"),
+        "settingByLightning":
+            MessageLookupByLibrary.simpleMessage("Wallet for Lightning"),
         "settingByMute": MessageLookupByLibrary.simpleMessage("Mute Manager"),
         "settingByNotify":
             MessageLookupByLibrary.simpleMessage("Notify Manager"),

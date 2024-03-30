@@ -73,10 +73,40 @@ class UserFollowings {
   }
 }
 
+class LightningWallet {
+  final String url;
+  String publicKey = '';
+  String secret = '';
+  String relayUrl = '';
+  String lud16 = '';
+  String nip19PublicKey = '';
+  bool connect = false;
+
+  LightningWallet({required this.url}){
+    final walletUrl = Uri.parse(url);
+    if(walletUrl.scheme =='nostrwalletconnect' || walletUrl.scheme =='nostr+walletconnect'){
+      connect = true;
+      if(walletUrl.host.trim()!=''){
+        publicKey = walletUrl.host;
+      }
+      else if(walletUrl.path.trim()!=''){
+        publicKey = walletUrl.path;
+      }
+      else{}
+      nip19PublicKey = publicKey.trim()!='' ? Nip19.encodePubkey(publicKey) : '';
+      secret = walletUrl.queryParameters['secret']??'';
+      relayUrl = walletUrl.queryParameters['relay']??'';
+      lud16 = walletUrl.queryParameters['lud16']??'';
+    }
+  }
+
+}
+
 class UserInfoModel extends ChangeNotifier {
   late final BuildContext _context;
   late final String publicKey;
 
+  LightningWallet? lightningWallet;
   UserInfo? _userInfo;
   UserInfo? get userInfo => _userInfo;
 

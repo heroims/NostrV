@@ -10,6 +10,7 @@ import 'package:nostr_app/pages/followers_page.dart';
 import 'package:nostr_app/pages/followings_page.dart';
 import 'package:nostr_app/pages/home_page.dart';
 import 'package:nostr_app/pages/key_manager_page.dart';
+import 'package:nostr_app/pages/lightning_page.dart';
 import 'package:nostr_app/pages/mnemonic_verify_page.dart';
 import 'package:nostr_app/pages/mnemonic_show_page.dart';
 import 'package:nostr_app/pages/mute_manager_page.dart';
@@ -25,8 +26,12 @@ import 'package:nostr_app/pages/search_page.dart';
 import 'package:nostr_app/pages/upvote_feed_page.dart';
 import 'package:nostr_app/pages/welcome_page.dart';
 import 'package:nostr_app/pages/relay_manager_page.dart';
+import 'package:provider/provider.dart';
+
+import 'models/deep_links_model.dart';
 
 enum Routers {
+  lightning(26, 'lightning'),
   notifyManager(25, 'notify_manager'),
   repostFeed(24, 'repost_feed'),
   upvoteFeed(23, 'upvote_feed'),
@@ -97,6 +102,8 @@ class AppRouter {
           name: Routers.home.value,
           path: '/${Routers.home.value}/:tab(${Routers.feed.value}|${Routers.message.value}|${Routers.notify.value}|${Routers.setting.value})',
           pageBuilder: (context, state) {
+            final deepLinksModel = Provider.of<DeepLinksModel>(context, listen: false);
+            deepLinksModel.context = context;
             final tabStr = state.pathParameters['tab'];
             return MaterialPage(child: HomePage(tab: tabStr ?? Routers.feed.value));
           }
@@ -305,6 +312,13 @@ class AppRouter {
           path: '/${Routers.notifyManager.value}',
           pageBuilder: (context, state) {
             return const MaterialPage(child: NotifyManagerPage());
+          }
+      ),
+      GoRoute(
+          name: Routers.lightning.value,
+          path: '/${Routers.lightning.value}',
+          pageBuilder: (context, state) {
+            return const MaterialPage(child: LightningPage());
           }
       ),
       GoRoute(

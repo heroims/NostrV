@@ -30,6 +30,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "avatarCardByFollowing": MessageLookupByLibrary.simpleMessage("已关注"),
         "avatarCardByRelays": MessageLookupByLibrary.simpleMessage("中继器"),
         "cardOfError": MessageLookupByLibrary.simpleMessage("异常卡片"),
+        "connectByAlby": MessageLookupByLibrary.simpleMessage("Alby连接"),
+        "connectByCancel": MessageLookupByLibrary.simpleMessage("取消连接"),
+        "connectByInput": MessageLookupByLibrary.simpleMessage("连接"),
+        "connectByMutiny": MessageLookupByLibrary.simpleMessage("Mutiny连接"),
+        "connectByScan": MessageLookupByLibrary.simpleMessage("扫一扫连接"),
         "copyByPost": MessageLookupByLibrary.simpleMessage("复制信息"),
         "copyByPostID": MessageLookupByLibrary.simpleMessage("复制NoteID"),
         "copyByUserID": MessageLookupByLibrary.simpleMessage("复制用户ID"),
@@ -41,6 +46,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "dialogByCancelMute": MessageLookupByLibrary.simpleMessage("取消屏蔽"),
         "dialogByCopy": MessageLookupByLibrary.simpleMessage("复制"),
         "dialogByCreate": MessageLookupByLibrary.simpleMessage("请选择创建账户的方式。"),
+        "dialogByDisconnectTip":
+            MessageLookupByLibrary.simpleMessage("是否确定取消连接？"),
         "dialogByDone": MessageLookupByLibrary.simpleMessage("确定"),
         "dialogByEditPop":
             MessageLookupByLibrary.simpleMessage("是否确定要退出当前编辑页面?"),
@@ -77,6 +84,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "pageWelcomeGo": MessageLookupByLibrary.simpleMessage("进入"),
         "pageWelcomeImport": MessageLookupByLibrary.simpleMessage("导入"),
         "pageWelcomeTitle": MessageLookupByLibrary.simpleMessage("欢迎"),
+        "placeholderByConnectAddress":
+            MessageLookupByLibrary.simpleMessage("连接地址"),
         "postByReply": MessageLookupByLibrary.simpleMessage("回复:"),
         "postDetailByComment": MessageLookupByLibrary.simpleMessage("回复"),
         "postDetailByMain": MessageLookupByLibrary.simpleMessage("评论"),
@@ -101,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "searchTabByPost": MessageLookupByLibrary.simpleMessage("帖子"),
         "searchTabByUser": MessageLookupByLibrary.simpleMessage("用户"),
         "settingByKey": MessageLookupByLibrary.simpleMessage("密钥管理"),
+        "settingByLightning": MessageLookupByLibrary.simpleMessage("闪电钱包"),
         "settingByMute": MessageLookupByLibrary.simpleMessage("屏蔽管理"),
         "settingByNotify": MessageLookupByLibrary.simpleMessage("通知管理"),
         "settingByRelay": MessageLookupByLibrary.simpleMessage("中继管理"),

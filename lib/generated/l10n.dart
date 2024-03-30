@@ -90,6 +90,66 @@ class S {
     );
   }
 
+  /// `Alby Connect`
+  String get connectByAlby {
+    return Intl.message(
+      'Alby Connect',
+      name: 'connectByAlby',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mutiny Connect`
+  String get connectByMutiny {
+    return Intl.message(
+      'Mutiny Connect',
+      name: 'connectByMutiny',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scan Connect`
+  String get connectByScan {
+    return Intl.message(
+      'Scan Connect',
+      name: 'connectByScan',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect`
+  String get connectByInput {
+    return Intl.message(
+      'Connect',
+      name: 'connectByInput',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disconnect`
+  String get connectByCancel {
+    return Intl.message(
+      'Disconnect',
+      name: 'connectByCancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect Address`
+  String get placeholderByConnectAddress {
+    return Intl.message(
+      'Connect Address',
+      name: 'placeholderByConnectAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Error Card`
   String get cardOfError {
     return Intl.message(
@@ -175,6 +235,16 @@ class S {
     return Intl.message(
       'Version',
       name: 'settingByVersion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wallet for Lightning`
+  String get settingByLightning {
+    return Intl.message(
+      'Wallet for Lightning',
+      name: 'settingByLightning',
       desc: '',
       args: [],
     );
@@ -855,6 +925,16 @@ class S {
     return Intl.message(
       'You will not be able to see this post after blocking.',
       name: 'dialogByMuteEvent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to disconnect?`
+  String get dialogByDisconnectTip {
+    return Intl.message(
+      'Are you sure you want to disconnect?',
+      name: 'dialogByDisconnectTip',
       desc: '',
       args: [],
     );

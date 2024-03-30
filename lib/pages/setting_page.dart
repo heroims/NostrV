@@ -9,7 +9,7 @@ class SettingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lblTitles = [S.of(context).settingByRelay, S.of(context).settingByKey, S.of(context).settingByMute, S.of(context).settingByNotify, S.of(context).settingByVersion];
+    final lblTitles = [S.of(context).settingByRelay, S.of(context).settingByKey, S.of(context).settingByMute, S.of(context).settingByNotify, S.of(context).settingByLightning, S.of(context).settingByVersion];
     PackageInfo.fromPlatform().then((value) => value.version);
     return Scaffold(
       body: ListView.builder(
@@ -87,6 +87,9 @@ class SettingPage extends StatelessWidget {
                     break;
                   case 3:
                     context.pushNamed(Routers.notifyManager.value);
+                    break;
+                  case 4:
+                    context.pushNamed(Routers.lightning.value);
                     break;
                   default:
                     break;
