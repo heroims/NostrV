@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../generated/l10n.dart';
 import '../models/deep_links_model.dart';
 import '../models/user_info_model.dart';
-import '../router.dart';
 
 class LightningPage extends StatelessWidget {
   const LightningPage({super.key});
@@ -81,7 +81,7 @@ class LightningPage extends StatelessWidget {
                         TextButton(
                             onPressed: (){
                               model.lightningWallet=null;
-                              model.notifyListeners();
+                              model.refresh();
                               Navigator.pop(context);
                             },
                             child: Text(S.of(context).dialogByDone)
@@ -129,209 +129,40 @@ class LightningPage extends StatelessWidget {
             ))
           ],
         ),
-        // Row(
-        //   children: [
-        //     Expanded(child: Container(
-        //       padding: const EdgeInsets.only(left: 20,right: 20, top: 60),
-        //       child: SizedBox(
-        //         height: 50,
-        //         child: ElevatedButton(onPressed: (){}, child: Text(S.of(context).connectByScan)),
-        //       ),
-        //     ))
-        //   ],
-        // ),
         Row(
-          mainAxisSize: MainAxisSize.max,
           children: [
-
             Expanded(child: Container(
               padding: const EdgeInsets.only(left: 20,right: 20, top: 60),
               child: SizedBox(
-                width: 300,
-                height: 50,
-                child: CupertinoTextField(
-                  placeholder: S.of(context).placeholderByConnectAddress,
-                  controller: controller,
-                ),
-              ),
-            )),
-            Container(
-              padding: const EdgeInsets.only(right: 20, top: 60),
-              child: SizedBox(
-                width: 100,
                 height: 50,
                 child: ElevatedButton(onPressed: (){
-                  final lightWallet = LightningWallet(url: controller.text);
-                  model.lightningWallet = lightWallet;
-                }, child: Text(S.of(context).connectByInput)),
-              ),
-            )
-
-          ],
-        )
-      ];
-      return Scaffold(
-        appBar: AppBar(
-          title:Text(S.of(context).settingByLightning),
-        ),
-        body: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children:isConnect ?
-            connectUI :
-            disConnectUI
-        ),
-      );
-    });
-
-  }
-
-  // @override
-  // State<StatefulWidget> createState() {
-  //   return LightningState();
-  // }
-}
-
-class LightningState extends State{
-
-  bool isConnect = false;
-  String publicKey = '';
-  String relayUrl = '';
-  String lud16 = '';
-
-  void changeWalletState(LightningWallet lightWallet){
-    if(lightWallet.connect){
-      AppRouter appRouter = Provider.of<AppRouter>(context, listen: false);
-      appRouter.nostrUserModel.currentUserInfo?.lightningWallet = lightWallet;
-      setState(() {
-        isConnect = lightWallet.connect;
-        publicKey = lightWallet.nip19PublicKey;
-        relayUrl = lightWallet.relayUrl;
-        lud16 = lightWallet.lud16;
-      });
-    }
-  }
-
-  void onConnectWallet(String urlString){
-    if(urlString.isNotEmpty){
-      final lightWallet = LightningWallet(url: urlString);
-      changeWalletState(lightWallet);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<DeepLinksModel>(builder: (context, model, child) {
-      final controller = TextEditingController();
-      final connectUI = [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                child: Text('address:$publicKey',textAlign: TextAlign.center, style: const TextStyle(fontSize: 18),),
-              ),
-            ),
-          ],
-        ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                child: Text('relay:$relayUrl',textAlign: TextAlign.center, style: const TextStyle(fontSize: 18),),
-              ),
-            ),
-          ],
-        ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                child: Text('lud16:$lud16',textAlign: TextAlign.center, style: const TextStyle(fontSize: 18),),
-              ),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            Expanded(child: Container(
-              padding: const EdgeInsets.only(left: 20,right: 20),
-              child: SizedBox(
-                height: 50,
-                child: ElevatedButton(onPressed: (){
-                  showCupertinoDialog(context: context, builder: (context){
-                    return CupertinoAlertDialog(
-                      title: Text(S.of(context).dialogByTitle),
-                      content: Text(S.of(context).dialogByDisconnectTip),
-                      actions: [
-                        TextButton(
-                            onPressed: (){
-                              setState(() {
-                                isConnect = false;
-                              });
-                              Navigator.pop(context);
-                            },
-                            child: Text(S.of(context).dialogByDone)
+                  showDialog(context: context, barrierDismissible: true, builder: (context){
+                    return Scaffold(
+                      appBar: AppBar(
+                        title: Text(S.of(context).connectByScan),
+                      ),
+                      body: Center(
+                        child: ReaderWidget(
+                          onScan: (code){
+                            Navigator.pop(context, code.text);
+                          },
+                          scanDelay: const Duration(milliseconds: 500),
+                          resolution: ResolutionPreset.high,
+                          lensDirection: CameraLensDirection.back,
+                          showFlashlight: true,
+                          showGallery: true,
+                          showToggleCamera: true,
+                          showScannerOverlay: true,
                         ),
-                        TextButton(
-                            onPressed: (){
-                              Navigator.pop(context);
-                            },
-                            child: Text(S.of(context).createByCancel)
-                        )
-                      ],
+                      ),
                     );
+                  })
+                  .then((value) {
+                    final lightWallet = LightningWallet(url: value);
+                    model.lightningWallet = lightWallet;
+                    model.refresh();
                   });
-
-                }, child: Text(S.of(context).connectByCancel)),
-              ),
-            ))
-          ],
-        ),
-      ];
-
-      if(model.lightningWallet!=null){
-        changeWalletState(model.lightningWallet!);
-      }
-      final disConnectUI = [
-        Row(
-          children: [
-            Expanded(child: Container(
-              padding: const EdgeInsets.only(left: 20,right: 20),
-              child: SizedBox(
-                height: 50,
-                child: ElevatedButton(onPressed: (){
-                  launchUrlString('https://nwc.getalby.com/apps/new?c=NostrApp', mode: LaunchMode.externalApplication);
-                }, child: Text(S.of(context).connectByAlby)),
-              ),
-            ))
-          ],
-        ),
-        Row(
-          children: [
-            Expanded(child: Container(
-              padding: const EdgeInsets.only(left: 20,right: 20, top: 60),
-              child: SizedBox(
-                height: 50,
-                child: ElevatedButton(onPressed: (){
-                  launchUrlString('https://app.mutinywallet.com/settings/connections?callbackUri=nostr%2bwalletconnect&name=NostrApp', mode: LaunchMode.externalApplication);
-                }, child: Text(S.of(context).connectByMutiny)),
-              ),
-            ))
-          ],
-        ),
-        Row(
-          children: [
-            Expanded(child: Container(
-              padding: const EdgeInsets.only(left: 20,right: 20, top: 60),
-              child: SizedBox(
-                height: 50,
-                child: ElevatedButton(onPressed: (){}, child: Text(S.of(context).connectByScan)),
+                }, child: Text(S.of(context).connectByScan)),
               ),
             ))
           ],
@@ -357,7 +188,9 @@ class LightningState extends State{
                 width: 100,
                 height: 50,
                 child: ElevatedButton(onPressed: (){
-                  onConnectWallet(controller.text);
+                  final lightWallet = LightningWallet(url: controller.text);
+                  model.lightningWallet = lightWallet;
+                  model.refresh();
                 }, child: Text(S.of(context).connectByInput)),
               ),
             )
@@ -378,6 +211,7 @@ class LightningState extends State{
         ),
       );
     });
-  }
 
+  }
 }
+

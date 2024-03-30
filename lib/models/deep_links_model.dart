@@ -51,6 +51,9 @@ class DeepLinksModel extends ChangeNotifier {
         context.pushNamed(Routers.lightning.value);
       }
     }
+  }
+
+  void refresh(){
     notifyListeners();
   }
 }
