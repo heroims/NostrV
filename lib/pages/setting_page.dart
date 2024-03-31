@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nostr/nostr.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../generated/l10n.dart';
+import '../models/nip19_extension.dart';
+import '../models/user_info_model.dart';
 import '../router.dart';
 class SettingPage extends StatelessWidget {
   const SettingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final lblTitles = [S.of(context).settingByRelay, S.of(context).settingByKey, S.of(context).settingByMute, S.of(context).settingByNotify, S.of(context).settingByLightning, S.of(context).settingByVersion];
+    final lblTitles = [S.of(context).settingByRelay, S.of(context).settingByKey, S.of(context).settingByMute, S.of(context).settingByNotify, S.of(context).settingByLightning, S.of(context).settingByScan, S.of(context).settingByVersion];
     PackageInfo.fromPlatform().then((value) => value.version);
     return Scaffold(
       body: ListView.builder(
@@ -90,6 +94,51 @@ class SettingPage extends StatelessWidget {
                     break;
                   case 4:
                     context.pushNamed(Routers.lightning.value);
+                    break;
+                  case 5:
+                    showDialog(context: context, barrierDismissible: true, builder: (context){
+                      return Scaffold(
+                        appBar: AppBar(
+                          title: Text(S.of(context).connectByScan),
+                        ),
+                        body: Center(
+                          child: ReaderWidget(
+                            onScan: (code){
+                              Navigator.pop(context, code.text);
+                            },
+                            scanDelay: const Duration(milliseconds: 500),
+                            resolution: ResolutionPreset.high,
+                            lensDirection: CameraLensDirection.back,
+                            showFlashlight: true,
+                            showGallery: true,
+                            showToggleCamera: true,
+                            showScannerOverlay: true,
+                          ),
+                        ),
+                      );
+                    })
+                        .then((value) {
+                      String urlString = value;
+                      String nostrString = urlString;
+                      if(urlString.startsWith('nostr://')){
+                        nostrString = urlString.replaceAll('nostr://', '');
+                      }
+                      try{
+                        if(nostrString.startsWith('npub')){
+                          final pubKey = Nip19.decodePubkey(nostrString);
+                          context.pushNamed(Routers.profile.value,extra: UserInfoModel(context, pubKey));
+                        }
+                        if(nostrString.startsWith('nprofile')){
+                          final pubKey = Nip19Extension.decode(nostrString)['data']['pubkey'];
+                          context.pushNamed(Routers.profile.value,extra: UserInfoModel(context, pubKey));
+                        }
+                        if(nostrString.startsWith('nevent')){
+                          final eventId =  Nip19Extension.decode(nostrString)['data']['id'];
+                          context.pushNamed(Routers.feedDetail.value,extra: eventId);
+                        }
+                      }
+                      catch(_){}
+                    });
                     break;
                   default:
                     break;

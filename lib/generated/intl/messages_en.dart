@@ -141,6 +141,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settingByNotify":
             MessageLookupByLibrary.simpleMessage("Notify Manager"),
         "settingByRelay": MessageLookupByLibrary.simpleMessage("Relay Manager"),
+        "settingByScan": MessageLookupByLibrary.simpleMessage("Scan"),
         "settingByVersion": MessageLookupByLibrary.simpleMessage("Version"),
         "shareByPostID": MessageLookupByLibrary.simpleMessage("Share"),
         "tipByKeystorePwError":

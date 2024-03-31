@@ -114,6 +114,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settingByMute": MessageLookupByLibrary.simpleMessage("屏蔽管理"),
         "settingByNotify": MessageLookupByLibrary.simpleMessage("通知管理"),
         "settingByRelay": MessageLookupByLibrary.simpleMessage("中继管理"),
+        "settingByScan": MessageLookupByLibrary.simpleMessage("扫一扫"),
         "settingByVersion": MessageLookupByLibrary.simpleMessage("版本"),
         "shareByPostID": MessageLookupByLibrary.simpleMessage("分享"),
         "tipByKeystorePwError":

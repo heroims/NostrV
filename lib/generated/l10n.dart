@@ -240,6 +240,16 @@ class S {
     );
   }
 
+  /// `Scan`
+  String get settingByScan {
+    return Intl.message(
+      'Scan',
+      name: 'settingByScan',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Wallet for Lightning`
   String get settingByLightning {
     return Intl.message(

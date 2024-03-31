@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nostr/nostr.dart';
 import 'package:nostr_app/models/user_info_model.dart';
 import 'package:nostr_app/router.dart';
+import 'nip19_extension.dart';
 
 
 class DeepLinksModel extends ChangeNotifier {
@@ -49,6 +51,26 @@ class DeepLinksModel extends ChangeNotifier {
       lightningWallet = LightningWallet(url: uri.toString());
       if(currentRouteName != Routers.lightning.value){
         context.pushNamed(Routers.lightning.value);
+      }
+    }
+    if(uri.scheme == 'nostr'){
+      final path = uri.host!=null?uri.host:(uri.path!=null?uri.path:'');
+      if(path!=''){
+        try{
+          if(path.startsWith('npub')){
+            final pubKey = Nip19.decodePubkey(path);
+            context.pushNamed(Routers.profile.value,extra: UserInfoModel(context, pubKey));
+          }
+          if(path.startsWith('nprofile')){
+            final pubKey = Nip19Extension.decode(path)['data']['pubkey'];
+            context.pushNamed(Routers.profile.value,extra: UserInfoModel(context, pubKey));
+          }
+          if(path.startsWith('nevent')){
+            final eventId =  Nip19Extension.decode(path)['data']['id'];
+            context.pushNamed(Routers.feedDetail.value,extra: eventId);
+          }
+        }
+        catch(_){}
       }
     }
   }

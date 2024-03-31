@@ -18,6 +18,7 @@
   "settingByMute": "Mute Manager",
   "settingByNotify": "Notify Manager",
   "settingByVersion": "Version",
+  "settingByScan": "Scan",
   "settingByLightning": "Wallet for Lightning",
   "tipRecommendRelay": "Recommended relays",
   "actionSheetByReport": "Please select the type of report.",

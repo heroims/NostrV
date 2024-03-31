@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nostr/nostr.dart';
 import 'package:nostr_app/models/user_follow_model.dart';
@@ -12,6 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../generated/l10n.dart';
 import '../models/user_info_model.dart';
 import '../router.dart';
+import 'package:image/image.dart' as imglib;
 
 class UserHeaderCard extends StatelessWidget {
   final UserFollowModel userFollowModel;
@@ -149,7 +151,53 @@ class UserHeaderCard extends StatelessWidget {
                       );
                     });
                   },
-                  icon: const Icon(Icons.copy))
+                  icon: const Icon(Icons.copy)),
+              IconButton(
+                  onPressed: (){
+                    showCupertinoDialog(context: context, builder: (context){
+                      final size = MediaQuery.of(context).size;
+                      final width = size.width * 3 / 4;
+
+                      final Encode result = zx.encodeBarcode(contents: originUserId, params: EncodeParams(
+                        format: Format.qrCode,
+                        width: width.toInt(),
+                        height: width.toInt(),
+                        margin: 10,
+                        eccLevel: EccLevel.high,
+                      ));
+
+                      Uint8List imageData = Uint8List(0);
+                      try {
+                        final imglib.Image img = imglib.Image.fromBytes(
+                          width: width.toInt(),
+                          height: width.toInt(),
+                          bytes: result.data!.buffer,
+                          numChannels: 4,
+                        );
+                        final Uint8List encodedBytes = Uint8List.fromList(
+                          imglib.encodeJpg(img),
+                        );
+                        imageData = encodedBytes;
+                      } catch (_) {
+
+                      }
+
+                      return AlertDialog(
+                        content: Image.memory(
+                          imageData,
+                          width: width,
+                          height: width,
+                        ),
+                        actions: <Widget>[
+                          CupertinoDialogAction(
+                            child: Text(S.of(context).dialogByDone),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                        ],
+                      );
+                    });
+                  },
+                  icon: const Icon(Icons.qr_code))
             ],
           ),
           const SizedBox(height: 10,),

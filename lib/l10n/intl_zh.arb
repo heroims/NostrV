@@ -18,6 +18,7 @@
   "settingByMute": "屏蔽管理",
   "settingByNotify": "通知管理",
   "settingByVersion": "版本",
+  "settingByScan": "扫一扫",
   "settingByLightning": "闪电钱包",
   "tipRecommendRelay": "推荐中继",
   "actionSheetByReport": "请选择举报类型。",
