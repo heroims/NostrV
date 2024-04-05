@@ -104,13 +104,13 @@ class UserHeaderCard extends StatelessWidget {
           onPressed: (){
             showCupertinoDialog(context: context, builder: (context){
               final size = MediaQuery.of(context).size;
-              final width = size.width * 3 / 4;
+              double width = 180;//size.width * 3 / 4;
 
               final Encode result = zx.encodeBarcode(contents: originUserId, params: EncodeParams(
                 format: Format.qrCode,
                 width: width.toInt(),
                 height: width.toInt(),
-                margin: 10,
+                margin: 0,
                 eccLevel: EccLevel.high,
               ));
 
@@ -133,8 +133,8 @@ class UserHeaderCard extends StatelessWidget {
               return AlertDialog(
                 content: Image.memory(
                   imageData,
-                  width: width,
-                  height: width,
+                  width: size.width * 3 / 4,
+                  height: size.width * 3 / 4,
                 ),
                 actions: <Widget>[
                   CupertinoDialogAction(
