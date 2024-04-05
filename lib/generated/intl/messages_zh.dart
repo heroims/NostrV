@@ -29,6 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "avatarCardByFollowers": MessageLookupByLibrary.simpleMessage("被关注"),
         "avatarCardByFollowing": MessageLookupByLibrary.simpleMessage("已关注"),
         "avatarCardByRelays": MessageLookupByLibrary.simpleMessage("中继器"),
+        "balanceByLightning": MessageLookupByLibrary.simpleMessage("余额"),
         "cardOfError": MessageLookupByLibrary.simpleMessage("异常卡片"),
         "connectByAlby": MessageLookupByLibrary.simpleMessage("Alby连接"),
         "connectByCancel": MessageLookupByLibrary.simpleMessage("取消连接"),
@@ -43,6 +44,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "createByHDNode": MessageLookupByLibrary.simpleMessage("HD Node"),
         "createByNormal": MessageLookupByLibrary.simpleMessage("普通"),
         "dialogByAddFailed": MessageLookupByLibrary.simpleMessage("添加失败"),
+        "dialogByCancel": MessageLookupByLibrary.simpleMessage("取消"),
         "dialogByCancelMute": MessageLookupByLibrary.simpleMessage("取消屏蔽"),
         "dialogByCopy": MessageLookupByLibrary.simpleMessage("复制"),
         "dialogByCreate": MessageLookupByLibrary.simpleMessage("请选择创建账户的方式。"),
@@ -64,12 +66,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "exportByKeystore": MessageLookupByLibrary.simpleMessage("导出Keystore"),
         "exportByNostrKey": MessageLookupByLibrary.simpleMessage("导出Nostr私钥"),
         "exportByWalletKey": MessageLookupByLibrary.simpleMessage("导出钱包私钥"),
+        "infoByLightning": MessageLookupByLibrary.simpleMessage("详情"),
         "mutePost": MessageLookupByLibrary.simpleMessage("屏蔽帖子"),
         "muteUser": MessageLookupByLibrary.simpleMessage("屏蔽用户"),
         "navByPost": MessageLookupByLibrary.simpleMessage("发布"),
         "navByPrivateChat": MessageLookupByLibrary.simpleMessage("私信"),
         "navByPublicChat": MessageLookupByLibrary.simpleMessage("公共聊天"),
         "navByRelay": MessageLookupByLibrary.simpleMessage("中继"),
+        "navByZap": MessageLookupByLibrary.simpleMessage("打赏"),
         "notifyByFollow": MessageLookupByLibrary.simpleMessage("关注"),
         "notifyByReply": MessageLookupByLibrary.simpleMessage("评论"),
         "notifyByRepost": MessageLookupByLibrary.simpleMessage("转发"),
@@ -123,7 +127,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "tipByOnThisUser": MessageLookupByLibrary.simpleMessage("正位于当前用户页面。"),
         "tipByReposted": MessageLookupByLibrary.simpleMessage("已转发"),
         "tipBySearchQuery": MessageLookupByLibrary.simpleMessage("请输入搜索关键词"),
+        "tipByUnConnectWallet": MessageLookupByLibrary.simpleMessage("未连接钱包"),
+        "tipByUnInputLud16":
+            MessageLookupByLibrary.simpleMessage("未录入lud16的闪电地址"),
         "tipByUnSupportNip11": MessageLookupByLibrary.simpleMessage("不支持NIP11"),
+        "tipByZapAmountOut": MessageLookupByLibrary.simpleMessage("打赏金额超出范围"),
         "tipNoFeedToPost": MessageLookupByLibrary.simpleMessage("无可上传的内容"),
         "tipRecommendRelay": MessageLookupByLibrary.simpleMessage("推荐中继"),
         "tipReportRepeatedly": MessageLookupByLibrary.simpleMessage("请勿重复举报"),
@@ -134,6 +142,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "userReposts": MessageLookupByLibrary.simpleMessage("转发"),
         "userRepostsList": MessageLookupByLibrary.simpleMessage("转发列表"),
         "userUpvote": MessageLookupByLibrary.simpleMessage("点赞"),
-        "userUpvoteList": MessageLookupByLibrary.simpleMessage("点赞列表")
+        "userUpvoteList": MessageLookupByLibrary.simpleMessage("点赞列表"),
+        "userZapsList": MessageLookupByLibrary.simpleMessage("打赏列表")
       };
 }

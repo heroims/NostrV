@@ -1,12 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../generated/l10n.dart';
 import '../models/deep_links_model.dart';
-import '../models/user_info_model.dart';
+import '../models/lightning_wallet.dart';
+
+typedef LightningInfo = (String balance, Map<String,List<String>> methods);
 
 class LightningPage extends StatelessWidget {
   const LightningPage({super.key});
@@ -19,13 +24,13 @@ class LightningPage extends StatelessWidget {
     String lud16 = '';
 
     return Consumer<DeepLinksModel>(builder: (context, model, child) {
-      DeepLinksModel deepLinksModel = Provider.of<DeepLinksModel>(context, listen: false);
-
-      if(deepLinksModel.lightningWallet!=null){
+      if(model.lightningWallet!=null){
         isConnect=model.lightningWallet!.connect;
         publicKey=model.lightningWallet!.publicKey;
-        relayUrl=model.lightningWallet!.relayUrl;
+        relayUrl=model.lightningWallet!.relayUrls.join(',');
         lud16=model.lightningWallet!.lud16;
+
+        // deepLinksModel.lightningWallet!.payInvoiceEvent((p0, p1) => null, invoiceCode: 'invoiceCode');
       }
       else{
         isConnect = false;
@@ -61,9 +66,86 @@ class LightningPage extends StatelessWidget {
             Expanded(
               child: Container(
                 padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                child: Text('lud16:$lud16',textAlign: TextAlign.center, style: const TextStyle(fontSize: 18),),
+                child: Text(lud16!=''?'lud16:$lud16':'',textAlign: TextAlign.center, style: const TextStyle(fontSize: 18),),
               ),
             ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(child: Container(
+              padding: const EdgeInsets.only(left: 20,right: 20, bottom: 20),
+              child: SizedBox(
+                height: 50,
+                child: ElevatedButton(onPressed: (){
+                  showDialog(context: context, builder: (context){
+
+                    return AlertDialog(
+                      title: Text(S.of(context).infoByLightning),
+                      content: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          FutureBuilder(
+                            future: model.lightningWallet!.getBalanceEvent(),
+                            builder: (BuildContext context, AsyncSnapshot<double> snapshot) {
+                              if (snapshot.connectionState == ConnectionState.done) {
+                                if (snapshot.hasError) {
+                                  // 请求失败，显示错误
+                                  return Text("Error: ${snapshot.error}");
+                                } else {
+                                  double balance = snapshot.data as double;
+
+                                  return Text('${S.of(context).balanceByLightning}:$balance', style: const TextStyle(fontSize: 16),);
+                                }
+                              } else {
+                                // 请求未结束，显示loading
+                                return const Text('');
+                              }
+                            },
+                          ),
+                          FutureBuilder(
+                            future: model.lightningWallet!.getInfoEvent(),
+                            builder: (BuildContext context, AsyncSnapshot<Map<String,List<String>>> snapshot) {
+                              if (snapshot.connectionState == ConnectionState.done) {
+                                if (snapshot.hasError) {
+                                  // 请求失败，显示错误
+                                  return Text("Error: ${snapshot.error}");
+                                } else {
+                                  Map<String,List<String>> listData = snapshot.data as Map<String, List<String>>;
+                                  String showText = '';
+                                  listData.forEach((key, value) {
+                                    showText += '$key\n${value.join(', ')}\n';
+                                  });
+
+                                  return Text(showText, style: const TextStyle(fontSize: 16),);
+                                }
+                              } else {
+                                // 请求未结束，显示loading
+                                return const SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                      actions: [
+                        TextButton(
+                            onPressed: (){
+                              Navigator.pop(context);
+                            },
+                            child: Text(S.of(context).dialogByDone)
+                        )
+                      ],
+                    );
+                  });
+
+                }, child: Text(S.of(context).infoByLightning)),
+              ),
+            ))
           ],
         ),
         Row(

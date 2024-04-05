@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nostr/nostr.dart';
 import 'package:nostr_app/models/nostr_user_model.dart';
@@ -10,8 +11,10 @@ import 'package:nostr_app/models/relay_pool_model.dart';
 import 'package:nostr_app/realm/db_follower.dart';
 import 'package:nostr_app/realm/db_user.dart';
 import 'package:provider/provider.dart';
+import 'package:bech32/bech32.dart';
 
 import '../router.dart';
+import 'lightning_wallet.dart';
 
 class UserInfo{
   String website = '';
@@ -73,42 +76,15 @@ class UserFollowings {
   }
 }
 
-class LightningWallet {
-  final String url;
-  String publicKey = '';
-  String secret = '';
-  String relayUrl = '';
-  String lud16 = '';
-  String nip19PublicKey = '';
-  bool connect = false;
-
-  LightningWallet({required this.url}){
-    final walletUrl = Uri.parse(url);
-    if(walletUrl.scheme =='nostrwalletconnect' || walletUrl.scheme =='nostr+walletconnect'){
-      connect = true;
-      if(walletUrl.host.trim()!=''){
-        publicKey = walletUrl.host;
-      }
-      else if(walletUrl.path.trim()!=''){
-        publicKey = walletUrl.path;
-      }
-      else{}
-      nip19PublicKey = publicKey.trim()!='' ? Nip19.encodePubkey(publicKey) : '';
-      secret = walletUrl.queryParameters['secret']??'';
-      relayUrl = walletUrl.queryParameters['relay']??'';
-      lud16 = walletUrl.queryParameters['lud16']??'';
-    }
-  }
-
-}
-
 class UserInfoModel extends ChangeNotifier {
   late final BuildContext _context;
   late final String publicKey;
 
-  LightningWallet? lightningWallet;
+  // LightningWallet? lightningWallet;
   UserInfo? _userInfo;
   UserInfo? get userInfo => _userInfo;
+  Map<String,dynamic> lightningInfo = {};
+  String lightningCallback = '';
 
   UserFollowings _followings = UserFollowings();
   UserFollowings get followings => _followings;
@@ -155,6 +131,17 @@ class UserInfoModel extends ChangeNotifier {
     if(findUser!=null){
       _userInfo = UserInfo.fromDBUser(findUser);
     }
+  }
+
+  bool get supportLightning {
+    if(lightningInfo.containsKey('allowsNostr')){
+      return lightningInfo['allowsNostr'];
+    }
+    if(lightningCallback!='')
+    {
+      return true;
+    }
+    return false;
   }
 
   bool get followed {
@@ -316,7 +303,7 @@ class UserInfoModel extends ChangeNotifier {
           }
         }
 
-        if(publicKey == Nip19.decodePubkey(tmpUser!.publicKey)){
+        if(publicKey == Nip19.decodePubkey(tmpUser.publicKey)){
           return ;
         }
       }
@@ -374,7 +361,6 @@ class UserInfoModel extends ChangeNotifier {
 
   }
 
-
   void getUserInfo({Function? refreshCallback}){
     RelayPoolModel relayPoolModel = Provider.of<RelayPoolModel>(_context, listen: false);
     final requestUUID =generate64RandomHexChars();
@@ -419,6 +405,52 @@ class UserInfoModel extends ChangeNotifier {
       });
     });
 
+  }
+
+  void getLightningInfo({Function? refreshCallback}){
+    if(userInfo!=null){
+      if(userInfo!.lud16!=''){
+        final lud16List =userInfo!.lud16.split('@');
+        if(lud16List.length > 1){
+          Dio dio = Dio();
+          dio.get(
+            'https://${lud16List[1]}/.well-known/lnurlp/${lud16List[0]}',
+          ).then((response) {
+            if(response.statusCode == 200){
+              lightningInfo = response.data;
+              if(lightningInfo.containsKey('allowsNostr')&&lightningInfo.containsKey('callback')){
+                if(lightningInfo['allowsNostr']){
+                  lightningCallback = lightningInfo['callback'];
+                }
+              }
+              notifyListeners();
+              refreshCallback != null ? refreshCallback() : null;
+            }
+          }, onError: (err){
+            debugPrint(err.toString());
+          });
+        }
+      }
+      else if(userInfo!.lud06!=''){
+        try{
+          String paymentRequest = userInfo!.lud06;
+          Bech32Codec codec = const Bech32Codec();
+          Bech32 originData = codec.decode(
+            paymentRequest,
+            paymentRequest.length,
+          );
+          debugPrint("Bech32 hrp: ${originData.hrp}");
+
+          String callback= utf8.decode(convertBits(originData.data, 5, 8, false));
+          debugPrint("lightnting callback: $callback");
+          lightningCallback = callback;
+          notifyListeners();
+          refreshCallback != null ? refreshCallback() : null;
+        }
+        catch(_){}
+
+      }
+    }
   }
 
   void stopGetUserFollowing(){

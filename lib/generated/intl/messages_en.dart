@@ -33,6 +33,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "avatarCardByFollowing":
             MessageLookupByLibrary.simpleMessage("Following"),
         "avatarCardByRelays": MessageLookupByLibrary.simpleMessage("Relays"),
+        "balanceByLightning": MessageLookupByLibrary.simpleMessage("Balance"),
         "cardOfError": MessageLookupByLibrary.simpleMessage("Error Card"),
         "connectByAlby": MessageLookupByLibrary.simpleMessage("Alby Connect"),
         "connectByCancel": MessageLookupByLibrary.simpleMessage("Disconnect"),
@@ -49,6 +50,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "createByHDNode": MessageLookupByLibrary.simpleMessage("HD Node"),
         "createByNormal": MessageLookupByLibrary.simpleMessage("Normal"),
         "dialogByAddFailed": MessageLookupByLibrary.simpleMessage("Add Failed"),
+        "dialogByCancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "dialogByCancelMute": MessageLookupByLibrary.simpleMessage("UnMute"),
         "dialogByCopy": MessageLookupByLibrary.simpleMessage("Copy"),
         "dialogByCreate": MessageLookupByLibrary.simpleMessage(
@@ -76,6 +78,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Export Nostr Private Key"),
         "exportByWalletKey":
             MessageLookupByLibrary.simpleMessage("Export Nostr Private Key"),
+        "infoByLightning":
+            MessageLookupByLibrary.simpleMessage("Lightning Info"),
         "mutePost": MessageLookupByLibrary.simpleMessage("Mute Post"),
         "muteUser": MessageLookupByLibrary.simpleMessage("Mute User"),
         "navByPost": MessageLookupByLibrary.simpleMessage("Post"),
@@ -83,6 +87,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Private Chat"),
         "navByPublicChat": MessageLookupByLibrary.simpleMessage("Public Chat"),
         "navByRelay": MessageLookupByLibrary.simpleMessage("Relay"),
+        "navByZap": MessageLookupByLibrary.simpleMessage("Zap"),
         "notifyByFollow": MessageLookupByLibrary.simpleMessage("Follow"),
         "notifyByReply": MessageLookupByLibrary.simpleMessage("Reply"),
         "notifyByRepost": MessageLookupByLibrary.simpleMessage("Repost"),
@@ -153,8 +158,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "tipByReposted": MessageLookupByLibrary.simpleMessage("Reposted"),
         "tipBySearchQuery":
             MessageLookupByLibrary.simpleMessage("Enter your search query"),
+        "tipByUnConnectWallet":
+            MessageLookupByLibrary.simpleMessage("Unconnected Wallet"),
+        "tipByUnInputLud16": MessageLookupByLibrary.simpleMessage(
+            "Unrecorded lightning address for lud16"),
         "tipByUnSupportNip11":
             MessageLookupByLibrary.simpleMessage("Not supported by NIP11."),
+        "tipByZapAmountOut":
+            MessageLookupByLibrary.simpleMessage("Zap amount is out of range"),
         "tipNoFeedToPost":
             MessageLookupByLibrary.simpleMessage("No content to publish."),
         "tipRecommendRelay":
@@ -169,6 +180,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "userReposts": MessageLookupByLibrary.simpleMessage("Reposts"),
         "userRepostsList": MessageLookupByLibrary.simpleMessage("Reposts List"),
         "userUpvote": MessageLookupByLibrary.simpleMessage("Upvote"),
-        "userUpvoteList": MessageLookupByLibrary.simpleMessage("Upvote List")
+        "userUpvoteList": MessageLookupByLibrary.simpleMessage("Upvote List"),
+        "userZapsList": MessageLookupByLibrary.simpleMessage("Zaps List")
       };
 }

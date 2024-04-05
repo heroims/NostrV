@@ -35,6 +35,7 @@ class FeedPage extends StatelessWidget {
             appRouter.nostrUserModel.currentUserInfo?.getUserInfo();
             appRouter.nostrUserModel.currentUserInfo?.getMuteInfo();
             appRouter.nostrUserModel.currentUserInfo?.getUserFollowing();
+            appRouter.nostrUserModel.currentUserInfo?.getLightningInfo();
           }
           return Scaffold(
             body: EasyRefresh(

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nostr/nostr.dart';
 import 'package:nostr_app/models/user_info_model.dart';
 import 'package:nostr_app/router.dart';
+import 'lightning_wallet.dart';
 import 'nip19_extension.dart';
 
 
@@ -52,9 +53,12 @@ class DeepLinksModel extends ChangeNotifier {
       if(currentRouteName != Routers.lightning.value){
         context.pushNamed(Routers.lightning.value);
       }
+      else{
+        notifyListeners();
+      }
     }
     if(uri.scheme == 'nostr'){
-      final path = uri.host!=null?uri.host:(uri.path!=null?uri.path:'');
+      final path = uri.host!=''?uri.host:(uri.path!=''?uri.path:'');
       if(path!=''){
         try{
           if(path.startsWith('npub')){

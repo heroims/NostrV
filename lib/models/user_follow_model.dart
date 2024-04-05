@@ -16,6 +16,10 @@ class UserFollowModel extends ChangeNotifier {
     return userInfoModel.followed;
   }
 
+  bool get supportLightning {
+    return userInfoModel.supportLightning;
+  }
+
   UserFollowings get followings{
     return userInfoModel.followings;
   }
@@ -63,6 +67,13 @@ class UserFollowModel extends ChangeNotifier {
     });
   }
 
+  void getLightningInfo(){
+    userInfoModel.getLightningInfo(refreshCallback: (){
+      if(!_disposed){
+        notifyListeners();
+      }
+    });
+  }
   @override
   void dispose() {
     _disposed = true;

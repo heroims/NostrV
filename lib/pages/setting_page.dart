@@ -1,7 +1,11 @@
+import 'dart:convert';
+
+import 'package:bolt11_decoder/bolt11_decoder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nostr/nostr.dart';
+import 'package:bech32/bech32.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../generated/l10n.dart';

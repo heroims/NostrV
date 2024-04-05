@@ -140,6 +140,26 @@ class S {
     );
   }
 
+  /// `Lightning Info`
+  String get infoByLightning {
+    return Intl.message(
+      'Lightning Info',
+      name: 'infoByLightning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Balance`
+  String get balanceByLightning {
+    return Intl.message(
+      'Balance',
+      name: 'balanceByLightning',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Connect Address`
   String get placeholderByConnectAddress {
     return Intl.message(
@@ -185,6 +205,16 @@ class S {
     return Intl.message(
       'Post',
       name: 'navByPost',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zap`
+  String get navByZap {
+    return Intl.message(
+      'Zap',
+      name: 'navByZap',
       desc: '',
       args: [],
     );
@@ -410,11 +440,31 @@ class S {
     );
   }
 
-  /// `Enter your search query`
-  String get tipBySearchQuery {
+  /// `Unrecorded lightning address for lud16`
+  String get tipByUnInputLud16 {
     return Intl.message(
-      'Enter your search query',
-      name: 'tipBySearchQuery',
+      'Unrecorded lightning address for lud16',
+      name: 'tipByUnInputLud16',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unconnected Wallet`
+  String get tipByUnConnectWallet {
+    return Intl.message(
+      'Unconnected Wallet',
+      name: 'tipByUnConnectWallet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zap amount is out of range`
+  String get tipByZapAmountOut {
+    return Intl.message(
+      'Zap amount is out of range',
+      name: 'tipByZapAmountOut',
       desc: '',
       args: [],
     );
@@ -490,6 +540,16 @@ class S {
     );
   }
 
+  /// `Enter your search query`
+  String get tipBySearchQuery {
+    return Intl.message(
+      'Enter your search query',
+      name: 'tipBySearchQuery',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Replies`
   String get userReplies {
     return Intl.message(
@@ -545,6 +605,16 @@ class S {
     return Intl.message(
       'Reposts List',
       name: 'userRepostsList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zaps List`
+  String get userZapsList {
+    return Intl.message(
+      'Zaps List',
+      name: 'userZapsList',
       desc: '',
       args: [],
     );
@@ -835,6 +905,16 @@ class S {
     return Intl.message(
       'Done',
       name: 'dialogByDone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get dialogByCancel {
+    return Intl.message(
+      'Cancel',
+      name: 'dialogByCancel',
       desc: '',
       args: [],
     );

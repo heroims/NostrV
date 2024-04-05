@@ -57,6 +57,7 @@ dependencies:
   realm:
   app_links:
   flutter_zxing:
+  bolt11_decoder:
 dev_dependencies:
   flutter_test:
     sdk: flutter

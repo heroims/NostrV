@@ -6,12 +6,15 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nostr/nostr.dart';
+import 'package:nostr_app/models/deep_links_model.dart';
+import 'package:nostr_app/models/relay_pool_model.dart';
 import 'package:nostr_app/models/user_follow_model.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../generated/l10n.dart';
 import '../models/user_info_model.dart';
+import '../models/zap_lightning_model.dart';
 import '../router.dart';
 import 'package:image/image.dart' as imglib;
 
@@ -76,6 +79,238 @@ class UserHeaderCard extends StatelessWidget {
 
     AppRouter appRouter = Provider.of<AppRouter>(context, listen: false);
 
+    final userActionUI = [
+      Expanded(child: Text(
+        '@$userName',
+        style: const TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.bold
+        ),
+        softWrap: true,
+      )),
+      IconButton(
+          onPressed: (){
+            Clipboard.setData(ClipboardData(text: Nip19.encodePubkey(model.userInfoModel.publicKey))).then((value){
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(S.of(context).copyToClipboard),
+                  duration: const Duration(seconds: 1),
+                ),
+              );
+            });
+          },
+          icon: const Icon(Icons.copy)),
+      IconButton(
+          onPressed: (){
+            showCupertinoDialog(context: context, builder: (context){
+              final size = MediaQuery.of(context).size;
+              final width = size.width * 3 / 4;
+
+              final Encode result = zx.encodeBarcode(contents: originUserId, params: EncodeParams(
+                format: Format.qrCode,
+                width: width.toInt(),
+                height: width.toInt(),
+                margin: 10,
+                eccLevel: EccLevel.high,
+              ));
+
+              Uint8List imageData = Uint8List(0);
+              try {
+                final imglib.Image img = imglib.Image.fromBytes(
+                  width: width.toInt(),
+                  height: width.toInt(),
+                  bytes: result.data!.buffer,
+                  numChannels: 4,
+                );
+                final Uint8List encodedBytes = Uint8List.fromList(
+                  imglib.encodeJpg(img),
+                );
+                imageData = encodedBytes;
+              } catch (_) {
+
+              }
+
+              return AlertDialog(
+                content: Image.memory(
+                  imageData,
+                  width: width,
+                  height: width,
+                ),
+                actions: <Widget>[
+                  CupertinoDialogAction(
+                    child: Text(S.of(context).dialogByDone),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              );
+            });
+          },
+          icon: const Icon(Icons.qr_code)),
+    ];
+    bool isOwner = appRouter.nostrUserModel.currentUserInfo?.publicKey==userFollowModel.userInfoModel.publicKey;
+    if(userFollowModel.supportLightning && !isOwner){
+      userActionUI.add(
+        IconButton(
+          onPressed: (){
+            final zapLightningModel = ZapLightningModel();
+            zapLightningModel.zapAmount = 1;
+            final minMilliSatoshi = userFollowModel.userInfoModel.lightningInfo['minSendable'];
+            final maxMilliSatoshi = userFollowModel.userInfoModel.lightningInfo['maxSendable'];
+
+            String contentLeftText = 'lud06';
+            String contentRightText = '';
+
+            showDialog(context: context, builder: (context){
+
+              return ChangeNotifierProvider(create:(_)=>zapLightningModel,builder: (context, child){
+                return Consumer<ZapLightningModel>(builder: (context, zapModel, _){
+                  final textEditController=TextEditingController(text: zapModel.zapAmount.toString());
+
+                  Widget inputWidget = TextField(controller: textEditController,);
+                  if(minMilliSatoshi != null && maxMilliSatoshi != null){
+                    contentLeftText = 'lud16';//:${zapModel.zapAmount.toStringAsFixed(0)}';
+                    contentRightText = '${minMilliSatoshi~/1000}~${maxMilliSatoshi~/1000}sats';
+                    // inputWidget = Slider(
+                    //     value: zapModel.zapAmount,
+                    //     min: double.tryParse((minMilliSatoshi~/1000).toString())??1,
+                    //     max: double.tryParse((maxMilliSatoshi~/1000).toString())??100000,
+                    //     onChanged: (value){
+                    //       zapModel.zapAmount = value;
+                    //     });
+                  }
+
+                  return AlertDialog(
+                    title: Text(S.of(context).navByZap),
+                    content: SizedBox(
+                      height: 100,
+                      child:Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(contentLeftText),
+                                Text(contentRightText)
+                              ],
+                            ),
+                          ),
+                          inputWidget,
+                        ],
+                      ),
+                    ),
+                    actions: [
+                      TextButton(onPressed: (){
+                        if(!appRouter.nostrUserModel.currentUserInfo!.supportLightning){
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(S.of(context).tipByUnInputLud16),
+                              duration: const Duration(seconds: 1),
+                            ),
+                          );
+                          return;
+                        }
+                        final relayPoolModel = Provider.of<RelayPoolModel>(context, listen: false);
+                        Navigator.pop(context);
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              final proKey = GlobalKey();
+                              return Dismissible(
+                                onDismissed: (direction) {}, key: proKey,
+                                child: const AlertDialog(
+                                  content: Center(
+                                    widthFactor: 1,
+                                    heightFactor: 2,
+                                    child: SizedBox(
+                                      width: 60,
+                                      height: 60,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 5,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                        );
+                        if(minMilliSatoshi != null && maxMilliSatoshi != null) {
+                          if(zapModel.zapAmount>maxMilliSatoshi/1000||zapModel.zapAmount<minMilliSatoshi/1000){
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(S.of(context).tipByZapAmountOut),
+                                duration: const Duration(seconds: 1),
+                              ),
+                            );
+                          }
+                          zapModel.getInvoiceCodeByLightning(
+                              callback: userFollowModel.userInfoModel.lightningCallback,
+                              pubKey: userFollowModel.userInfoModel.publicKey,
+                              appRouter: appRouter,
+                              relays: relayPoolModel.relayWss.keys.toList(),
+                          ).then((value) {
+                            DeepLinksModel deepLinksModel = Provider.of<DeepLinksModel>(context, listen: false);
+
+                            if(deepLinksModel?.lightningWallet != null&&value!=null){
+                              deepLinksModel?.lightningWallet!.payInvoiceEvent((relay, response) {
+                                if(response['error'] == null){
+                                  Navigator.pop(context);
+                                }
+                                else{
+                                  Navigator.pop(context, value);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(response['error']['message']),
+                                      duration: const Duration(seconds: 1),
+                                    ),
+                                  );
+                                }
+                              }, invoiceCode: value);
+                            }
+                            else{
+                              Navigator.pop(context,);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(S.of(context).tipByUnConnectWallet),
+                                  duration: const Duration(seconds: 1),
+                                ),
+                              );
+                            }
+                          }, onError: (_){
+                            Navigator.pop(context);
+                          });
+                        }
+                        else{
+                          zapModel.zapAmount=double.tryParse(textEditController.text)??0;
+                          zapModel.getInvoiceCodeByLightning(
+                              callback: userFollowModel.userInfoModel.lightningCallback,
+                              pubKey: userFollowModel.userInfoModel.publicKey,
+                              appRouter: appRouter,
+                              relays: relayPoolModel.relayWss.keys.toList(),
+                          ).then((value) {
+                            Navigator.pop(context, value);
+                          }, onError: (_){
+                            Navigator.pop(context);
+                          });
+                        }
+
+                      }, child: Text(S.of(context).navByZap)),
+                      TextButton(onPressed: (){
+                        Navigator.pop(context);
+                      }, child: Text(S.of(context).dialogByCancel))
+                    ],
+                  );
+                },);
+              }, );
+            }).then((value) {
+              if(value!=null){
+
+              }
+            });
+          },
+          icon: const Icon(Icons.bolt, color: Colors.orange,)),
+      );
+    }
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.all(10),
@@ -132,73 +367,7 @@ class UserHeaderCard extends StatelessWidget {
           ),
           const SizedBox(height: 10,),
           Row(
-            children: [
-              Text(
-                '@$userName',
-                style: const TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold
-                ),
-              ),
-              IconButton(
-                  onPressed: (){
-                    Clipboard.setData(ClipboardData(text: Nip19.encodePubkey(model.userInfoModel.publicKey))).then((value){
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(S.of(context).copyToClipboard),
-                          duration: const Duration(seconds: 1),
-                        ),
-                      );
-                    });
-                  },
-                  icon: const Icon(Icons.copy)),
-              IconButton(
-                  onPressed: (){
-                    showCupertinoDialog(context: context, builder: (context){
-                      final size = MediaQuery.of(context).size;
-                      final width = size.width * 3 / 4;
-
-                      final Encode result = zx.encodeBarcode(contents: originUserId, params: EncodeParams(
-                        format: Format.qrCode,
-                        width: width.toInt(),
-                        height: width.toInt(),
-                        margin: 10,
-                        eccLevel: EccLevel.high,
-                      ));
-
-                      Uint8List imageData = Uint8List(0);
-                      try {
-                        final imglib.Image img = imglib.Image.fromBytes(
-                          width: width.toInt(),
-                          height: width.toInt(),
-                          bytes: result.data!.buffer,
-                          numChannels: 4,
-                        );
-                        final Uint8List encodedBytes = Uint8List.fromList(
-                          imglib.encodeJpg(img),
-                        );
-                        imageData = encodedBytes;
-                      } catch (_) {
-
-                      }
-
-                      return AlertDialog(
-                        content: Image.memory(
-                          imageData,
-                          width: width,
-                          height: width,
-                        ),
-                        actions: <Widget>[
-                          CupertinoDialogAction(
-                            child: Text(S.of(context).dialogByDone),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        ],
-                      );
-                    });
-                  },
-                  icon: const Icon(Icons.qr_code))
-            ],
+            children: userActionUI,
           ),
           const SizedBox(height: 10,),
           HtmlWidget(

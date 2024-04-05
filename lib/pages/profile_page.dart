@@ -34,6 +34,8 @@ class ProfilePage extends StatelessWidget {
     }
     userFollowModel.getUserFollowing();
     userFollowModel.getUserRelay();
+    userFollowModel.getLightningInfo();
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<FeedListModel>(
