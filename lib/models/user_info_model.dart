@@ -417,7 +417,12 @@ class UserInfoModel extends ChangeNotifier {
             'https://${lud16List[1]}/.well-known/lnurlp/${lud16List[0]}',
           ).then((response) {
             if(response.statusCode == 200){
-              lightningInfo = response.data;
+              if(response.data is String){
+                lightningInfo = jsonDecode(response.data);
+              }
+              else{
+                lightningInfo = response.data;
+              }
               if(lightningInfo.containsKey('allowsNostr')&&lightningInfo.containsKey('callback')){
                 if(lightningInfo['allowsNostr']){
                   lightningCallback = lightningInfo['callback'];
