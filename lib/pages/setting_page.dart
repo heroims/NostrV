@@ -17,7 +17,7 @@ class SettingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lblTitles = [S.of(context).settingByRelay, S.of(context).settingByKey, S.of(context).settingByMute, S.of(context).settingByNotify, S.of(context).settingByLightning, S.of(context).settingByScan, S.of(context).settingByVersion];
+    final lblTitles = [S.of(context).settingByAccount,S.of(context).settingByRelay, S.of(context).settingByKey, S.of(context).settingByMute, S.of(context).settingByNotify, S.of(context).settingByLightning, S.of(context).settingByScan, S.of(context).settingByVersion];
     PackageInfo.fromPlatform().then((value) => value.version);
     return Scaffold(
       body: ListView.builder(
@@ -85,21 +85,24 @@ class SettingPage extends StatelessWidget {
               onTap: (){
                 switch (index) {
                   case 0:
-                    context.pushNamed(Routers.relayManager.value);
+                    context.pushNamed(Routers.accountManager.value);
                     break;
                   case 1:
-                    context.pushNamed(Routers.keyManager.value);
+                    context.pushNamed(Routers.relayManager.value);
                     break;
                   case 2:
-                    context.pushNamed(Routers.muteManager.value);
+                    context.pushNamed(Routers.keyManager.value);
                     break;
                   case 3:
-                    context.pushNamed(Routers.notifyManager.value);
+                    context.pushNamed(Routers.muteManager.value);
                     break;
                   case 4:
-                    context.pushNamed(Routers.lightning.value);
+                    context.pushNamed(Routers.notifyManager.value);
                     break;
                   case 5:
+                    context.pushNamed(Routers.lightning.value);
+                    break;
+                  case 6:
                     showDialog(context: context, barrierDismissible: true, builder: (context){
                       return Scaffold(
                         appBar: AppBar(

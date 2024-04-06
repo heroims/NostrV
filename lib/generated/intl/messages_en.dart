@@ -34,6 +34,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Following"),
         "avatarCardByRelays": MessageLookupByLibrary.simpleMessage("Relays"),
         "balanceByLightning": MessageLookupByLibrary.simpleMessage("Balance"),
+        "btnByDeleteAccount":
+            MessageLookupByLibrary.simpleMessage("Delete Account"),
+        "btnByLogout": MessageLookupByLibrary.simpleMessage("Logout"),
         "cardOfError": MessageLookupByLibrary.simpleMessage("Error Card"),
         "connectByAlby": MessageLookupByLibrary.simpleMessage("Alby Connect"),
         "connectByCancel": MessageLookupByLibrary.simpleMessage("Disconnect"),
@@ -139,6 +142,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "repostByPostID": MessageLookupByLibrary.simpleMessage("Repost"),
         "searchTabByPost": MessageLookupByLibrary.simpleMessage("Post"),
         "searchTabByUser": MessageLookupByLibrary.simpleMessage("User"),
+        "settingByAccount":
+            MessageLookupByLibrary.simpleMessage("Account Manager"),
         "settingByKey": MessageLookupByLibrary.simpleMessage("Key Manager"),
         "settingByLightning":
             MessageLookupByLibrary.simpleMessage("Wallet for Lightning"),
@@ -149,8 +154,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "settingByScan": MessageLookupByLibrary.simpleMessage("Scan"),
         "settingByVersion": MessageLookupByLibrary.simpleMessage("Version"),
         "shareByPostID": MessageLookupByLibrary.simpleMessage("Share"),
+        "tipByDeleteAccount": MessageLookupByLibrary.simpleMessage(
+            "Confirm delete the current account?"),
         "tipByKeystorePwError":
             MessageLookupByLibrary.simpleMessage("Keystore Password Error"),
+        "tipByLogout": MessageLookupByLibrary.simpleMessage(
+            "Confirm logout of the current account?"),
         "tipByOnThisPost": MessageLookupByLibrary.simpleMessage(
             "Currently positioned at the main comment."),
         "tipByOnThisUser": MessageLookupByLibrary.simpleMessage(

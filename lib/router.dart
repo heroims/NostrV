@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nostr/nostr.dart';
 import 'package:nostr_app/models/nostr_user_model.dart';
 import 'package:nostr_app/models/user_info_model.dart';
+import 'package:nostr_app/pages/account_manager_page.dart';
 import 'package:nostr_app/pages/chat_page.dart';
 import 'package:nostr_app/pages/contract_page.dart';
 import 'package:nostr_app/pages/feed_post_page.dart';
@@ -31,6 +32,7 @@ import 'package:provider/provider.dart';
 import 'models/deep_links_model.dart';
 
 enum Routers {
+  accountManager(27, 'account_manager'),
   lightning(26, 'lightning'),
   notifyManager(25, 'notify_manager'),
   repostFeed(24, 'repost_feed'),
@@ -298,6 +300,13 @@ class AppRouter {
           path: '/${Routers.keyManager.value}',
           pageBuilder: (context, state) {
             return const MaterialPage(child: KeyManagerPage());
+          }
+      ),
+      GoRoute(
+          name: Routers.accountManager.value,
+          path: '/${Routers.accountManager.value}',
+          pageBuilder: (context, state) {
+            return const MaterialPage(child: AccountManagerPage());
           }
       ),
       GoRoute(

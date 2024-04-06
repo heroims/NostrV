@@ -220,6 +220,36 @@ class S {
     );
   }
 
+  /// `Logout`
+  String get btnByLogout {
+    return Intl.message(
+      'Logout',
+      name: 'btnByLogout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Account`
+  String get btnByDeleteAccount {
+    return Intl.message(
+      'Delete Account',
+      name: 'btnByDeleteAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Account Manager`
+  String get settingByAccount {
+    return Intl.message(
+      'Account Manager',
+      name: 'settingByAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Key Manager`
   String get settingByKey {
     return Intl.message(
@@ -465,6 +495,26 @@ class S {
     return Intl.message(
       'Zap amount is out of range',
       name: 'tipByZapAmountOut',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm logout of the current account?`
+  String get tipByLogout {
+    return Intl.message(
+      'Confirm logout of the current account?',
+      name: 'tipByLogout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm delete the current account?`
+  String get tipByDeleteAccount {
+    return Intl.message(
+      'Confirm delete the current account?',
+      name: 'tipByDeleteAccount',
       desc: '',
       args: [],
     );

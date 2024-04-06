@@ -30,6 +30,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "avatarCardByFollowing": MessageLookupByLibrary.simpleMessage("已关注"),
         "avatarCardByRelays": MessageLookupByLibrary.simpleMessage("中继器"),
         "balanceByLightning": MessageLookupByLibrary.simpleMessage("余额"),
+        "btnByDeleteAccount": MessageLookupByLibrary.simpleMessage("删除账户"),
+        "btnByLogout": MessageLookupByLibrary.simpleMessage("退出"),
         "cardOfError": MessageLookupByLibrary.simpleMessage("异常卡片"),
         "connectByAlby": MessageLookupByLibrary.simpleMessage("Alby连接"),
         "connectByCancel": MessageLookupByLibrary.simpleMessage("取消连接"),
@@ -113,6 +115,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "repostByPostID": MessageLookupByLibrary.simpleMessage("转发"),
         "searchTabByPost": MessageLookupByLibrary.simpleMessage("帖子"),
         "searchTabByUser": MessageLookupByLibrary.simpleMessage("用户"),
+        "settingByAccount": MessageLookupByLibrary.simpleMessage("账户管理"),
         "settingByKey": MessageLookupByLibrary.simpleMessage("密钥管理"),
         "settingByLightning": MessageLookupByLibrary.simpleMessage("闪电钱包"),
         "settingByMute": MessageLookupByLibrary.simpleMessage("屏蔽管理"),
@@ -121,8 +124,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "settingByScan": MessageLookupByLibrary.simpleMessage("扫一扫"),
         "settingByVersion": MessageLookupByLibrary.simpleMessage("版本"),
         "shareByPostID": MessageLookupByLibrary.simpleMessage("分享"),
+        "tipByDeleteAccount":
+            MessageLookupByLibrary.simpleMessage("是否确定删除当前账户?"),
         "tipByKeystorePwError":
             MessageLookupByLibrary.simpleMessage("Keystore密码设置错误"),
+        "tipByLogout": MessageLookupByLibrary.simpleMessage("是否确定退出当前账户？"),
         "tipByOnThisPost": MessageLookupByLibrary.simpleMessage("正位于当前主评论。"),
         "tipByOnThisUser": MessageLookupByLibrary.simpleMessage("正位于当前用户页面。"),
         "tipByReposted": MessageLookupByLibrary.simpleMessage("已转发"),

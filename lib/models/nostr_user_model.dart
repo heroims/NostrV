@@ -112,6 +112,11 @@ class NostrUserModel extends ChangeNotifier {
     await storage.write(key:userKey, value: json,iOptions: iosSecureStorageOptions,aOptions: androidSecureStorageOptions);
   }
 
+  Future<void> removeCurrentNostrUser() async {
+    await storage.delete(key:'nostr_user', iOptions: iosSecureStorageOptions,aOptions: androidSecureStorageOptions);
+    _currentUser=null;
+    _currentUserInfo=null;
+  }
   // Future<void> checkoutNostrUser(int index) async{
   //
   // }
