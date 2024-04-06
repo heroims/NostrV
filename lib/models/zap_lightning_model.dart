@@ -55,9 +55,4 @@ class ZapLightningModel extends ChangeNotifier {
     }
     return null;
   }
-
-  Future<void> payInvoice({required String callback,required String invoice,required AppRouter appRouter,required String pubKey}
-  ) async {
-
-  }
 }
