@@ -18,7 +18,6 @@ class RelayManagerPage extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController editController = TextEditingController();
     final relayManagerModel = RelayManagerModel();
-    final relayPoolModel = Provider.of<RelayPoolModel>(context, listen: false);
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_)=>relayManagerModel, lazy: false,),
@@ -57,6 +56,8 @@ class RelayManagerPage extends StatelessWidget {
                                     );
                                     return;
                                   }
+                                  final relayPoolModel = Provider.of<RelayPoolModel>(context, listen: false);
+
                                   relayPoolModel.addRelayWithUrl(editController.text).then((value){
                                     relayManagerModel.refreshRelays();
                                     editController.clear();
@@ -87,61 +88,56 @@ class RelayManagerPage extends StatelessWidget {
                 )
               ],
             ),
-            body: Consumer<RelayManagerModel>(
-                builder: (context, listModel, child){
-                  final relayWss = relayPoolModel.relayWss.keys.toList();
-                  return CustomScrollView(
-                    slivers: [
-                      SliverList.builder(
+            body: CustomScrollView(
+              slivers: [
+                Consumer<RelayPoolModel>(
+                    builder: (context, relayPoolModel, child){
+                      final relayWss = relayPoolModel.relayWss.keys.toList();
+                      return SliverList.builder(
                           itemCount: relayWss.length,
                           itemBuilder: (context, index) {
                             final relayKey = relayWss[index];
                             RelayInfoModel relayInfoModel = RelayInfoModel(context,relayUrl: relayKey, relayManager: relayManagerModel);
-                            return ChangeNotifierProvider(
-                              create: (_)=>relayInfoModel,
-                              builder: (context, child){
-                                return Consumer<RelayInfoModel>(builder: (context, model, child){
-                                  return RelayItemCard(relayModel: model,);
-                                });
-                              },
-                            );
+                            return RelayItemCard(relayModel: relayInfoModel,);
                           }
-                      ),
-                      SliverPersistentHeader(
-                        pinned: true,
-                        delegate: SliverHeaderDelegate.fixedHeight(
-                          height:  50,
-                          child: Container(
-                            color: Colors.white,
-                            padding: const EdgeInsets.all(10),
-                            child: Text(
-                              S.of(context).tipRecommendRelay,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
+                      );
+                    }
+                ),
+                SliverPersistentHeader(
+                    pinned: true,
+                    delegate: SliverHeaderDelegate.fixedHeight(
+                        height:  50,
+                        child: Container(
+                          color: Colors.white,
+                          padding: const EdgeInsets.all(10),
+                          child: Text(
+                            S.of(context).tipRecommendRelay,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
-                          )
+                          ),
                         )
-                      ),
-                      SliverList.builder(
-                          itemCount: listModel.recommendedRelays.length,
-                          itemBuilder: (context, index) {
-                            final relayKey = listModel.recommendedRelays[index];
-                            RelayInfoModel relayInfoModel = RelayInfoModel(context,relayUrl: relayKey,relayManager: relayManagerModel);
-                            return ChangeNotifierProvider(
-                              create: (_)=>relayInfoModel,
-                              builder: (context, child){
-                                return Consumer<RelayInfoModel>(builder: (context, model, child){
-                                  return RelayItemCard(relayModel: model,);
-                                });
-                              },
-                            );
-                          }
-                      ),
-                    ],
+                    )
+                ),
+                Consumer<RelayManagerModel>(builder: (context, listModel, child){
+                  return SliverList.builder(
+                      itemCount: listModel.recommendedRelays.length,
+                      itemBuilder: (context, index) {
+                        final relayKey = listModel.recommendedRelays[index];
+                        RelayInfoModel relayInfoModel = RelayInfoModel(context,relayUrl: relayKey,relayManager: relayManagerModel);
+                        return ChangeNotifierProvider(
+                          create: (_)=>relayInfoModel,
+                          builder: (context, child){
+                            return Consumer<RelayInfoModel>(builder: (context, model, child){
+                              return RelayItemCard(relayModel: model,);
+                            });
+                          },
+                        );
+                      }
                   );
-                }
+                }),
+              ],
             ),
           );
         }

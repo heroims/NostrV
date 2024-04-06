@@ -221,11 +221,11 @@ class RelayPoolModel extends ChangeNotifier {
   Future<void> deleteRelayWithUrl (String url) async {
     if(_relayWss.containsKey(url)) {
       try {
+        _closeRelayUrl = url;
         if(_relayWss[url]!=null){
           await _relayWss[url]!.close();
         }
         _relayWss.remove(url);
-        _closeRelayUrl = url;
         if(_relayResponses.containsKey(url)){
           _relayResponses.remove(url);
         }
