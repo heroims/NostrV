@@ -50,7 +50,9 @@ class MyApp extends StatelessWidget {
       ],
       child: Builder(
         builder: (BuildContext context) {
-          final router = Provider.of<AppRouter>(context, listen: false).router;
+          final appRouter = Provider.of<AppRouter>(context, listen: false);
+          final router = appRouter.router;
+          appRouter.nostrUserModel.currentUser;
           return MaterialApp.router(
             routeInformationParser: router.routeInformationParser,
             routeInformationProvider: router.routeInformationProvider,
