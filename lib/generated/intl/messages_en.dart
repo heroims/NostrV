@@ -85,6 +85,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Lightning Info"),
         "mutePost": MessageLookupByLibrary.simpleMessage("Mute Post"),
         "muteUser": MessageLookupByLibrary.simpleMessage("Mute User"),
+        "navByHDWallet": MessageLookupByLibrary.simpleMessage("HDWallet"),
+        "navByNostr": MessageLookupByLibrary.simpleMessage("Nostr"),
         "navByPost": MessageLookupByLibrary.simpleMessage("Post"),
         "navByPrivateChat":
             MessageLookupByLibrary.simpleMessage("Private Chat"),
@@ -106,8 +108,24 @@ class MessageLookup extends MessageLookupByLibrary {
         "pageWelcomeGo": MessageLookupByLibrary.simpleMessage("Go"),
         "pageWelcomeImport": MessageLookupByLibrary.simpleMessage("Import"),
         "pageWelcomeTitle": MessageLookupByLibrary.simpleMessage("Welcome"),
+        "placeholderByConfirmPassword":
+            MessageLookupByLibrary.simpleMessage("Please confirm password"),
         "placeholderByConnectAddress":
             MessageLookupByLibrary.simpleMessage("Connect Address"),
+        "placeholderByEnterPassword":
+            MessageLookupByLibrary.simpleMessage("Please enter password"),
+        "placeholderByHDWalletPK":
+            MessageLookupByLibrary.simpleMessage("HDWallet private key"),
+        "placeholderByKeystore":
+            MessageLookupByLibrary.simpleMessage("Keystore"),
+        "placeholderByMnemonic":
+            MessageLookupByLibrary.simpleMessage("Mnemonic"),
+        "placeholderByMnemonicPassphrase":
+            MessageLookupByLibrary.simpleMessage("Mnemonic Passphrase(Option)"),
+        "placeholderByNostrPK":
+            MessageLookupByLibrary.simpleMessage("Nostr private key"),
+        "placeholderByPassword":
+            MessageLookupByLibrary.simpleMessage("Password"),
         "postByReply": MessageLookupByLibrary.simpleMessage("reply:"),
         "postDetailByComment": MessageLookupByLibrary.simpleMessage("Comment"),
         "postDetailByMain": MessageLookupByLibrary.simpleMessage("Main"),
@@ -156,6 +174,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "shareByPostID": MessageLookupByLibrary.simpleMessage("Share"),
         "tipByDeleteAccount": MessageLookupByLibrary.simpleMessage(
             "Confirm delete the current account?"),
+        "tipByImportError":
+            MessageLookupByLibrary.simpleMessage("Import Error"),
         "tipByKeystorePwError":
             MessageLookupByLibrary.simpleMessage("Keystore Password Error"),
         "tipByLogout": MessageLookupByLibrary.simpleMessage(

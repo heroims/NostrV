@@ -14,4 +14,4 @@ enum StorageKeys {
 const iosSecureStorageOptions = IOSOptions(accessibility: KeychainAccessibility.unlocked);
 const androidSecureStorageOptions = AndroidOptions(encryptedSharedPreferences: true);
 
-const defaultRelayUrls = ['wss://relay.plebstr.com'];
+const defaultRelayUrls = ['wss://relay.stoner.com'];

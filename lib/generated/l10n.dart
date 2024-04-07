@@ -520,6 +520,116 @@ class S {
     );
   }
 
+  /// `Import Error`
+  String get tipByImportError {
+    return Intl.message(
+      'Import Error',
+      name: 'tipByImportError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter password`
+  String get placeholderByEnterPassword {
+    return Intl.message(
+      'Please enter password',
+      name: 'placeholderByEnterPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please confirm password`
+  String get placeholderByConfirmPassword {
+    return Intl.message(
+      'Please confirm password',
+      name: 'placeholderByConfirmPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nostr private key`
+  String get placeholderByNostrPK {
+    return Intl.message(
+      'Nostr private key',
+      name: 'placeholderByNostrPK',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `HDWallet private key`
+  String get placeholderByHDWalletPK {
+    return Intl.message(
+      'HDWallet private key',
+      name: 'placeholderByHDWalletPK',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mnemonic`
+  String get placeholderByMnemonic {
+    return Intl.message(
+      'Mnemonic',
+      name: 'placeholderByMnemonic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mnemonic Passphrase(Option)`
+  String get placeholderByMnemonicPassphrase {
+    return Intl.message(
+      'Mnemonic Passphrase(Option)',
+      name: 'placeholderByMnemonicPassphrase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password`
+  String get placeholderByPassword {
+    return Intl.message(
+      'Password',
+      name: 'placeholderByPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keystore`
+  String get placeholderByKeystore {
+    return Intl.message(
+      'Keystore',
+      name: 'placeholderByKeystore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nostr`
+  String get navByNostr {
+    return Intl.message(
+      'Nostr',
+      name: 'navByNostr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `HDWallet`
+  String get navByHDWallet {
+    return Intl.message(
+      'HDWallet',
+      name: 'navByHDWallet',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Repost`
   String get repostByPostID {
     return Intl.message(

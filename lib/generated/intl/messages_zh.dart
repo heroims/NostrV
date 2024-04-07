@@ -71,6 +71,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "infoByLightning": MessageLookupByLibrary.simpleMessage("详情"),
         "mutePost": MessageLookupByLibrary.simpleMessage("屏蔽帖子"),
         "muteUser": MessageLookupByLibrary.simpleMessage("屏蔽用户"),
+        "navByHDWallet": MessageLookupByLibrary.simpleMessage("HDWallet"),
+        "navByNostr": MessageLookupByLibrary.simpleMessage("Nostr"),
         "navByPost": MessageLookupByLibrary.simpleMessage("发布"),
         "navByPrivateChat": MessageLookupByLibrary.simpleMessage("私信"),
         "navByPublicChat": MessageLookupByLibrary.simpleMessage("公共聊天"),
@@ -90,8 +92,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "pageWelcomeGo": MessageLookupByLibrary.simpleMessage("进入"),
         "pageWelcomeImport": MessageLookupByLibrary.simpleMessage("导入"),
         "pageWelcomeTitle": MessageLookupByLibrary.simpleMessage("欢迎"),
+        "placeholderByConfirmPassword":
+            MessageLookupByLibrary.simpleMessage("请确认密码"),
         "placeholderByConnectAddress":
             MessageLookupByLibrary.simpleMessage("连接地址"),
+        "placeholderByHDWalletPK":
+            MessageLookupByLibrary.simpleMessage("HDWallet私钥"),
+        "placeholderByKeystore":
+            MessageLookupByLibrary.simpleMessage("Keystore"),
+        "placeholderByMnemonic": MessageLookupByLibrary.simpleMessage("助记词"),
+        "placeholderByMnemonicPassphrase":
+            MessageLookupByLibrary.simpleMessage("助记词密码(可选)"),
+        "placeholderByNostrPK": MessageLookupByLibrary.simpleMessage("Nostr私钥"),
+        "placeholderByPassword": MessageLookupByLibrary.simpleMessage("密码"),
         "postByReply": MessageLookupByLibrary.simpleMessage("回复:"),
         "postDetailByComment": MessageLookupByLibrary.simpleMessage("回复"),
         "postDetailByMain": MessageLookupByLibrary.simpleMessage("评论"),
@@ -126,6 +139,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "shareByPostID": MessageLookupByLibrary.simpleMessage("分享"),
         "tipByDeleteAccount":
             MessageLookupByLibrary.simpleMessage("是否确定删除当前账户?"),
+        "tipByImportError": MessageLookupByLibrary.simpleMessage("导入异常"),
         "tipByKeystorePwError":
             MessageLookupByLibrary.simpleMessage("Keystore密码设置错误"),
         "tipByLogout": MessageLookupByLibrary.simpleMessage("是否确定退出当前账户？"),

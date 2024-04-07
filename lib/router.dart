@@ -10,6 +10,7 @@ import 'package:nostr_app/pages/feed_post_page.dart';
 import 'package:nostr_app/pages/followers_page.dart';
 import 'package:nostr_app/pages/followings_page.dart';
 import 'package:nostr_app/pages/home_page.dart';
+import 'package:nostr_app/pages/import_account_page.dart';
 import 'package:nostr_app/pages/key_manager_page.dart';
 import 'package:nostr_app/pages/lightning_page.dart';
 import 'package:nostr_app/pages/mnemonic_verify_page.dart';
@@ -32,6 +33,7 @@ import 'package:provider/provider.dart';
 import 'models/deep_links_model.dart';
 
 enum Routers {
+  importAccount(28, 'import_account'),
   accountManager(27, 'account_manager'),
   lightning(26, 'lightning'),
   notifyManager(25, 'notify_manager'),
@@ -328,6 +330,13 @@ class AppRouter {
           path: '/${Routers.lightning.value}',
           pageBuilder: (context, state) {
             return const MaterialPage(child: LightningPage());
+          }
+      ),
+      GoRoute(
+          name: Routers.importAccount.value,
+          path: '/${Routers.importAccount.value}',
+          pageBuilder: (context, state) {
+            return const MaterialPage(child: ImportAccountPage());
           }
       ),
       GoRoute(

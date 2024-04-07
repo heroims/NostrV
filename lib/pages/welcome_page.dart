@@ -35,19 +35,19 @@ class WelcomePage extends StatelessWidget {
                 height: 50,
                 child: ElevatedButton(
                   // color: Color.fromARGB(255, 11, 221, 33),
-                  style: ButtonStyle(backgroundColor:MaterialStateProperty.resolveWith<Color?>(
-                          (Set<MaterialState> states) {
-                        if (states.contains(MaterialState.focused)) {
-                          return Colors.red;
-                        }
-                        if (states.contains(MaterialState.hovered)) {
-                          return Colors.green;
-                        }
-                        if (states.contains(MaterialState.pressed)) {
-                          return Colors.red;
-                        }
-                        return Colors.brown; // Defer to the widget's default.
-                      }),),
+                  // style: ButtonStyle(backgroundColor:MaterialStateProperty.resolveWith<Color?>(
+                  //         (Set<MaterialState> states) {
+                  //       if (states.contains(MaterialState.focused)) {
+                  //         return Colors.red;
+                  //       }
+                  //       if (states.contains(MaterialState.hovered)) {
+                  //         return Colors.green;
+                  //       }
+                  //       if (states.contains(MaterialState.pressed)) {
+                  //         return Colors.red;
+                  //       }
+                  //       return Colors.brown; // Defer to the widget's default.
+                  //     }),),
                   onPressed: () {
                     showCupertinoDialog(
                         context: context,
@@ -74,26 +74,28 @@ class WelcomePage extends StatelessWidget {
                             ],
                           );
                         }).then((value) {
-                      final nostrUserModel = Provider.of<AppRouter>(context, listen: false).nostrUserModel;
+                          if(value!=null){
+                            final nostrUserModel = Provider.of<AppRouter>(context, listen: false).nostrUserModel;
 
-                      switch (value as CreateUserType){
-                        case CreateUserType.hdNode:{
-                          nostrUserModel.createHDAccount().then((mnemonic){
-                            context.pushNamed(Routers.mnemonicShow.value, extra: mnemonic);
-                          });
-                          break;
-                        }
-                        case CreateUserType.normal:{
-                          nostrUserModel.createNormalAccount().then((value){
-                            debugPrint('created');
-                            context.goNamed(Routers.feed.value);
-                          },onError: (err){
-                            debugPrint('err');
-                            debugPrint(err);
-                          });
-                          break;
-                        }
-                      }
+                            switch (value as CreateUserType){
+                              case CreateUserType.hdNode:{
+                                nostrUserModel.createHDAccount().then((mnemonic){
+                                  context.pushNamed(Routers.mnemonicShow.value, extra: mnemonic);
+                                });
+                                break;
+                              }
+                              case CreateUserType.normal:{
+                                nostrUserModel.createNormalAccount().then((value){
+                                  debugPrint('created');
+                                  context.goNamed(Routers.feed.value);
+                                },onError: (err){
+                                  debugPrint('err');
+                                  debugPrint(err);
+                                });
+                                break;
+                              }
+                            }
+                          }
                     });
 
                   },
@@ -106,20 +108,23 @@ class WelcomePage extends StatelessWidget {
                 height: 50,
                 child: ElevatedButton(
                   // color: Color.fromARGB(255, 11, 221, 33),
-                  style: ButtonStyle(backgroundColor:MaterialStateProperty.resolveWith<Color?>(
-                          (Set<MaterialState> states) {
-                        if (states.contains(MaterialState.focused)) {
-                          return Colors.red;
-                        }
-                        if (states.contains(MaterialState.hovered)) {
-                          return Colors.green;
-                        }
-                        if (states.contains(MaterialState.pressed)) {
-                          return Colors.red;
-                        }
-                        return Colors.brown; // Defer to the widget's default.
-                      }),),
-                  onPressed: ()=>{},child: Text(S.of(context).pageWelcomeImport),
+                  // style: ButtonStyle(backgroundColor:MaterialStateProperty.resolveWith<Color?>(
+                  //         (Set<MaterialState> states) {
+                  //       if (states.contains(MaterialState.focused)) {
+                  //         return Colors.red;
+                  //       }
+                  //       if (states.contains(MaterialState.hovered)) {
+                  //         return Colors.green;
+                  //       }
+                  //       if (states.contains(MaterialState.pressed)) {
+                  //         return Colors.red;
+                  //       }
+                  //       return Colors.brown; // Defer to the widget's default.
+                  //     }),),
+                  onPressed: (){
+                    context.pushNamed(Routers.importAccount.value,);
+                  },
+                  child: Text(S.of(context).pageWelcomeImport),
                 ),
               ),
             ],

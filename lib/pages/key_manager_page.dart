@@ -107,7 +107,7 @@ class KeyManagerPage extends StatelessWidget {
             height: 70,
             padding: const EdgeInsets.all(10),
             child: CupertinoTextField(
-              placeholder: "请输入密码",
+              placeholder: S.of(context).placeholderByEnterPassword,
               obscureText: true,
               controller: edit1Controller,
             ),
@@ -116,7 +116,7 @@ class KeyManagerPage extends StatelessWidget {
             height: 70,
             padding: const EdgeInsets.all(10),
             child: CupertinoTextField(
-              placeholder: "请确认密码",
+              placeholder: S.of(context).placeholderByConfirmPassword,
               obscureText: true,
               controller: edit2Controller,
             ),

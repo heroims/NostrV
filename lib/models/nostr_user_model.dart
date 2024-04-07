@@ -173,7 +173,7 @@ class NostrUserModel extends ChangeNotifier {
   void importNostrPrivateKey(String nostrPrivateKey){
     final pk = Nip19.decodePrivkey(nostrPrivateKey);
     final nostrNode = Keychain(pk);
-    currentUser = NostrUser(nostrNode.public, nostrNode.private);
+    currentUser = NostrUser(Nip19.encodePubkey(nostrNode.public), Nip19.encodePrivkey(nostrNode.private));
   }
 
   void importHDPrivateKey(String hdPrivateKey){
@@ -187,8 +187,8 @@ class NostrUserModel extends ChangeNotifier {
     currentUser = nostrUser;
   }
 
-  void importMnemonic(String mnemonic){
-    final m = BIP39.fromMnemonic(mnemonic);
+  void importMnemonic(String mnemonic,{String passphrase = ''}){
+    final m = BIP39.fromMnemonic(mnemonic, passphrase: passphrase);
 
     final node = BIP32.fromSeed(Uint8List.fromList(hexToBytes(m.seed)));
     final hdNode = node.derivePath("m/44'/1237'/0'/0/0");
