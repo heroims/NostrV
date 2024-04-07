@@ -220,6 +220,26 @@ class S {
     );
   }
 
+  /// `Send`
+  String get navByZapSend {
+    return Intl.message(
+      'Send',
+      name: 'navByZapSend',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receive`
+  String get navByZapReceive {
+    return Intl.message(
+      'Receive',
+      name: 'navByZapReceive',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Logout`
   String get btnByLogout {
     return Intl.message(

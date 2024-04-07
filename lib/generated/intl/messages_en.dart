@@ -93,6 +93,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "navByPublicChat": MessageLookupByLibrary.simpleMessage("Public Chat"),
         "navByRelay": MessageLookupByLibrary.simpleMessage("Relay"),
         "navByZap": MessageLookupByLibrary.simpleMessage("Zap"),
+        "navByZapReceive": MessageLookupByLibrary.simpleMessage("Receive"),
+        "navByZapSend": MessageLookupByLibrary.simpleMessage("Send"),
         "notifyByFollow": MessageLookupByLibrary.simpleMessage("Follow"),
         "notifyByReply": MessageLookupByLibrary.simpleMessage("Reply"),
         "notifyByRepost": MessageLookupByLibrary.simpleMessage("Repost"),

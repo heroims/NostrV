@@ -78,6 +78,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "navByPublicChat": MessageLookupByLibrary.simpleMessage("公共聊天"),
         "navByRelay": MessageLookupByLibrary.simpleMessage("中继"),
         "navByZap": MessageLookupByLibrary.simpleMessage("打赏"),
+        "navByZapReceive": MessageLookupByLibrary.simpleMessage("被打赏"),
+        "navByZapSend": MessageLookupByLibrary.simpleMessage("打赏"),
         "notifyByFollow": MessageLookupByLibrary.simpleMessage("关注"),
         "notifyByReply": MessageLookupByLibrary.simpleMessage("评论"),
         "notifyByRepost": MessageLookupByLibrary.simpleMessage("转发"),

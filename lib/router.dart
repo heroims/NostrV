@@ -28,11 +28,13 @@ import 'package:nostr_app/pages/search_page.dart';
 import 'package:nostr_app/pages/upvote_feed_page.dart';
 import 'package:nostr_app/pages/welcome_page.dart';
 import 'package:nostr_app/pages/relay_manager_page.dart';
+import 'package:nostr_app/pages/zap_list_page.dart';
 import 'package:provider/provider.dart';
 
 import 'models/deep_links_model.dart';
 
 enum Routers {
+  zapList(29, 'zap_list'),
   importAccount(28, 'import_account'),
   accountManager(27, 'account_manager'),
   lightning(26, 'lightning'),
@@ -432,6 +434,27 @@ class AppRouter {
             }
 
             return MaterialPage(child: RepostFeedPage(publicKey: pubKey,));
+          }
+      ),
+      GoRoute(
+          name: Routers.zapList.value,
+          path: '/${Routers.zapList.value}',
+          pageBuilder: (context, state) {
+
+            String? pubKey = state.uri.queryParameters['id'];
+            if(pubKey!=null){
+              pubKey = Nip19.decodePubkey(pubKey);
+            }
+            else {
+              if(state.extra!=null){
+                pubKey = state.extra as String;
+              }
+              else{
+                pubKey = Nip19.decodePubkey(nostrUserModel.currentUserSync!.publicKey);
+              }
+            }
+
+            return MaterialPage(child: ZapListPage(publicKey: pubKey,));
           }
       ),
       GoRoute(

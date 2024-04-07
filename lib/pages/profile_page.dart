@@ -85,6 +85,12 @@ class ProfilePage extends StatelessWidget {
                         context.pushNamed(Routers.repostFeed.value, queryParameters: {'id':Nip19.encodePubkey(userFollowModel.userInfoModel.publicKey)});
                       },
                     ),
+                    PopupMenuItem<String>(
+                      child: Text(S.of(context).userZapsList),
+                      onTap: () {
+                        context.pushNamed(Routers.zapList.value, queryParameters: {'id':Nip19.encodePubkey(userFollowModel.userInfoModel.publicKey)});
+                      },
+                    ),
                   ];
                   if(pubKey!=Nip19.decodePubkey(appRouter.nostrUserModel.currentUserSync!.publicKey)){
                     menuItem.addAll([

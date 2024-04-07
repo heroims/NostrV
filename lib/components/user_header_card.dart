@@ -251,8 +251,8 @@ class UserHeaderCard extends StatelessWidget {
                           ).then((value) {
                             DeepLinksModel deepLinksModel = Provider.of<DeepLinksModel>(context, listen: false);
 
-                            if(deepLinksModel?.lightningWallet != null&&value!=null){
-                              deepLinksModel?.lightningWallet!.payInvoiceEvent((relay, response) {
+                            if(deepLinksModel.lightningWallet != null&&value!=null){
+                              deepLinksModel.lightningWallet!.payInvoiceEvent((relay, response) {
                                 if(response['error'] == null){
                                   Navigator.pop(context);
                                 }

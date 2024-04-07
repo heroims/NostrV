@@ -16,6 +16,8 @@
   "navByRelay": "中继",
   "navByPost": "发布",
   "navByZap": "打赏",
+  "navByZapSend": "打赏",
+  "navByZapReceive": "被打赏",
   "btnByLogout": "退出",
   "btnByDeleteAccount": "删除账户",
   "settingByAccount": "账户管理",

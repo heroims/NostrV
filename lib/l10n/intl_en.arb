@@ -16,6 +16,8 @@
   "navByRelay": "Relay",
   "navByPost": "Post",
   "navByZap": "Zap",
+  "navByZapSend": "Send",
+  "navByZapReceive": "Receive",
   "btnByLogout": "Logout",
   "btnByDeleteAccount": "Delete Account",
   "settingByAccount": "Account Manager",

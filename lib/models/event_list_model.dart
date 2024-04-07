@@ -2,8 +2,12 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nostr/nostr.dart';
 import 'package:nostr_app/models/nostr_filter.dart';
+import 'package:nostr_app/models/realm_model.dart';
 import 'package:nostr_app/models/relay_pool_model.dart';
+import 'package:nostr_app/models/user_info_model.dart';
 import 'package:provider/provider.dart';
+
+import '../realm/db_user.dart';
 
 class EventListModel extends ChangeNotifier {
   late final EasyRefreshController _controller;
@@ -11,10 +15,11 @@ class EventListModel extends ChangeNotifier {
   List<String>? pubKeys;
   String? noteId;
   String? atUserId;
+  String? zapSenderId;
   String? searchKey;
   List<int> kinds = [];
 
-  EventListModel(this._controller,this._context, {this.pubKeys, this.noteId, this.atUserId, this.searchKey, List<int>? kinds}){
+  EventListModel(this._controller,this._context, {this.pubKeys, this.noteId, this.atUserId, this.zapSenderId, this.searchKey, List<int>? kinds}){
     if(kinds!=null){
       this.kinds.addAll(kinds);
       this.kinds = this.kinds.toSet().toList();
@@ -22,6 +27,19 @@ class EventListModel extends ChangeNotifier {
     else{
       this.kinds.add(0);
     }
+  }
+
+  UserInfo? getUser(String publicKey){
+    RealmToolModel realmModel = Provider.of<RealmToolModel>(_context, listen: false);
+
+    final findUser = realmModel.realm.find<DBUser>(publicKey);
+    if(findUser!=null){
+      return UserInfo.fromDBUser(findUser);
+    }
+    else{
+      UserInfoModel(_context, publicKey).getUserInfo(refreshCallback: ()=>notifyListeners());
+    }
+    return null;
   }
 
   int _lastCreatedAt = DateTime.now().millisecondsSinceEpoch ~/ 1000;
@@ -45,6 +63,7 @@ class EventListModel extends ChangeNotifier {
     List<String> tmpAuthors = [];
     List<String> tmpE = [];
     List<String> tmpP = [];
+    List<String> tmpPP = [];
     List<String> tmpT = [];
     if(pubKeys != null) {
       tmpAuthors.addAll(pubKeys!);
@@ -57,6 +76,10 @@ class EventListModel extends ChangeNotifier {
     if(atUserId != null) {
       tmpP.add(atUserId!);
       filter.p = tmpP;
+    }
+    if(zapSenderId != null) {
+      tmpPP.add(zapSenderId!);
+      filter.P = tmpPP;
     }
     if(searchKey!=null){
       String replacedText = searchKey!;
