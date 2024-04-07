@@ -14,7 +14,6 @@ import 'package:provider/provider.dart';
 import 'package:bech32/bech32.dart';
 
 import '../router.dart';
-import 'lightning_wallet.dart';
 
 class UserInfo{
   String website = '';

@@ -115,7 +115,7 @@ class SearchPage extends StatelessWidget {
                         child: Text(
                           S.of(context).searchTabByPost,
                           style: const TextStyle(
-                              color: Colors.blue,
+                              color: Colors.deepPurple,
                               fontWeight: FontWeight.bold
                           ),
                           selectionColor: Colors.cyan,
@@ -125,7 +125,7 @@ class SearchPage extends StatelessWidget {
                         child: Text(
                           S.of(context).searchTabByUser,
                           style: const TextStyle(
-                              color: Colors.blue,
+                              color: Colors.deepPurple,
                               fontWeight: FontWeight.bold
                           ),
                           selectionColor: Colors.cyan,
