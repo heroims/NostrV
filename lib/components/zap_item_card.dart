@@ -46,8 +46,18 @@ class ZapItemCard extends StatelessWidget {
     final bolt11Payment = Bolt11PaymentRequest(bolt11);
     final realAmount = bolt11Payment.amount * Decimal.parse('100000000');
 
-    String userPubKey = '';
-    userPubKey = senderPubKey == '' ? recipientPubKey : senderPubKey;
+    String userPubKey = recipientPubKey;
+
+    switch (cardType) {
+      case ZapItemCardType.send:
+        userPubKey = recipientPubKey;
+        break;
+      case ZapItemCardType.receive:
+        userPubKey = senderPubKey == '' ? recipientPubKey : senderPubKey;
+        break;
+      default:
+        break;
+    }
 
     UserInfo? user = eventListModel.getUser(userPubKey);
 
