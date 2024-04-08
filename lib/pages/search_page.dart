@@ -54,9 +54,9 @@ class SearchPage extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title:Padding(
-              padding: const EdgeInsets.only(top: 5),
+              padding: const EdgeInsets.only(top: 0),
               child: Container(
-                height: 45,
+                height: 48,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
                     color: Colors.white,
@@ -81,7 +81,7 @@ class SearchPage extends StatelessWidget {
                           return TextField(
                             controller: searchModel.editingController,
                             style: const TextStyle(
-                                fontSize: 18
+                                fontSize: 16
                             ),
                             decoration: InputDecoration(
                               hintText: S.of(context).tipBySearchQuery,
