@@ -69,11 +69,11 @@ class HomePage extends StatelessWidget{
                                    context.pushNamed(Routers.contract.value);
                                  },
                                ),
-                               PopupMenuItem<String>(
-                                 child: Text(S.of(context).navByPublicChat),
-                                 onTap: () {
-                                 },
-                               ),
+                               // PopupMenuItem<String>(
+                               //   child: Text(S.of(context).navByPublicChat),
+                               //   onTap: () {
+                               //   },
+                               // ),
                              ],
                            );
                          }

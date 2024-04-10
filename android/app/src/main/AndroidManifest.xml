@@ -20,7 +20,7 @@
     <!-- Permissions options for the `camera` group -->
     <uses-permission android:name="android.permission.CAMERA"/>
    <application
-        android:label="NostrX"
+        android:label="NostrV"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
