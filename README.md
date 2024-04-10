@@ -1,6 +1,6 @@
-# nostr_app
+# NostrV
 
-A new Flutter project.
+A Nostr Client Flutter project.
 
 ## Getting Started
 
